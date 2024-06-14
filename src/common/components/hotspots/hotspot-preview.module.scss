@@ -1,0 +1,37 @@
+.previewWrapper {
+  display: block;
+  position: relative;
+
+  &.desktop {
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+}
+
+.previewCrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  &.desktop {
+    width: 263px;
+  }
+
+  &.mobile {
+    width: 100%;
+  }
+}
+
+.product {
+  &.desktop {
+    font-size: 10px;
+    padding: 10px 0;
+    width: 263px;
+  }
+
+  &.mobile {
+    font-size: 8px;
+  }
+}

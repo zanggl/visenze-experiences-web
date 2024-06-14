@@ -1,0 +1,16 @@
+# Node
+node_modules
+**/node_modules/**
+**/tests/**
+
+# Artifacts
+dist
+build
+website
+**/cjs
+**/es
+**/dist
+coverage
+
+# Caches
+.cache
