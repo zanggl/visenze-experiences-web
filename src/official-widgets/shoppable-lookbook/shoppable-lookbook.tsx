@@ -117,7 +117,7 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
                     className={`rounded-full bg-white transition-all duration-300 group-hover:size-4 ${objectIndex === index ? 'size-4' : 'size-2'}`}></div>
                 </button>
               ))}
-              <Skeleton isLoaded={!!referenceImageUrl}>
+              <Skeleton classNames={{ content: 'aspect-[2/3]' }} isLoaded={!!referenceImageUrl}>
                 <img
                   ref={imageRef}
                   className='object-fit size-full'

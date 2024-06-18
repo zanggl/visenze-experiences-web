@@ -85,8 +85,8 @@ const Result: FC<ResultProps> = ({ index, result }) => {
 
   return (
     <a className={`${debugMode ? '' : 'cursor-pointer'}`} ref={targetRef} onClick={debugMode ? undefined : onClick}>
-      <Skeleton isLoaded={!isLoading}>
-        <img className='object-fit size-full' src={result.im_url}/>
+      <Skeleton classNames={{ content: 'aspect-[2/3]' }} isLoaded={!isLoading}>
+        <img className='size-full object-cover' src={result.im_url}/>
       </Skeleton>
       <Skeleton className='pt-2' isLoaded={!isLoading}>
         <span className='product-card-title line-clamp-1 text-primary'>{getProductName()}</span>
