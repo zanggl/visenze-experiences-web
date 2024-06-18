@@ -62,9 +62,9 @@ const EmbeddedGrid: FC<EmbeddedGridProps> = ({ config, productSearch, productId 
           <div className='widget-title py-2 text-center text-primary md:py-4'>You may also like</div>
 
           {/* Product card grid */}
-          <div className='grid grid-cols-2 gap-y-6 md:grid-cols-5'>
+          <div className='grid grid-cols-2 gap-x-2 gap-y-4 md:grid-cols-5'>
             {productResults.map((result, index) => (
-              <div className='p-1' key={`${result.product_id}-${index}`}>
+              <div key={`${result.product_id}-${index}`}>
                 <Result
                   index={index}
                   result={result}
@@ -74,7 +74,7 @@ const EmbeddedGrid: FC<EmbeddedGridProps> = ({ config, productSearch, productId 
           </div>
 
           {/* ViSenze Footer */}
-          <Footer className='bg-transparent py-2 md:py-8'/>
+          <Footer className='bg-transparent py-4 md:py-8'/>
         </div>
       </WidgetResultContext.Provider>
     </>

@@ -189,7 +189,7 @@ const ShopTheLook: FC<ShopTheLookProps> = ({ config, productSearch, productId })
         </div>
 
         {/* ViSenze Footer */}
-        <Footer className='bg-transparent py-2 md:py-8'/>
+        <Footer className='bg-transparent py-4 md:py-8'/>
       </WidgetResultContext.Provider>
     </>
   );

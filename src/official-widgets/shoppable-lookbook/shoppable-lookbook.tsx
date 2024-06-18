@@ -128,7 +128,7 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
             </div>
 
             {/* Product card grid */}
-            <div className='grid grid-cols-2 gap-x-2 md:absolute md:right-0 md:top-0 md:h-full md:w-[59%] md:grid-cols-3 md:gap-y-6 md:overflow-y-scroll'>
+            <div className='grid grid-cols-2 gap-x-2 gap-y-4 md:absolute md:right-0 md:top-0 md:h-full md:w-[59%] md:grid-cols-3 md:overflow-y-scroll'>
               {productResults.map((result, index) => (
                 <div key={`${result.product_id}-${index}`}>
                   <Result
@@ -141,7 +141,7 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
           </div>
 
           {/* ViSenze Footer */}
-          <Footer className='bg-transparent py-2 md:py-8'/>
+          <Footer className='bg-transparent py-4 md:py-8'/>
         </div>
       </WidgetResultContext.Provider>
     </>
