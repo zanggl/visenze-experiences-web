@@ -62,7 +62,7 @@ const EmbeddedGrid: FC<EmbeddedGridProps> = ({ config, productSearch, productId 
           <div className='widget-title py-2 text-center text-primary md:py-4'>You may also like</div>
 
           {/* Product card grid */}
-          <div className='grid grid-cols-2 md:grid-cols-5'>
+          <div className='grid grid-cols-2 gap-y-6 md:grid-cols-5'>
             {productResults.map((result, index) => (
               <div className='p-1' key={`${result.product_id}-${index}`}>
                 <Result
