@@ -4,7 +4,7 @@
   "description": "A collection of widgets to instantly add ViSenze-powered product search functionality into websites",
   "scripts": {
     "preinstall": "node -p \"'export const LIB_VERSION = \\'' + require('./package.json').version + '\\';'\" > src/version.ts",
-    "build": "npm run preinstall && npm run build:camera-search && npm run build:similar-search && npm run build:search-results-page && npm run build:recommend-me && npm run build:more-like-this && npm run build:shop-the-look && npm run build:embedded-grid",
+    "build": "npm run preinstall && npm run build:camera-search && npm run build:similar-search && npm run build:search-results-page && npm run build:recommend-me && npm run build:more-like-this && npm run build:shop-the-look && npm run build:embedded-grid && npm run build:shoppable-lookbook",
     "build:staging": "export build=staging && npm run build",
     "build:init": "webpack --config webpack.init.js",
     "build:camera-search": "webpack --env dir=official-widgets/camera-search name=camera-search entry=index.tsx --config webpack.config.js",
@@ -21,6 +21,8 @@
     "start:shop-the-look": "webpack-dev-server --env dir=official-widgets/shop-the-look --config webpack.dev.js",
     "build:embedded-grid": "webpack --env dir=official-widgets/embedded-grid name=embedded-grid entry=index.tsx --config webpack.config.js",
     "start:embedded-grid": "webpack-dev-server --env dir=official-widgets/embedded-grid --config webpack.dev.js",
+    "build:shoppable-lookbook": "webpack --env dir=official-widgets/shoppable-lookbook name=shoppable-lookbook entry=index.tsx --config webpack.config.js",
+    "start:shoppable-lookbook": "webpack-dev-server --env dir=official-widgets/shoppable-lookbook --config webpack.dev.js",
     "test": "jest ./tests",
     "test:coverage": "jest ./tests --coverage",
     "lint": "eslint ./src",
