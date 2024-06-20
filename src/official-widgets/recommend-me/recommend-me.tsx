@@ -9,6 +9,7 @@ import useRecommendMe from '../../common/components/hooks/use-recommend-me';
 import Carousel from './components/Carousel';
 import CarouselLoader from './components/CarouselLoader';
 import { Actions, Category } from '../../common/types/tracking-constants';
+import { MAX_CHARACTER_LENGTH_INPUT } from '../../common/constants';
 
 const RecommendMe = memo((props: {
   configs: WidgetConfig;
@@ -87,7 +88,7 @@ const RecommendMe = memo((props: {
             }}
             disabled={isStreaming}
             isClearable
-            maxLength={500}
+            maxLength={MAX_CHARACTER_LENGTH_INPUT}
             autoComplete='off'
             variant='bordered'
             radius='none'

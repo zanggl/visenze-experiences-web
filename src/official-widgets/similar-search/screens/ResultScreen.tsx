@@ -17,6 +17,7 @@ import Header from '../components/Header';
 import PrevArrow from '../../../common/components/PrevArrow';
 import NextArrow from '../../../common/components/NextArrow';
 import useBreakpoint from '../../../common/components/hooks/use-breakpoint';
+import { MAX_CHARACTER_LENGTH_INPUT } from '../../../common/constants';
 
 const swipeConfig = {
   delta: 10, // min distance(px) before a swipe starts. *See Notes*
@@ -246,7 +247,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
               input: '!text-mobile-searchBarText !font-mobile-searchBarText',
             }}
             isClearable
-            maxLength={500}
+            maxLength={MAX_CHARACTER_LENGTH_INPUT}
             type='filters'
             placeholder='type here to refine your results'
             value={search}
@@ -364,7 +365,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                       input: 'text-tablet-searchBarText lg:text-desktop-searchBarText font-tablet-searchBarText lg:font-desktop-searchBarText',
                     }}
                     isClearable
-                    maxLength={500}
+                    maxLength={MAX_CHARACTER_LENGTH_INPUT}
                     type='filters'
                     placeholder='type here to refine your results'
                     value={search}

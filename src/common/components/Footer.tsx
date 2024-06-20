@@ -6,7 +6,7 @@ interface FooterProps {
 }
 
 const Footer: FC<FooterProps> = ({ className }): ReactElement => (
-  <div className={cn('z-10 flex w-full justify-center items-center', className)}>
+  <div className={cn('z-10 flex w-full justify-center items-center', className)} data-pw='visenze-footer'>
     <p className='text-xs'>POWERED BY </p>
     <img
       src='https://visenze-static.s3.amazonaws.com/demos/ms-adidas/ViSenze-FullColor-Horizontal.png'

@@ -19,6 +19,7 @@ import ArrowUpIcon from '../../../common/icons/ArrowUpIcon';
 import ArrowDownIcon from '../../../common/icons/ArrowDownIcon';
 import useBreakpoint from '../../../common/components/hooks/use-breakpoint';
 import { Actions, Category, Labels } from '../../../common/types/tracking-constants';
+import { MAX_CHARACTER_LENGTH_INPUT } from '../../../common/constants';
 
 const swipeConfig = {
   delta: 10, // min distance(px) before a swipe starts. *See Notes*
@@ -154,7 +155,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
             onKeywordSearch(search, keyword === selectedChip ? '' : keyword);
             scrollToResultsTop();
           }}>
-          <span className='calls-to-action-text text-primary'>{keyword}</span>
+          <span className='calls-to-action-text text-primary' data-pw='autocomplete-chip'>{keyword}</span>
         </Chip>
       ));
     }
@@ -174,13 +175,16 @@ const ResultScreen: FC<ResultScreenProps> = ({
           </div>
 
           <div
-            className={`no-scrollbar fixed left-3/20 top-14 m-auto flex w-2/3 gap-1 overflow-scroll ${showFullResults ? 'block' : 'hidden'}`}>
-            {searchHistory?.map((searchImage, i) => (
+            className={`no-scrollbar fixed left-3/20 top-14 m-auto flex w-2/3 gap-1 overflow-scroll ${showFullResults ? 'block' : 'hidden'}`}
+            data-pw='previous-views'
+          >
+            {searchHistory?.map((searchImage, index) => (
               <img
-                key={`image-history-${i}`}
+                key={`image-history-${index}`}
                 className='w-2/5'
                 src={getFile(searchImage)}
                 onClick={() => onClickMoreLikeThisHandler(searchImage)}
+                data-pw={`previous-views-image-${index + 1}`}
               />
             ))}
           </div>
@@ -203,7 +207,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
           </div>
 
           <div ref={resultsRef} className='no-scrollbar flex size-full justify-center overflow-y-auto md:hidden'>
-            <div className='mx-2 grid h-full grid-cols-2 pb-20 sm:grid-cols-3'>
+            <div className='mx-2 grid h-full grid-cols-2 pb-20 sm:grid-cols-3' data-pw='product-result-grid'>
               {productResults.map((result: ProcessedProduct, index: number) => (
                 <div
                   key={result.product_id}
@@ -232,7 +236,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
               input: '!text-mobile-searchBarText !font-mobile-searchBarText',
             }}
             isClearable
-            maxLength={500}
+            maxLength={MAX_CHARACTER_LENGTH_INPUT}
             type='filters'
             placeholder='type here to refine your results'
             value={search}
@@ -256,7 +260,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
             }}
           />
 
-          <div className='no-scrollbar mb-2 flex flex-row gap-1 overflow-scroll pt-2'>
+          <div className='no-scrollbar mb-2 flex flex-row gap-1 overflow-scroll pt-2' data-pw='autocomplete-chips'>
             {getAutocompleteChips()}
           </div>
         </div>
@@ -274,7 +278,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
               <div className='flex w-full flex-col items-center rounded-3xl border border-black pt-2 text-center'>
                 <HotspotPreview className='w-3/5' referenceImage={getReferenceImage()}/>
 
-                <FileDropzone onImageUpload={onImageUpload}>
+                <FileDropzone onImageUpload={onImageUpload} name='upload-icon'>
                   <p className='px-3 py-2 text-medium'>
                     <span className='calls-to-action-text text-primary'>drag an image to</span> <br/>
                     <span className='calls-to-action-text text-primary'>search or </span>
@@ -286,15 +290,16 @@ const ResultScreen: FC<ResultScreenProps> = ({
               {searchHistory && searchHistory?.length > 1 && (
                 <div className='pt-4 text-medium'>
                   <p className='text-primary'>Previous views</p>
-                  <div className='no-scrollbar flex h-full flex-row gap-1 overflow-scroll pt-1'>
+                  <div className='no-scrollbar flex h-full flex-row gap-1 overflow-scroll pt-1' data-pw='previous-views'>
                     {searchHistory
                       ?.slice(1)
-                      .map((searchImage, i) => (
+                      .map((searchImage, index) => (
                         <img
-                          key={`image-history-${i}`}
+                          key={`image-history-${index}`}
                           className='w-1/3 cursor-pointer rounded-lg object-cover object-center'
                           src={getFile(searchImage)}
                           onClick={() => onClickMoreLikeThisHandler(searchImage)}
+                          data-pw={`previous-views-image-${index + 1}`}
                         />
                       ))}
                   </div>
@@ -305,7 +310,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
 
           <div className='flex w-2/3 flex-col'>
             <div className='h-4/5 overflow-y-auto'>
-              <div className='mx-2 grid grid-cols-3'>
+              <div className='mx-2 grid grid-cols-3' data-pw='product-result-grid'>
                 {productResults.map((result: ProcessedProduct, index: number) => (
                   <div key={result.product_id} className={cn('pt-3 pb-2 px-2 bg-primary')}>
                     <Result
@@ -337,7 +342,9 @@ const ResultScreen: FC<ResultScreenProps> = ({
                     }}>
                     {inputSuggestions.map((keyword) => (
                       <ListboxItem key={keyword} className={cn(keyword === search ? 'bg-gray' : '', 'pl-8')}>
-                        {keyword}
+                        <div data-pw='autocomplete-suggestion'>
+                          {keyword}
+                        </div>
                       </ListboxItem>
                     ))}
                   </Listbox>
@@ -349,7 +356,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                       input: 'text-tablet-searchBarText lg:text-desktop-searchBarText font-tablet-searchBarText lg:font-desktop-searchBarText',
                     }}
                     isClearable
-                    maxLength={500}
+                    maxLength={MAX_CHARACTER_LENGTH_INPUT}
                     type='filters'
                     placeholder='type here to refine your results'
                     value={search}
@@ -377,7 +384,9 @@ const ResultScreen: FC<ResultScreenProps> = ({
                     trendingKeywords.length > 0
                     && <p className='calls-to-action-text pr-2 text-primary'>Trending:</p>
                   }
-                  {getAutocompleteChips()}
+                  <div data-pw='autocomplete-chips'>
+                    {getAutocompleteChips()}
+                  </div>
                 </div>
               </div>
             </div>

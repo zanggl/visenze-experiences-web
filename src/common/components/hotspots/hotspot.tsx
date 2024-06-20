@@ -295,7 +295,9 @@ export default class DotBoundingBox extends Component<DotBoundingBoxProps, DotBo
         onMouseDown={isCropOn && isSelected ? this.onMouseDown.bind(this) : doNothing}
         onTouchStart={isCropOn && isSelected ? this.onTouchStart.bind(this) : doNothing}
         onMouseUp={isCropOn && isSelected ? this.onMouseUp.bind(this) : doNothing}
-        onTouchEnd={isCropOn && isSelected ? this.onTouchEnd.bind(this) : doNothing}></div>
+        onTouchEnd={isCropOn && isSelected ? this.onTouchEnd.bind(this) : doNothing}
+        data-pw='hotspot'
+      ></div>
     );
   }
 }

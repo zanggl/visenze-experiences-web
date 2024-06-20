@@ -9,9 +9,10 @@ import { Actions, Category, Labels } from '../../../common/types/tracking-consta
 interface FileDropzoneProps {
   onImageUpload: (image: SearchImage) => void;
   children: ReactNode;
+  name: string;
 }
 
-const FileDropzone: FC<FileDropzoneProps> = ({ onImageUpload, children }) => {
+const FileDropzone: FC<FileDropzoneProps> = ({ onImageUpload, children, name }) => {
   const { productSearch } = useContext(WidgetDataContext);
   const MAX_IMAGE_FILE_SIZE = 10000000;
 
@@ -51,8 +52,8 @@ const FileDropzone: FC<FileDropzoneProps> = ({ onImageUpload, children }) => {
   });
 
   return (
-    <div className='cursor-pointer' {...getRootProps()}>
-      <input {...getInputProps()} />
+    <div className='cursor-pointer' {...getRootProps()} data-pw={`${name}-dropzone`}>
+      <input {...getInputProps()} data-pw={`${name}-input`} />
       {children}
     </div>
   );
