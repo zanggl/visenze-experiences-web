@@ -1,1 +1,1 @@
-export const MAX_CHARACTER_LENGTH_INPUT = 500;
+export const QUERY_MAX_CHARACTER_LENGTH = 500;

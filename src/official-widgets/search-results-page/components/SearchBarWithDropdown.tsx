@@ -5,7 +5,7 @@ import { Input } from '@nextui-org/input';
 import { cn } from '@nextui-org/system';
 import MagnifyingGlassIcon from '../../../common/icons/MagnifyingGlassIcon';
 import type { ProcessedProduct } from '../../../common/types/product';
-import { MAX_CHARACTER_LENGTH_INPUT } from '../../../common/constants';
+import { QUERY_MAX_CHARACTER_LENGTH } from '../../../common/constants';
 
 /**
  * Component which displays autocomplete suggestions based on search bar input
@@ -41,7 +41,7 @@ const SearchBarWithDropdown: FC<SearchBarWithDropdownProps> = ({ searchBarValue,
         autoComplete='off'
         size='lg'
         isClearable
-        maxLength={MAX_CHARACTER_LENGTH_INPUT}
+        maxLength={QUERY_MAX_CHARACTER_LENGTH}
         placeholder='What are you looking for?'
         onClick={() => setShowDropdown(true)}
         onBlur={() => setTimeout(() => setShowDropdown(false), 100)}

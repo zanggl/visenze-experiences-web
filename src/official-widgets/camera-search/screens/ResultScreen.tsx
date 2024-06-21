@@ -19,7 +19,7 @@ import ArrowUpIcon from '../../../common/icons/ArrowUpIcon';
 import ArrowDownIcon from '../../../common/icons/ArrowDownIcon';
 import useBreakpoint from '../../../common/components/hooks/use-breakpoint';
 import { Actions, Category, Labels } from '../../../common/types/tracking-constants';
-import { MAX_CHARACTER_LENGTH_INPUT } from '../../../common/constants';
+import { QUERY_MAX_CHARACTER_LENGTH } from '../../../common/constants';
 
 const swipeConfig = {
   delta: 10, // min distance(px) before a swipe starts. *See Notes*
@@ -207,7 +207,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
           </div>
 
           <div ref={resultsRef} className='no-scrollbar flex size-full justify-center overflow-y-auto md:hidden'>
-            <div className='mx-2 grid h-full grid-cols-2 pb-20 sm:grid-cols-3' data-pw='product-result-grid'>
+            <div className='mx-2 grid h-full grid-cols-2 pb-20' data-pw='product-result-grid'>
               {productResults.map((result: ProcessedProduct, index: number) => (
                 <div
                   key={result.product_id}
@@ -236,7 +236,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
               input: '!text-mobile-searchBarText !font-mobile-searchBarText',
             }}
             isClearable
-            maxLength={MAX_CHARACTER_LENGTH_INPUT}
+            maxLength={QUERY_MAX_CHARACTER_LENGTH}
             type='filters'
             placeholder='type here to refine your results'
             value={search}
@@ -258,6 +258,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
               onKeywordSearch('', selectedChip || '');
               scrollToResultsTop();
             }}
+            data-pw='refinement-text-bar'
           />
 
           <div className='no-scrollbar mb-2 flex flex-row gap-1 overflow-scroll pt-2' data-pw='autocomplete-chips'>
@@ -340,11 +341,9 @@ const ResultScreen: FC<ResultScreenProps> = ({
                         setShowInputSuggest(false);
                       });
                     }}>
-                    {inputSuggestions.map((keyword) => (
+                    {inputSuggestions.map((keyword, index) => (
                       <ListboxItem key={keyword} className={cn(keyword === search ? 'bg-gray' : '', 'pl-8')}>
-                        <div data-pw='autocomplete-suggestion'>
-                          {keyword}
-                        </div>
+                        <span data-pw={`autocomplete-suggestion-${index + 1}`}>{keyword}</span>
                       </ListboxItem>
                     ))}
                   </Listbox>
@@ -356,7 +355,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                       input: 'text-tablet-searchBarText lg:text-desktop-searchBarText font-tablet-searchBarText lg:font-desktop-searchBarText',
                     }}
                     isClearable
-                    maxLength={MAX_CHARACTER_LENGTH_INPUT}
+                    maxLength={QUERY_MAX_CHARACTER_LENGTH}
                     type='filters'
                     placeholder='type here to refine your results'
                     value={search}
@@ -376,6 +375,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                       setSearch('');
                       onKeywordSearch('', selectedChip || '');
                     }}
+                    data-pw='refinement-text-bar'
                   />
                 </div>
 

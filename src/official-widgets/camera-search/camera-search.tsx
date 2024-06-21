@@ -16,7 +16,7 @@ import ViSenzeModal from '../../common/components/modal/visenze-modal';
 import useImageMultisearch from '../../common/components/hooks/use-image-multisearch';
 import CameraIcon from './icons/CameraIcon';
 import LoadingIcon from './icons/LoadingIcon';
-import { MAX_CHARACTER_LENGTH_INPUT } from '../../common/constants';
+import { QUERY_MAX_CHARACTER_LENGTH } from '../../common/constants';
 
 const CameraSearch = memo((props: {
   configs: WidgetConfig;
@@ -133,9 +133,10 @@ const CameraSearch = memo((props: {
 
   const onKeywordSearch = (inputKeyword: string, chip: string): void => {
     setSelectedChip(chip);
-    let query = chip ? inputKeyword.concat(' ', chip) : inputKeyword;
-    if (query.length > MAX_CHARACTER_LENGTH_INPUT) {
-      query = query.slice(0, MAX_CHARACTER_LENGTH_INPUT);
+
+    let query = chip ? chip.concat(' ', inputKeyword) : inputKeyword;
+    if (query.length > QUERY_MAX_CHARACTER_LENGTH) {
+      query = query.slice(0, QUERY_MAX_CHARACTER_LENGTH);
     }
 
     const params: Record<string, any> = {
