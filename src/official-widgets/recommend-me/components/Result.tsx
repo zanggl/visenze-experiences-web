@@ -78,7 +78,7 @@ const Result: FC<ResultProps> = ({ index, result }) => {
   }, []);
 
   return (
-    <a className={`${debugMode ? '' : 'cursor-pointer'}`} ref={targetRef} onClick={debugMode ? undefined : onClick}>
+    <a className={`${debugMode ? '' : 'cursor-pointer'}`} ref={targetRef} onClick={debugMode ? undefined : onClick} data-pw={`product-result-card-${index + 1}`}>
       <div className='h-52 w-36 md:h-72 md:w-48 lg:h-96 lg:w-64'>
         <img className='object-fit size-full' src={result.im_url}/>
       </div>
