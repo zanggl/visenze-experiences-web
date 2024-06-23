@@ -57,9 +57,9 @@ const ResultsPage: FC<ResultsPageProps> = ({ results, autocompleteResults, handl
     <div className='flex h-[90vh] w-full flex-col divide-y-1' data-pw='results-page'>
       {
         productHistory.length > 0 ? (
-          <div className='no-scrollbar flex h-40 w-full gap-2 overflow-x-scroll p-4'>
+          <div className='no-scrollbar flex h-40 w-full gap-2 overflow-x-scroll p-4' data-pw='product-history'>
             {
-              productHistory.map((product) => (
+              productHistory.map((product, index) => (
                 <div
                   key={product.product_id}
                   className={cn(
@@ -70,10 +70,13 @@ const ResultsPage: FC<ResultsPageProps> = ({ results, autocompleteResults, handl
                     handleMultisearchWithProduct(product);
                     setActiveProduct(product);
                     scrollToResultsTop();
-                  }}>
+                  }}
+                  data-pw={`${product.product_id === activeProduct?.product_id ? 'active-product' : 'inactive-product'}`}
+                >
                   <Image
                     classNames={{ wrapper: 'h-full' }}
                     className='object-fit h-full rounded-none' src={product.im_url}
+                    data-pw={`product-history-image-${index + 1}`}
                   />
                   <button
                     className='absolute right-1 top-1 z-10 rounded-full bg-white p-1'
@@ -82,6 +85,7 @@ const ResultsPage: FC<ResultsPageProps> = ({ results, autocompleteResults, handl
                       event.stopPropagation();
                       removeFromHistory(product);
                     }}
+                    data-pw='product-history-delete'
                   >
                     <CloseIcon className='size-3'/>
                   </button>
@@ -92,7 +96,7 @@ const ResultsPage: FC<ResultsPageProps> = ({ results, autocompleteResults, handl
         )
         : (
             <div className='no-scrollbar flex gap-2 overflow-y-hidden overflow-x-scroll p-4' data-pw='autocomplete-chips'>
-              {autocompleteResults.map((result) => (
+              {autocompleteResults.map((result, index) => (
                 <Button
                   disableRipple
                   key={result}
@@ -102,7 +106,7 @@ const ResultsPage: FC<ResultsPageProps> = ({ results, autocompleteResults, handl
                   onClick={() => {
                     handleMultisearchWithQuery(result);
                   }}>
-                  <span className='calls-to-action-text text-buttonPrimary' data-pw='autocomplete-chip'>{result}</span>
+                  <span className='calls-to-action-text text-buttonPrimary' data-pw={`autocomplete-chip-${index + 1}`}>{result}</span>
                 </Button>
               ))}
             </div>

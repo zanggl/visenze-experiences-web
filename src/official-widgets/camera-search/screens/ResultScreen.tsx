@@ -155,7 +155,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
             onKeywordSearch(search, keyword === selectedChip ? '' : keyword);
             scrollToResultsTop();
           }}>
-          <span className='calls-to-action-text text-primary' data-pw='autocomplete-chip'>{keyword}</span>
+          <span className='calls-to-action-text text-primary' data-pw={`autocomplete-chip-${index + 1}`}>{keyword}</span>
         </Chip>
       ));
     }
