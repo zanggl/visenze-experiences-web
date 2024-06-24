@@ -159,7 +159,7 @@ export default class HotspotContainer extends Component<HotspotContainerProps, H
                   ref={this.imageRef}
                   src={this.state.file}
                   onLoad={() => setTimeout(() => this.onLoad(), 250)} // Delay needed to get correct image width and height for calculation in onLoad
-                  data-pw='reference-image'
+                  data-pw='hotspot-reference-image'
                 />
                 <div
                   className='absolute top-1/2 inline-block max-h-full max-w-full -translate-x-1/2 -translate-y-1/2'

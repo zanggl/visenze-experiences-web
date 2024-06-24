@@ -115,6 +115,7 @@ const Result = memo(({
               });
               clearSearch();
             }}
+            data-pw='ss-more-like-this-button'
           >
             {
               customizations?.icons.moreLikeThis
