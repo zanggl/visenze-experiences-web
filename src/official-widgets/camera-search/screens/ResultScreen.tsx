@@ -155,7 +155,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
             onKeywordSearch(search, keyword === selectedChip ? '' : keyword);
             scrollToResultsTop();
           }}>
-          <span className='calls-to-action-text text-primary' data-pw={`autocomplete-chip-${index + 1}`}>{keyword}</span>
+          <span className='calls-to-action-text text-primary' data-pw={`cs-autocomplete-chip-${index + 1}`}>{keyword}</span>
         </Chip>
       ));
     }
@@ -176,7 +176,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
 
           <div
             className={`no-scrollbar fixed left-3/20 top-14 m-auto flex w-2/3 gap-1 overflow-scroll ${showFullResults ? 'block' : 'hidden'}`}
-            data-pw='previous-views'
+            data-pw='cs-previous-views'
           >
             {searchHistory?.map((searchImage, index) => (
               <img
@@ -184,7 +184,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                 className='w-2/5'
                 src={getFile(searchImage)}
                 onClick={() => onClickMoreLikeThisHandler(searchImage)}
-                data-pw={`previous-views-image-${index + 1}`}
+                data-pw={`cs-previous-views-image-${index + 1}`}
               />
             ))}
           </div>
@@ -207,7 +207,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
           </div>
 
           <div ref={resultsRef} className='no-scrollbar flex size-full justify-center overflow-y-auto md:hidden'>
-            <div className='mx-2 grid h-full grid-cols-2 pb-20' data-pw='product-result-grid'>
+            <div className='mx-2 grid h-full grid-cols-2 pb-20' data-pw='cs-product-result-grid'>
               {productResults.map((result: ProcessedProduct, index: number) => (
                 <div
                   key={result.product_id}
@@ -258,10 +258,10 @@ const ResultScreen: FC<ResultScreenProps> = ({
               onKeywordSearch('', selectedChip || '');
               scrollToResultsTop();
             }}
-            data-pw='refinement-text-bar'
+            data-pw='cs-refinement-text-bar'
           />
 
-          <div className='no-scrollbar mb-2 flex flex-row gap-1 overflow-scroll pt-2' data-pw='autocomplete-chips'>
+          <div className='no-scrollbar mb-2 flex flex-row gap-1 overflow-scroll pt-2' data-pw='cs-autocomplete-chips'>
             {getAutocompleteChips()}
           </div>
         </div>
@@ -291,7 +291,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
               {searchHistory && searchHistory?.length > 1 && (
                 <div className='pt-4 text-medium'>
                   <p className='text-primary'>Previous views</p>
-                  <div className='no-scrollbar flex h-full flex-row gap-1 overflow-scroll pt-1' data-pw='previous-views'>
+                  <div className='no-scrollbar flex h-full flex-row gap-1 overflow-scroll pt-1' data-pw='cs-previous-views'>
                     {searchHistory
                       ?.slice(1)
                       .map((searchImage, index) => (
@@ -300,7 +300,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                           className='w-1/3 cursor-pointer rounded-lg object-cover object-center'
                           src={getFile(searchImage)}
                           onClick={() => onClickMoreLikeThisHandler(searchImage)}
-                          data-pw={`previous-views-image-${index + 1}`}
+                          data-pw={`cs-previous-views-image-${index + 1}`}
                         />
                       ))}
                   </div>
@@ -311,7 +311,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
 
           <div className='flex w-2/3 flex-col'>
             <div className='h-4/5 overflow-y-auto'>
-              <div className='mx-2 grid grid-cols-3' data-pw='product-result-grid'>
+              <div className='mx-2 grid grid-cols-3' data-pw='cs-product-result-grid'>
                 {productResults.map((result: ProcessedProduct, index: number) => (
                   <div key={result.product_id} className={cn('pt-3 pb-2 px-2 bg-primary')}>
                     <Result
@@ -343,7 +343,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                     }}>
                     {inputSuggestions.map((keyword, index) => (
                       <ListboxItem key={keyword} className={cn(keyword === search ? 'bg-gray' : '', 'pl-8')}>
-                        <span data-pw={`autocomplete-suggestion-${index + 1}`}>{keyword}</span>
+                        <span data-pw={`cs-autocomplete-suggestion-${index + 1}`}>{keyword}</span>
                       </ListboxItem>
                     ))}
                   </Listbox>
@@ -375,7 +375,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                       setSearch('');
                       onKeywordSearch('', selectedChip || '');
                     }}
-                    data-pw='refinement-text-bar'
+                    data-pw='cs-refinement-text-bar'
                   />
                 </div>
 
@@ -384,7 +384,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                     trendingKeywords.length > 0
                     && <p className='calls-to-action-text pr-2 text-primary'>Trending:</p>
                   }
-                  <div data-pw='autocomplete-chips' className='flex gap-1'>
+                  <div data-pw='cs-autocomplete-chips' className='flex gap-1'>
                     {getAutocompleteChips()}
                   </div>
                 </div>

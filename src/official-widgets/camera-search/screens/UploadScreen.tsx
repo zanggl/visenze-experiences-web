@@ -49,7 +49,7 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
               }
             }}
           >
-            <img className='object-fit h-full' src={imageWithLabel.url} data-pw={`gallery-image-${index + 1}`}/>
+            <img className='object-fit h-full' src={imageWithLabel.url} data-pw={`cs-gallery-image-${index + 1}`}/>
             {
               imageWithLabel.label
               && <CardFooter className='absolute bottom-0 z-10 w-full justify-center overflow-hidden rounded-b-large
@@ -128,7 +128,7 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
                       onGallerySelect(0);
                     }
                   }}>
-                  <img className='object-fit h-full' src={customizations?.images[0].url} data-pw='gallery-image-1'/>
+                  <img className='object-fit h-full' src={customizations?.images[0].url} data-pw='cs-gallery-image-1'/>
                   {
                     customizations?.images[0].label
                     && <CardFooter

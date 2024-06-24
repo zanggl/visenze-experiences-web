@@ -52,8 +52,8 @@ const FileDropzone: FC<FileDropzoneProps> = ({ onImageUpload, children, name }) 
   });
 
   return (
-    <div className='cursor-pointer' {...getRootProps()} data-pw={`${name}-dropzone`}>
-      <input {...getInputProps()} data-pw={`${name}-input`} />
+    <div className='cursor-pointer' {...getRootProps()} data-pw={`cs-${name}-dropzone`}>
+      <input {...getInputProps()} data-pw={`cs-${name}-input`} />
       {children}
     </div>
   );
