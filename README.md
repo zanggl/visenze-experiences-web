@@ -1,4 +1,4 @@
-# ViSenze ProductSearch Widgets
+# ViSenze Product Search Widgets
 
 This is the repository for all ViSenze widgets aiming to accelerate development and deployment of Visenze powered Shopping Experiences.
 
