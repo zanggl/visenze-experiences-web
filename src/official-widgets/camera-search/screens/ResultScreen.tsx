@@ -379,12 +379,12 @@ const ResultScreen: FC<ResultScreenProps> = ({
                   />
                 </div>
 
-                <div className='relative z-20 flex min-h-10 flex-row items-center gap-1 bg-primary px-5 pb-3 pt-2'>
+                <div className='relative z-20 flex min-h-10 items-center bg-primary px-5 pb-3 pt-2'>
                   {
                     trendingKeywords.length > 0
                     && <p className='calls-to-action-text pr-2 text-primary'>Trending:</p>
                   }
-                  <div data-pw='autocomplete-chips'>
+                  <div data-pw='autocomplete-chips' className='flex gap-1'>
                     {getAutocompleteChips()}
                   </div>
                 </div>
