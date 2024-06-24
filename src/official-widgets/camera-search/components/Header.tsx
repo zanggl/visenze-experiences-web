@@ -20,14 +20,14 @@ const Header: FC<HeaderProps> = ({ onCloseHandler, onBackHandler, isResultScreen
         isResultScreen
         ? (
           <>
-            <Button isIconOnly className='absolute left-5 top-3 bg-transparent' onClick={onBackHandler} data-pw='back-button'>
+            <Button isIconOnly className='absolute left-5 top-3 bg-transparent' onClick={onBackHandler} data-pw='cs-back-button'>
               <BackIcon className='size-6'/>
             </Button>
-            <p className='hidden text-2xl text-primary md:block' data-pw='widget-title'>{resultScreenTitle}</p>
+            <p className='hidden text-2xl text-primary md:block' data-pw='cs-widget-title'>{resultScreenTitle}</p>
           </>
         )
         : (
-          <p className='widget-title text-center text-primary' data-pw='widget-title'>
+          <p className='widget-title text-center text-primary' data-pw='cs-widget-title'>
             {uploadScreenTitleStart}
             <br className='md:hidden'/>
             {uploadScreenTitleEnd}
@@ -35,7 +35,7 @@ const Header: FC<HeaderProps> = ({ onCloseHandler, onBackHandler, isResultScreen
         )
       }
 
-      <Button isIconOnly className='absolute right-5 top-3 bg-transparent' onClick={onCloseHandler} data-pw='close-button'>
+      <Button isIconOnly className='absolute right-5 top-3 bg-transparent' onClick={onCloseHandler} data-pw='cs-close-button'>
         <CloseIcon className='size-6'/>
       </Button>
     </div>
