@@ -94,6 +94,7 @@ const Result: FC<ResultProps> = ({ index, result, onClickMoreLikeThisHandler }) 
             event.stopPropagation();
             onClickMoreLikeThisHandler(result);
           }}
+          data-pw='srp-more-like-this-button'
         >
           {
             customizations?.icons.moreLikeThis
