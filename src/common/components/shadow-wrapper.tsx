@@ -12,7 +12,7 @@ const rootStyle: CSSProperties = {
 };
 
 const rootContainerStyle: CSSProperties = {
-  display: 'block !important',
+  display: 'block',
 };
 
 export const RootContext = createContext<HTMLElement | null>(null);

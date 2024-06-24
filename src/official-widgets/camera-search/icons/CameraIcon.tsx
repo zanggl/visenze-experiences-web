@@ -12,7 +12,8 @@ const CameraIcon: FC<CameraIconProps> = ({ onClickHandler }): ReactElement => (
   strokeWidth={1.5}
   stroke='black'
   className='curser-pointer size-7'
-  onClick={onClickHandler}>
+  onClick={onClickHandler}
+  data-pw='cs-camera-icon'>
     <path
       strokeLinecap='round'
       strokeLinejoin='round'

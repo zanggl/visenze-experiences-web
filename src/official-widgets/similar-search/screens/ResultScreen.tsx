@@ -17,6 +17,7 @@ import Header from '../components/Header';
 import PrevArrow from '../../../common/components/PrevArrow';
 import NextArrow from '../../../common/components/NextArrow';
 import useBreakpoint from '../../../common/components/hooks/use-breakpoint';
+import { QUERY_MAX_CHARACTER_LENGTH } from '../../../common/constants';
 
 const swipeConfig = {
   delta: 10, // min distance(px) before a swipe starts. *See Notes*
@@ -151,7 +152,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
     });
   };
 
-  const getTrendingKeywordChips = (): ReactElement[] | null => {
+  const getAutocompleteChips = (): ReactElement[] | null => {
     if (trendingKeywords.length > 0) {
       return trendingKeywords.slice(6, 10).map((keyword, index) => (
         <Chip
@@ -166,7 +167,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
             onKeywordSearch(search, keyword === selectedChip ? '' : keyword);
             scrollToResultsTop();
           }}>
-          <span className='calls-to-action-text'>{keyword}</span>
+          <span className='calls-to-action-text text-primary' data-pw={`ss-autocomplete-chip-${index + 1}`}>{keyword}</span>
         </Chip>
       ));
     }
@@ -185,16 +186,20 @@ const ResultScreen: FC<ResultScreenProps> = ({
             className={cn(showFullResults ? 'opacity-0' : 'w-full opacity-100 max-h-[80vh]', 'transition-all duration-500')}
             alt='ViSenze Recommendations Reference Image'
             src={getReferenceImage()}
+            data-pw='ss-reference-image'
           />
 
           <div
-            className={`no-scrollbar fixed left-3/20 top-14 m-auto flex w-2/3 gap-1 overflow-scroll ${showFullResults ? 'block' : 'hidden'}`}>
-            {searchHistory?.map((searchImage, i) => (
+            className={`no-scrollbar fixed left-3/20 top-14 m-auto flex w-2/3 gap-1 overflow-scroll ${showFullResults ? 'block' : 'hidden'}`}
+            data-pw='ss-previous-views'
+          >
+            {searchHistory?.map((searchImage, index) => (
               <img
-                key={`image-history-${i}`}
+                key={`image-history-${index}`}
                 className='w-2/5'
                 src={getFile(searchImage)}
                 onClick={() => onClickMoreLikeThisHandler(searchImage)}
+                data-pw={`ss-previous-views-image-${index + 1}`}
               />
             ))}
           </div>
@@ -211,13 +216,15 @@ const ResultScreen: FC<ResultScreenProps> = ({
               isIconOnly
               radius='full'
               className='absolute inset-x-0 -top-3 m-auto bg-buttonSecondary'
-              onClick={(): void => toggleFullResults()}>
+              onClick={(): void => toggleFullResults()}
+              data-pw='ss-arrow-button'
+            >
               {showFullResults ? <ArrowDownIcon className='size-6'/> : <ArrowUpIcon className='size-6'/>}
             </Button>
           </div>
 
           <div ref={resultsRef} className='no-scrollbar flex size-full justify-center overflow-y-auto'>
-            <div className='mx-2 grid h-full grid-cols-2 pb-20 sm:grid-cols-3'>
+            <div className='mx-2 grid h-full grid-cols-2 pb-20' data-pw='ss-product-result-grid'>
               {productResults.map((result: ProcessedProduct, index: number) => (
                 <div
                   key={result.product_id}
@@ -246,7 +253,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
               input: '!text-mobile-searchBarText !font-mobile-searchBarText',
             }}
             isClearable
-            maxLength={500}
+            maxLength={QUERY_MAX_CHARACTER_LENGTH}
             type='filters'
             placeholder='type here to refine your results'
             value={search}
@@ -268,10 +275,11 @@ const ResultScreen: FC<ResultScreenProps> = ({
               onKeywordSearch('', selectedChip || '');
               scrollToResultsTop();
             }}
+            data-pw='ss-refinement-text-bar'
           />
 
-          <div className='no-scrollbar mb-2 flex flex-row gap-1 overflow-scroll pt-2'>
-            {getTrendingKeywordChips()}
+          <div className='no-scrollbar mb-2 flex flex-row gap-1 overflow-scroll pt-2' data-pw='ss-autocomplete-chips'>
+            {getAutocompleteChips()}
           </div>
         </div>
       </div>
@@ -287,21 +295,22 @@ const ResultScreen: FC<ResultScreenProps> = ({
             <div className='flex h-full flex-col justify-between px-16 md:px-6'>
               <div
                 className='mt-4 flex flex-col items-center rounded-2xl border border-black text-center md:h-72 md:w-48'>
-                <img src={getFile(image)} className='rounded-2xl object-fill object-center md:h-full'/>
+                <img src={getFile(image)} className='rounded-2xl object-cover object-center md:h-full' data-pw='ss-reference-image'/>
               </div>
 
               {searchHistory && searchHistory?.length > 1 && (
                 <div className='pt-2 text-medium'>
                   <p className='text-primary'>Previous views</p>
-                  <div className='no-scrollbar flex h-full flex-row gap-1 overflow-scroll pt-1'>
+                  <div className='no-scrollbar flex h-full flex-row gap-1 overflow-scroll pt-1' data-pw='ss-previous-views'>
                     {searchHistory
                       ?.slice(1)
-                      .map((searchImage, i) => (
+                      .map((searchImage, index) => (
                         <img
-                          key={`image-history-${i}`}
+                          key={`image-history-${index}`}
                           className='w-1/3 cursor-pointer rounded-lg object-cover object-center'
                           src={getFile(searchImage)}
                           onClick={() => onClickMoreLikeThisHandler(searchImage)}
+                          data-pw={`ss-previous-views-image-${index + 1}`}
                         />
                       ))}
                   </div>
@@ -310,7 +319,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
             </div>
           </div>
 
-          <div className='flex size-full flex-col pb-4 pt-8'>
+          <div className='flex size-full flex-col pb-4 pt-8' data-pw='ss-product-result-carousel'>
             <div className='relative w-3/4'>
               <div className='absolute h-80 w-full rounded-xl'>
                 <PrevArrow isDisabled={carouselPos === 0} onClickHandler={onClickPrevArrow}
@@ -350,9 +359,9 @@ const ResultScreen: FC<ResultScreenProps> = ({
                         setShowInputSuggest(false);
                       });
                     }}>
-                    {inputSuggestions.map((keyword) => (
+                    {inputSuggestions.map((keyword, index) => (
                       <ListboxItem key={keyword} className={cn(keyword === search ? 'bg-gray' : '', 'pl-8')}>
-                        {keyword}
+                        <span data-pw={`ss-autocomplete-suggestion-${index + 1}`}>{keyword}</span>
                       </ListboxItem>
                     ))}
                   </Listbox>
@@ -364,7 +373,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                       input: 'text-tablet-searchBarText lg:text-desktop-searchBarText font-tablet-searchBarText lg:font-desktop-searchBarText',
                     }}
                     isClearable
-                    maxLength={500}
+                    maxLength={QUERY_MAX_CHARACTER_LENGTH}
                     type='filters'
                     placeholder='type here to refine your results'
                     value={search}
@@ -384,15 +393,18 @@ const ResultScreen: FC<ResultScreenProps> = ({
                       setSearch('');
                       onKeywordSearch('', selectedChip || '');
                     }}
+                    data-pw='ss-refinement-text-bar'
                   />
                 </div>
 
-                <div className='relative z-20 flex min-h-10 flex-row items-center gap-1 bg-primary px-3 pb-1 pt-2'>
+                <div className='relative z-20 flex min-h-10 items-center bg-primary px-3 pb-1 pt-2'>
                   {
                     trendingKeywords.length > 0
                     && <p className='calls-to-action-text pr-2'>Trending:</p>
                   }
-                  {getTrendingKeywordChips()}
+                  <div data-pw='ss-autocomplete-chips' className='flex gap-1'>
+                    {getAutocompleteChips()}
+                  </div>
                 </div>
               </div>
             </div>
@@ -419,7 +431,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
     <>
       {breakpoint === 'mobile' && getMobileView()}
       {(breakpoint === 'tablet' || breakpoint === 'desktop') && getTabletAndDesktopView()}
-      <Footer className='fixed bottom-0 bg-white py-2 md:absolute lg:rounded-b-3xl'/>
+      <Footer className='fixed bottom-0 bg-white py-2 md:absolute lg:rounded-b-3xl' data-pw='ss-visenze-footer'/>
     </>
   );
 };

@@ -15,6 +15,7 @@ import { RootContext } from '../../common/components/shadow-wrapper';
 import ViSenzeModal from '../../common/components/modal/visenze-modal';
 import LoadingIcon from './icons/LoadingIcon';
 import SimilarSearchIcon from './icons/SimilarSearchIcon';
+import { QUERY_MAX_CHARACTER_LENGTH } from '../../common/constants';
 
 interface SimilarSearchProps {
   configs: WidgetConfig;
@@ -102,8 +103,13 @@ const SimilarSearch: FC<SimilarSearchProps> = ({ configs, productSearch, element
   const onKeywordSearch = (inputKeyword: string, chip: string): void => {
     setSelectedChip(chip);
 
+    let query = chip ? chip.concat(' ', inputKeyword) : inputKeyword;
+    if (query.length > QUERY_MAX_CHARACTER_LENGTH) {
+      query = query.slice(0, QUERY_MAX_CHARACTER_LENGTH);
+    }
+
     const params: Record<string, any> = {
-      q: inputKeyword.concat(' ', chip),
+      q: query,
       im_id: imageId,
       page: 1,
       limit: configs.searchSettings.limit,

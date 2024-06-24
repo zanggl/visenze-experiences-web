@@ -9,6 +9,7 @@ import useRecommendMe from '../../common/components/hooks/use-recommend-me';
 import Carousel from './components/Carousel';
 import CarouselLoader from './components/CarouselLoader';
 import { Actions, Category } from '../../common/types/tracking-constants';
+import { QUERY_MAX_CHARACTER_LENGTH } from '../../common/constants';
 
 const RecommendMe = memo((props: {
   configs: WidgetConfig;
@@ -64,7 +65,7 @@ const RecommendMe = memo((props: {
   return (
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
-        <div className='widget-title py-4 text-primary'>Personalize your recommendations</div>
+        <div className='widget-title py-4 text-primary' data-pw='rm-widget-title'>Personalize your recommendations</div>
 
         {/* Search input bar with Recommend me button */}
         <div className='flex'>
@@ -76,6 +77,7 @@ const RecommendMe = memo((props: {
               setQueryValue(searchBarValue);
               recommendMeWithQuery(searchBarValue);
             }}
+            data-pw='rm-recommend-me-button'
           >
             <span className='text-buttonPrimary'>Recommend me</span>
           </Button>
@@ -87,7 +89,7 @@ const RecommendMe = memo((props: {
             }}
             disabled={isStreaming}
             isClearable
-            maxLength={500}
+            maxLength={QUERY_MAX_CHARACTER_LENGTH}
             autoComplete='off'
             variant='bordered'
             radius='none'
@@ -102,6 +104,7 @@ const RecommendMe = memo((props: {
                 recommendMeWithQuery(searchBarValue);
               }
             }}
+            data-pw='rm-recommend-me-search-bar'
           />
          </div>
 

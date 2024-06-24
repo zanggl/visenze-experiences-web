@@ -5,6 +5,7 @@ import { Input } from '@nextui-org/input';
 import { cn } from '@nextui-org/system';
 import MagnifyingGlassIcon from '../../../common/icons/MagnifyingGlassIcon';
 import type { ProcessedProduct } from '../../../common/types/product';
+import { QUERY_MAX_CHARACTER_LENGTH } from '../../../common/constants';
 
 /**
  * Component which displays autocomplete suggestions based on search bar input
@@ -40,7 +41,7 @@ const SearchBarWithDropdown: FC<SearchBarWithDropdownProps> = ({ searchBarValue,
         autoComplete='off'
         size='lg'
         isClearable
-        maxLength={500}
+        maxLength={QUERY_MAX_CHARACTER_LENGTH}
         placeholder='What are you looking for?'
         onClick={() => setShowDropdown(true)}
         onBlur={() => setTimeout(() => setShowDropdown(false), 100)}
@@ -57,6 +58,7 @@ const SearchBarWithDropdown: FC<SearchBarWithDropdownProps> = ({ searchBarValue,
           setSearchBarValue(value);
         }}
         startContent={<MagnifyingGlassIcon className='size-4'/>}
+        data-pw='srp-search-bar'
       />
 
       {/* Autocomplete dropdown */}
@@ -64,7 +66,7 @@ const SearchBarWithDropdown: FC<SearchBarWithDropdownProps> = ({ searchBarValue,
         <div className={cn(
           showDropdown && autocompleteResults.length > 0 && searchBarValue !== '' ? 'top-12 h-60' : 'top-6 h-0',
           'absolute w-full transition-height z-20 overflow-hidden rounded-md border-b border-l border-r border-gray-200',
-        )}>
+        )} data-pw='srp-autocomplete-dropdown'>
           <Listbox
             onAction={(key: Key) => handleMultisearchWithQuery(String(key))}
             className='size-full overflow-auto bg-primary'
@@ -73,13 +75,13 @@ const SearchBarWithDropdown: FC<SearchBarWithDropdownProps> = ({ searchBarValue,
               classNames={{
                 heading: 'pl-4 text-sm md:text-md lg:text-lg text-primary font-bold',
               }}>
-              {autocompleteResults.map((result) => (
+              {autocompleteResults.map((result, index) => (
                 <ListboxItem
                   className='pr-4'
                   key={result}
                   endContent={<MagnifyingGlassIcon className='size-4'/>}
                 >
-                  <span className='calls-to-action-text pl-2 text-primary'>{result}</span>
+                  <span className='calls-to-action-text pl-2 text-primary' data-pw={`srp-autocomplete-suggestion-${index + 1}`}>{result}</span>
                 </ListboxItem>
               ))}
             </ListboxSection>

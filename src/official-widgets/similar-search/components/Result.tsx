@@ -91,14 +91,14 @@ const Result = memo(({
   }, []);
 
   return (
-    <a className={`${debugMode ? '' : 'cursor-pointer'}`} ref={targetRef} onClick={debugMode ? undefined : onClick}>
+    <a className={`${debugMode ? '' : 'cursor-pointer'}`} ref={targetRef} onClick={debugMode ? undefined : onClick} data-pw={`ss-product-result-card-${index + 1}`}>
       <Skeleton
         className='flex h-4/5'
         classNames={{ content: 'self-end' }}
         isLoaded={!isLoading}
       >
         <div className='relative'>
-          <img className='object-fit size-full' src={result.im_url}/>
+          <img className='object-fit size-full' src={result.im_url} data-pw={`ss-product-result-card-image-${index + 1}`}/>
           <Button
             isIconOnly
             size='sm'
@@ -115,6 +115,7 @@ const Result = memo(({
               });
               clearSearch();
             }}
+            data-pw='ss-more-like-this-button'
           >
             {
               customizations?.icons.moreLikeThis

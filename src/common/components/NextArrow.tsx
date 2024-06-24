@@ -11,9 +11,11 @@ interface NextArrowProps {
 const NextArrow: FC<NextArrowProps> = ({ onClickHandler, isDisabled = false, iconColour = '#000000' }) => (
   <div
     className={cn(
-      'absolute right-0 z-20 flex h-full w-12 items-center bg-gradient-to-r from-transparent to-white transition-opacity',
-      isDisabled ? 'opacity-0' : 'opacity-100',
-    )}>
+      'absolute right-0 flex h-full w-12 items-center bg-gradient-to-r from-transparent to-white transition-all',
+      isDisabled ? 'opacity-0 z-0' : 'opacity-100 z-20',
+    )}
+    data-pw='next-arrow'
+  >
     <Button
       isIconOnly
       disableRipple

@@ -81,9 +81,9 @@ const Result: FC<ResultProps> = ({ index, result, onClickMoreLikeThisHandler }) 
   }, []);
 
   return (
-    <a className={`size-full ${debugMode ? '' : 'cursor-pointer'}`} ref={targetRef} onClick={debugMode ? undefined : onClick}>
+    <a className={`size-full ${debugMode ? '' : 'cursor-pointer'}`} ref={targetRef} onClick={debugMode ? undefined : onClick} data-pw={`srp-product-result-card-${index + 1}`}>
       <div className='relative h-4/5'>
-        <img className='object-fit size-full' src={result.im_url}/>
+        <img className='object-fit size-full' src={result.im_url} data-pw={`srp-product-result-card-image-${index + 1}`}/>
         <Button
           isIconOnly
           size='sm'
@@ -94,6 +94,7 @@ const Result: FC<ResultProps> = ({ index, result, onClickMoreLikeThisHandler }) 
             event.stopPropagation();
             onClickMoreLikeThisHandler(result);
           }}
+          data-pw='srp-more-like-this-button'
         >
           {
             customizations?.icons.moreLikeThis

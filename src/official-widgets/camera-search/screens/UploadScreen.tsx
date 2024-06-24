@@ -49,7 +49,7 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
               }
             }}
           >
-            <img className='object-fit h-full' src={imageWithLabel.url} />
+            <img className='object-fit h-full' src={imageWithLabel.url} data-pw={`cs-gallery-image-${index + 1}`}/>
             {
               imageWithLabel.label
               && <CardFooter className='absolute bottom-0 z-10 w-full justify-center overflow-hidden rounded-b-large
@@ -88,7 +88,7 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
         <div className='flex flex-col md:flex-row'>
           <div className='md:w-1/3 md:px-10'>
             <div className='h-52 px-24 md:px-2'>
-              <FileDropzone onImageUpload={onImageUpload}>
+              <FileDropzone onImageUpload={onImageUpload} name='upload-icon'>
                 <div
                   className='flex w-full flex-col items-center rounded-3xl border border-black py-1 text-center text-medium'>
                   {
@@ -128,7 +128,7 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
                       onGallerySelect(0);
                     }
                   }}>
-                  <img className='object-fit h-full' src={customizations?.images[0].url}/>
+                  <img className='object-fit h-full' src={customizations?.images[0].url} data-pw='cs-gallery-image-1'/>
                   {
                     customizations?.images[0].label
                     && <CardFooter
@@ -150,7 +150,7 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
           </div>
 
           <div className='pb-5'>
-            <FileDropzone onImageUpload={onImageUpload}>
+            <FileDropzone onImageUpload={onImageUpload} name='use-camera'>
               <div className='mx-16 mt-3 rounded-full bg-buttonPrimary py-2 text-center font-bold text-buttonPrimary md:hidden'>
                 USE CAMERA
               </div>
