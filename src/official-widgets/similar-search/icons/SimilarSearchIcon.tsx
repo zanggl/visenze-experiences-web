@@ -12,7 +12,7 @@ const SimilarSearchIcon: FC<SimilarSearchIconProps> = ({ children }): ReactEleme
     strokeWidth={1.5}
     stroke='currentColor'
     className='size-6'
-    data-pw='similar-search-icon'
+    data-pw='ss-similar-search-icon'
   >
       <ellipse
         cx='249.446'
