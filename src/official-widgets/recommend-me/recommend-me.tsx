@@ -65,7 +65,7 @@ const RecommendMe = memo((props: {
   return (
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
-        <div className='widget-title py-4 text-primary' data-pw='widget-title'>Personalize your recommendations</div>
+        <div className='widget-title py-4 text-primary' data-pw='rm-widget-title'>Personalize your recommendations</div>
 
         {/* Search input bar with Recommend me button */}
         <div className='flex'>
@@ -77,7 +77,7 @@ const RecommendMe = memo((props: {
               setQueryValue(searchBarValue);
               recommendMeWithQuery(searchBarValue);
             }}
-            data-pw='recommend-me-button'
+            data-pw='rm-recommend-me-button'
           >
             <span className='text-buttonPrimary'>Recommend me</span>
           </Button>
@@ -104,7 +104,7 @@ const RecommendMe = memo((props: {
                 recommendMeWithQuery(searchBarValue);
               }
             }}
-            data-pw='recommend-me-search-bar'
+            data-pw='rm-recommend-me-search-bar'
           />
          </div>
 
