@@ -108,6 +108,7 @@ const Result = memo(({
               onMoreLikeThis({ imgUrl: result.im_url });
               clearSearch();
             }}
+            data-pw='cs-more-like-this-button'
           >
             {
               customizations?.icons.moreLikeThis

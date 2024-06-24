@@ -201,7 +201,9 @@ const ResultScreen: FC<ResultScreenProps> = ({
               isIconOnly
               radius='full'
               className='absolute inset-x-0 -top-3 m-auto bg-buttonSecondary'
-              onClick={(): void => toggleFullResults()}>
+              onClick={(): void => toggleFullResults()}
+              data-pw='cs-arrow-button'
+            >
               {showFullResults ? <ArrowDownIcon className='size-6'/> : <ArrowUpIcon className='size-6'/>}
             </Button>
           </div>
