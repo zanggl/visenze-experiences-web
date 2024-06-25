@@ -53,12 +53,18 @@ const ResultScreen: FC<ResultScreenProps> = ({
   const [showFullResults, setShowFullResults] = useState(false);
   const [showInputSuggest, setShowInputSuggest] = useState(false);
   const [inputSuggestions, setInputSuggestions] = useState<string[]>([]);
+  const [autocompleteSuggestionsHeight, setAutocompleteSuggestionsHeight] = useState(0);
   const resultsRef = useRef<HTMLDivElement>(null);
   const breakpoint = useBreakpoint();
 
   const carouselScrollOffset = 400;
   const carouselRef = useRef<HTMLDivElement>(null);
   const [carouselPos, setCarouselPos] = useState(0);
+
+  const autocompleteSuggestionsStyle = {
+    height: `${showInputSuggest ? autocompleteSuggestionsHeight : 0}px`,
+    top: `${showInputSuggest ? -autocompleteSuggestionsHeight : 0}px`,
+  };
 
   const toggleFullResults = (): void => {
     setShowFullResults(!showFullResults);
@@ -346,26 +352,24 @@ const ResultScreen: FC<ResultScreenProps> = ({
 
             <div className='z-30 h-1/5 w-3/4'>
               <div className='relative'>
-                <div
-                  className={`absolute w-full overflow-y-auto rounded-t-lg border-1 border-gray-200 bg-white transition-all 
-                    ${showInputSuggest ? '-top-36 z-10 h-36' : 'top-0 h-0 overflow-hidden'}`}>
-                  <Listbox
-                    aria-label='Actions'
-                    onAction={(key): void => {
-                      const newSearch = String(key);
-                      onKeywordSearch(newSearch, selectedChip || '');
-                      setSearch(String(newSearch));
-                      setTimeout(() => {
-                        setShowInputSuggest(false);
-                      });
-                    }}>
-                    {inputSuggestions.map((keyword, index) => (
-                      <ListboxItem key={keyword} className={cn(keyword === search ? 'bg-gray' : '', 'pl-8')}>
-                        <span data-pw={`ss-autocomplete-suggestion-${index + 1}`}>{keyword}</span>
-                      </ListboxItem>
-                    ))}
-                  </Listbox>
-                </div>
+                <Listbox
+                  style={autocompleteSuggestionsStyle}
+                  classNames={{ base: 'absolute w-full overflow-y-auto rounded-t-lg border-1 border-gray-200 bg-white transition-all' }}
+                  aria-label='Actions'
+                  onAction={(key): void => {
+                    const newSearch = String(key);
+                    onKeywordSearch(newSearch, selectedChip || '');
+                    setSearch(String(newSearch));
+                    setTimeout(() => {
+                      setShowInputSuggest(false);
+                    });
+                  }}>
+                  {inputSuggestions.map((keyword, index) => (
+                    <ListboxItem key={keyword} className={cn(keyword === search ? 'bg-gray' : '', 'pl-8')}>
+                      <span data-pw={`autocomplete-suggestion-${index + 1}`}>{keyword}</span>
+                    </ListboxItem>
+                  ))}
+                </Listbox>
 
                 <div className='relative z-20 border-t-1 border-gray-200 bg-primary px-2 pt-3'>
                   <Input
@@ -426,6 +430,11 @@ const ResultScreen: FC<ResultScreenProps> = ({
   useEffect(() => {
     setInputSuggestions(autocompleteResults || []);
   }, [autocompleteResults]);
+
+  // Set dynamic height for autocomplete suggestions container based on the number of suggestions
+  useEffect(() => {
+    setAutocompleteSuggestionsHeight(Math.min(36 * inputSuggestions.length + 5, 144));
+  }, [inputSuggestions]);
 
   return (
     <>
