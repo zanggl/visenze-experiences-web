@@ -417,7 +417,11 @@ const ResultScreen: FC<ResultScreenProps> = ({
 
   // Set dynamic height for autocomplete suggestions container based on the number of suggestions
   useEffect(() => {
-    setAutocompleteSuggestionsHeight(Math.min(36 * inputSuggestions.length + 5, 144));
+    if (inputSuggestions.length === 0) {
+      setAutocompleteSuggestionsHeight(0);
+    } else {
+      setAutocompleteSuggestionsHeight(Math.min(36 * inputSuggestions.length + 5, 144));
+    }
   }, [inputSuggestions]);
 
   useEffect(() => {
