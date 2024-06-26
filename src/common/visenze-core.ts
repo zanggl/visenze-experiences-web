@@ -14,7 +14,8 @@ export enum WidgetType {
   MORE_LIKE_THIS = 'more_like_this',
   SHOP_THE_LOOK = 'shop_the_look',
   EMBEDDED_GRID = 'embedded_grid',
-  SHOPPABLE_LOOKBOOK = 'shoppable_lookbook'
+  SHOPPABLE_LOOKBOOK = 'shoppable_lookbook',
+  ICON_TRIGGERED_GRID = 'icon_triggered_grid'
 }
 
 interface GenericWidgetClient {
