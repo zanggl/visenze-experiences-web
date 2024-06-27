@@ -89,8 +89,12 @@ const Result: FC<ResultProps> = ({ index, result, isReferenceProduct }) => {
       <Skeleton classNames={{ content: 'aspect-[2/3]' }} isLoaded={!isLoading}>
         <img className='size-full object-cover' src={result.im_url}/>
       </Skeleton>
-      <Skeleton className={`flex w-full flex-col p-2 ${isReferenceProduct && 'border-1'}`} isLoaded={!isLoading}>
-        <span className='product-card-title truncate text-primary'>{getProductName()}</span>
+      <Skeleton
+        className={`flex w-full flex-col p-2 ${isReferenceProduct && 'border-1'}`}
+        classNames={{ content: 'truncate' }}
+        isLoaded={!isLoading}
+      >
+        <span className='product-card-title text-primary'>{getProductName()}</span>
         {
           getOriginalPrice()
             ? (

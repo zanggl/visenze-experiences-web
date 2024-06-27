@@ -12,7 +12,7 @@ export const devConfigs: RecursivePartial<WidgetConfig> = {
     limit: 20,
   },
   displaySettings: {
-    cssSelector: '.more-like-this-widget',
+    cssSelector: '.icon-triggered-grid-widget',
     productDetails: {
       mainImageUrl: '',
       productUrl: '',

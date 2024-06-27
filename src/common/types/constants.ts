@@ -1,7 +1,7 @@
 export enum SortType {
   RELEVANCE = 'Relevance',
-  PRICE_LTH = 'Price: Low to high',
-  PRICE_HTL = 'Price: High to low',
+  PRICE_HTL = 'High to low (Price)',
+  PRICE_LTH = 'Low to high (Price)',
 }
 
 export enum FilterType {

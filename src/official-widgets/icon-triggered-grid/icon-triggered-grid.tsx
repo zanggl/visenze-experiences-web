@@ -5,7 +5,7 @@ import { Actions, Category, Labels } from '../../common/types/tracking-constants
 import { WidgetResultContext } from '../../common/types/contexts';
 import useBreakpoint from '../../common/components/hooks/use-breakpoint';
 import type { WidgetClient, WidgetConfig } from '../../common/visenze-core';
-import { SortType } from '../../common/types/constants';
+import { SortType, WidgetBreakpoint } from '../../common/types/constants';
 import { RootContext } from '../../common/components/shadow-wrapper';
 import ViSenzeModal from '../../common/components/modal/visenze-modal';
 import useRecommendationSearch from '../../common/components/hooks/use-recommendation-search';
@@ -91,11 +91,11 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
       <ViSenzeModal open={dialogVisible} layout={breakpoint} onClose={onModalClose}>
         <div className='relative flex size-full flex-col lg:flex-row lg:justify-between lg:divide-x-1'>
           {/* Close Button */}
-          <Button isIconOnly className='absolute right-2 top-3 border-none bg-transparent' onClick={onModalClose} data-pw='itg-close-button'>
+          <Button isIconOnly className='absolute right-3 top-3 z-10 border-none bg-transparent' onClick={onModalClose} data-pw='itg-close-button'>
             <CloseIcon className='size-6'/>
           </Button>
 
-          <div className='flex flex-col p-4 lg:w-3/10 lg:px-10 lg:py-6'>
+          <div className='flex flex-col border-none p-4 lg:w-3/10 lg:px-10 lg:py-6'>
             {/* Widget Title */}
             <div className='flex items-center'>
               <div className='widget-title text-primary'>You may also like</div>
@@ -117,7 +117,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
             <Footer className='mt-auto hidden bg-transparent lg:flex'/>
           </div>
 
-          <div className='relative flex w-full flex-col px-4 pb-2 lg:w-7/10 lg:pt-[7%]'>
+          <div className='relative flex w-full flex-col px-4 pb-4 lg:w-7/10 lg:pt-[6.5%]'>
             {/* Sort Type and Button */}
             <div className='flex items-center pb-4'>
               <div className='calls-to-action-text text-primary'>Sort: {sortType}</div>
@@ -147,10 +147,28 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
             {/* Sort Options */}
             {
               enableSortOptions
-              && <SortOptions sortType={sortType} setSortType={setSortType} setEnableSortOptions={setEnableSortOptions}/>
+              && <SortOptions
+                className='absolute left-0 top-14 hidden h-9/10 w-full flex-col justify-between gap-4 bg-white px-8 pb-8 pt-4 text-primary lg:flex'
+                sortType={sortType}
+                setSortType={setSortType}
+                setEnableSortOptions={setEnableSortOptions}
+              />
             }
           </div>
         </div>
+        <>
+          {
+            breakpoint === WidgetBreakpoint.MOBILE
+            && <ViSenzeModal open={enableSortOptions} layout='nested_mobile' onClose={() => setEnableSortOptions(false)}>
+              <SortOptions
+                className='flex h-full flex-col justify-between'
+                sortType={sortType}
+                setSortType={setSortType}
+                setEnableSortOptions={setEnableSortOptions}
+              />
+            </ViSenzeModal>
+          }
+        </>
       </ViSenzeModal>
     </WidgetResultContext.Provider>
   );

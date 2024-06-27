@@ -11,32 +11,33 @@ interface SortOptionsProps {
   sortType: SortType;
   setSortType: (selectedOption: SortType) => void;
   setEnableSortOptions: (enableSortOptions: boolean) => void;
+  className: string;
 }
 
-const SortOptions: FC<SortOptionsProps> = ({ sortType, setSortType, setEnableSortOptions }): ReactElement => {
+const SortOptions: FC<SortOptionsProps> = ({ sortType, setSortType, setEnableSortOptions, className }): ReactElement => {
   const [selectedOption, setSelectedOption] = useState<SortType>(sortType);
 
   return (
-    <div className='absolute left-0 top-14 flex h-9/10 w-full flex-col justify-between gap-4 bg-white px-8 pb-8 pt-4 text-primary'>
-      <span>Sort</span>
+    <div className={className}>
+      <div className='primary-text py-3 text-center lg:py-0 lg:text-start'>Sort</div>
       <div className='flex h-full flex-col gap-2 border-1 p-4'>
-        <label className='flex gap-2'>
+        <label className='flex cursor-pointer gap-2'>
           <input type='radio' id='relevance' value={SortType.RELEVANCE} checked={selectedOption === SortType.RELEVANCE}
                  onChange={(event) => setSelectedOption(event.target.value as SortType)}/>
-          Relevance
+          {SortType.RELEVANCE}
         </label>
-        <label className='flex gap-2'>
+        <label className='flex cursor-pointer gap-2'>
           <input type='radio' value={SortType.PRICE_HTL} checked={selectedOption === SortType.PRICE_HTL}
                  onChange={(event) => setSelectedOption(event.target.value as SortType)}/>
-          Price: High to low
+          {SortType.PRICE_HTL}
         </label>
-        <label className='flex gap-2'>
+        <label className='flex cursor-pointer gap-2'>
           <input type='radio' value={SortType.PRICE_LTH} checked={selectedOption === SortType.PRICE_LTH}
                  onChange={(event) => setSelectedOption(event.target.value as SortType)}/>
-          Price: Low to high
+          {SortType.PRICE_LTH}
         </label>
       </div>
-      <div className='flex-end ml-auto flex gap-4'>
+      <div className='flex justify-around py-4 lg:ml-auto lg:justify-normal lg:gap-4 lg:py-0'>
         <Button className='rounded border bg-white px-14 text-black' radius='none' onClick={() => setEnableSortOptions(false)}>
           Cancel
         </Button>
