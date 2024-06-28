@@ -34,6 +34,7 @@ const DEFAULT_CONFIGS: WidgetConfig = {
       title: '',
       price: '',
       originalPrice: '',
+      category: '',
     },
     breakpoints: {
       mobile: {

@@ -227,6 +227,7 @@ export interface WidgetConfig {
       title: string;
       price: string;
       originalPrice: string;
+      category: string;
     };
     fileDropzoneImage: string;
     breakpoints: WidgetBreakpointConfig;

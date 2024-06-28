@@ -87,6 +87,7 @@ const populateProductDetailsAndAttrsToGet = (config: WidgetConfig, fieldMappings
   config.displaySettings.productDetails.title = fieldMappings['title'] || '';
   config.displaySettings.productDetails.price = fieldMappings['price'] || '';
   config.displaySettings.productDetails.originalPrice = fieldMappings['original_price'] || '';
+  config.displaySettings.productDetails.category = fieldMappings['category'] || '';
   config.searchSettings.attrs_to_get = Object.values(config.displaySettings.productDetails).filter(value => Boolean(value));
 
   return config;

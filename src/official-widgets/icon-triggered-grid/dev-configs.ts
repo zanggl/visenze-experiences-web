@@ -144,4 +144,5 @@ export const devFieldMappings: Record<string, string> = {
   title: 'title',
   price: 'price',
   original_price: 'original_price',
+  category: 'category',
 };
