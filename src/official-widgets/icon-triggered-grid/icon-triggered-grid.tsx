@@ -210,7 +210,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
           </div>
         </div>
         <>
-          {/* Sort Options Mobile & Tablet */}
+          {/* Sort/Filter Options Mobile & Tablet */}
           {
             breakpoint === WidgetBreakpoint.MOBILE
             && <ViSenzeModal open={!!screen} layout='nested_mobile' onClose={() => setScreen(null)}>

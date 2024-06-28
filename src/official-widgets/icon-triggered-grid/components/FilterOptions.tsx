@@ -71,6 +71,7 @@ const FilterOptions: FC<FilterOptionsProps> = ({
       <div className='primary-text py-3 text-center lg:py-0 lg:text-start'>Filter</div>
       <div className='flex h-full flex-col gap-2 overflow-y-auto border-1'>
         <Accordion className='divide-y-1 px-0'>
+          {/* Price Filter */}
           <AccordionItem
             className='cursor-pointer px-4'
             classNames={{ content: 'py-0 flex justify-center' }}
@@ -111,6 +112,8 @@ const FilterOptions: FC<FilterOptionsProps> = ({
               />
             </div>
           </AccordionItem>
+
+          {/* Category Filter */}
           <AccordionItem
             className='cursor-pointer px-4'
             classNames={{ content: 'py-0' }}
@@ -129,6 +132,8 @@ const FilterOptions: FC<FilterOptionsProps> = ({
           </AccordionItem>
         </Accordion>
       </div>
+
+      {/* Cancel & Apply buttons */}
       <div className='flex justify-around py-2 lg:ml-auto lg:justify-normal lg:gap-4 lg:py-0'>
         <Button className='rounded border bg-white px-14 text-black' radius='none' onClick={() => setScreen(null)}>
           Cancel

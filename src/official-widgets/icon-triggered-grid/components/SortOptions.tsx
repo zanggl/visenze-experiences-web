@@ -22,22 +22,29 @@ const SortOptions: FC<SortOptionsProps> = ({ sortType, setSortType, setScreen, c
     <div className={className}>
       <div className='primary-text py-3 text-center lg:py-0 lg:text-start'>Sort</div>
       <div className='flex h-full flex-col gap-2 border-1 p-4'>
+        {/* Relevance option */}
         <label className='flex cursor-pointer gap-2'>
           <input type='radio' id='relevance' value={SortType.RELEVANCE} checked={selectedOption === SortType.RELEVANCE}
                  onChange={(event) => setSelectedOption(event.target.value as SortType)}/>
           {SortType.RELEVANCE}
         </label>
+
+        {/* Price high to low option */}
         <label className='flex cursor-pointer gap-2'>
           <input type='radio' value={SortType.PRICE_HTL} checked={selectedOption === SortType.PRICE_HTL}
                  onChange={(event) => setSelectedOption(event.target.value as SortType)}/>
           {SortType.PRICE_HTL}
         </label>
+
+        {/* Price low to high option */}
         <label className='flex cursor-pointer gap-2'>
           <input type='radio' value={SortType.PRICE_LTH} checked={selectedOption === SortType.PRICE_LTH}
                  onChange={(event) => setSelectedOption(event.target.value as SortType)}/>
           {SortType.PRICE_LTH}
         </label>
       </div>
+
+      {/* Cancel & Apply buttons */}
       <div className='flex justify-around py-4 lg:ml-auto lg:justify-normal lg:gap-4 lg:py-0'>
         <Button className='rounded border bg-white px-14 text-black' radius='none' onClick={() => setScreen(null)}>
           Cancel
