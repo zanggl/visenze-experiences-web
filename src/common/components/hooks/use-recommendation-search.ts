@@ -1,11 +1,11 @@
-import {useEffect, useState} from 'react';
-import type {ObjectProductResponse, ProductSearchResponse, ProductSearchResponseSuccess} from 'visearch-javascript-sdk';
-import type { WidgetClient, WidgetConfig} from '../../visenze-core';
-import {SortType} from '../../types/constants';
-import {Actions, Category} from '../../types/tracking-constants';
-import type {ProcessedProduct} from '../../types/product';
-import {getFlattenProduct, getFlattenProducts} from '../../utils';
-import type {PriceFilter} from '../../types/filter';
+import { useEffect, useState } from 'react';
+import type { ObjectProductResponse, ProductSearchResponse, ProductSearchResponseSuccess } from 'visearch-javascript-sdk';
+import type { WidgetClient, WidgetConfig } from '../../visenze-core';
+import { SortType } from '../../types/constants';
+import { Actions, Category } from '../../types/tracking-constants';
+import type { ProcessedProduct } from '../../types/product';
+import { getFlattenProduct, getFlattenProducts } from '../../utils';
+import type { PriceFilter } from '../../types/filter';
 
 interface RecommendationSearchProps {
   productSearch: WidgetClient;
