@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useEffect, useCallback, useContext, useState } from 'react';
 import { Button } from '@nextui-org/button';
 import { Actions, Category, Labels } from '../../common/types/tracking-constants';
 import { WidgetResultContext } from '../../common/types/contexts';
@@ -14,6 +14,13 @@ import Footer from '../../common/components/Footer';
 import Result from './components/Result';
 import CloseIcon from '../../common/icons/CloseIcon';
 import SortOptions from './components/SortOptions';
+import FilterOptions from './components/FilterOptions';
+import type { PriceFilter } from '../../common/types/filter';
+
+export enum ScreenType {
+  SORT = 'sort',
+  FILTER = 'filter',
+}
 
 interface IconTriggeredGridProps {
   config: WidgetConfig;
@@ -25,8 +32,11 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
   const breakpoint = useBreakpoint();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
-  const [enableSortOptions, setEnableSortOptions] = useState(false);
+  const [screen, setScreen] = useState<ScreenType | null>(null);
   const [sortType, setSortType] = useState<SortType>(SortType.RELEVANCE);
+  const [categoryFilter, setCategoryFilter] = useState<Set<string>>(new Set());
+  const [priceFilter, setPriceFilter] = useState<PriceFilter | null>(null);
+  const [categorySet, setCategorySet] = useState<Set<string>>(new Set());
   const root = useContext(RootContext);
 
   const {
@@ -40,6 +50,8 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
     productId,
     retryCount,
     sortType,
+    priceFilter,
+    categoryFilter,
   });
 
   const resetData = (): void => {
@@ -48,6 +60,9 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
 
   const onModalClose = useCallback((): void => {
     setDialogVisible(false);
+    setSortType(SortType.RELEVANCE);
+    setCategoryFilter(new Set());
+    setPriceFilter(null);
     if (productResults.length > 0) {
       productSearch.send(Actions.CLOSE, {
         label: Labels.PAGE,
@@ -58,6 +73,19 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
     setTimeout(() => {
       resetData();
     }, 300);
+  }, [productResults]);
+
+  // Retrieve categories from product results
+  useEffect(() => {
+    const newCategorySet: Set<string> = new Set();
+    productResults.forEach((result) => {
+      const categoryArr = result[config.displaySettings.productDetails.category];
+      categoryArr.forEach((category: string) => {
+        newCategorySet.add(category);
+      });
+    });
+
+    setCategorySet((prev) => new Set([...prev, ...newCategorySet]));
   }, [productResults]);
 
   const onPopupIconClick = (): void => {
@@ -117,18 +145,29 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
             <Footer className='mt-auto hidden bg-transparent lg:flex'/>
           </div>
 
-          <div className='relative flex w-full flex-col px-4 pb-4 lg:w-7/10 lg:pt-[6.5%]'>
-            {/* Sort Type and Button */}
+          <div className='relative flex w-full flex-col px-6 pb-4 lg:w-7/10 lg:pt-[6.5%]'>
             <div className='flex items-center pb-4'>
+              {/* Sort Type */}
               <div className='calls-to-action-text text-primary'>Sort: {sortType}</div>
-              <Button
-                className='ml-auto rounded bg-black bg-buttonPrimary'
-                size='sm'
-                radius='none'
-                onClick={() => setEnableSortOptions(true)}
-              >
-                <span className='calls-to-action-text text-buttonPrimary'>Sort</span>
-              </Button>
+              {/* Sort and Filter buttons */}
+              <div className='ml-auto flex gap-2'>
+                <Button
+                  className='rounded bg-black bg-buttonPrimary'
+                  size='sm'
+                  radius='none'
+                  onClick={() => setScreen(ScreenType.SORT)}
+                >
+                  <span className='calls-to-action-text text-buttonPrimary'>Sort</span>
+                </Button>
+                <Button
+                  className='rounded bg-black bg-buttonPrimary'
+                  size='sm'
+                  radius='none'
+                  onClick={() => setScreen(ScreenType.FILTER)}
+                >
+                  <span className='calls-to-action-text text-buttonPrimary'>Filter</span>
+                </Button>
+              </div>
             </div>
 
             {/* Product Result Grid */}
@@ -144,28 +183,63 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
               ))}
             </div>
 
-            {/* Sort Options */}
+            {/* Sort Options Desktop */}
             {
-              enableSortOptions
+              screen === ScreenType.SORT
               && <SortOptions
                 className='absolute left-0 top-14 hidden h-9/10 w-full flex-col justify-between gap-4 bg-white px-8 pb-8 pt-4 text-primary lg:flex'
                 sortType={sortType}
                 setSortType={setSortType}
-                setEnableSortOptions={setEnableSortOptions}
+                setScreen={setScreen}
+              />
+            }
+            {/* Filter Options Desktop */}
+            {
+              screen === ScreenType.FILTER
+              && <FilterOptions
+                className='absolute left-0 top-14 hidden h-9/10 w-full flex-col justify-between gap-4 bg-white px-8 pb-8 pt-4 text-primary lg:flex'
+                categorySet={categorySet}
+                priceFilter={priceFilter}
+                setPriceFilter={setPriceFilter}
+                categoryFilter={categoryFilter}
+                setCategoryFilter={setCategoryFilter}
+                productResults={productResults}
+                setScreen={setScreen}
               />
             }
           </div>
         </div>
         <>
+          {/* Sort Options Mobile & Tablet */}
           {
             breakpoint === WidgetBreakpoint.MOBILE
-            && <ViSenzeModal open={enableSortOptions} layout='nested_mobile' onClose={() => setEnableSortOptions(false)}>
-              <SortOptions
-                className='flex h-full flex-col justify-between'
-                sortType={sortType}
-                setSortType={setSortType}
-                setEnableSortOptions={setEnableSortOptions}
-              />
+            && <ViSenzeModal open={!!screen} layout='nested_mobile' onClose={() => setScreen(null)}>
+            <>
+              {
+                screen === ScreenType.SORT
+                && <SortOptions
+                    className='flex h-full flex-col justify-between'
+                    sortType={sortType}
+                    setSortType={setSortType}
+                    setScreen={setScreen}
+                  />
+              }
+            </>
+            <>
+              {
+                screen === ScreenType.FILTER
+                && <FilterOptions
+                  className='flex h-full flex-col justify-between'
+                  categorySet={categorySet}
+                  priceFilter={priceFilter}
+                  setPriceFilter={setPriceFilter}
+                  categoryFilter={categoryFilter}
+                  setCategoryFilter={setCategoryFilter}
+                  productResults={productResults}
+                  setScreen={setScreen}
+                />
+              }
+            </>
             </ViSenzeModal>
           }
         </>

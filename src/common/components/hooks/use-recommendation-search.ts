@@ -5,6 +5,7 @@ import {SortType} from '../../types/constants';
 import {Actions, Category} from '../../types/tracking-constants';
 import type {ProcessedProduct} from '../../types/product';
 import {getFlattenProduct, getFlattenProducts} from '../../utils';
+import type {PriceFilter} from '../../types/filter';
 
 interface RecommendationSearchProps {
   productSearch: WidgetClient;
@@ -12,6 +13,8 @@ interface RecommendationSearchProps {
   productId: string;
   retryCount: number;
   sortType?: SortType;
+  categoryFilter?: Set<string>;
+  priceFilter?: PriceFilter | null;
 }
 
 export interface RecommendationSearch {
@@ -32,6 +35,8 @@ const useRecommendationSearch = ({
   productId,
   retryCount,
   sortType,
+  priceFilter,
+  categoryFilter,
 }: RecommendationSearchProps): RecommendationSearch => {
   const [response, setResponse] = useState<ProductSearchResponseSuccess | undefined>();
   const [metadata, setMetadata] = useState<Record<string, any>>({});
@@ -41,6 +46,7 @@ const useRecommendationSearch = ({
   const [productInfo, setProductInfo] = useState<ProcessedProduct | undefined>();
   const [objectIndex, setObjectIndex] = useState<number>(0);
   const [error, setError] = useState<string>('');
+  const productDetails = config.displaySettings.productDetails;
   const MAX_RETRY_COUNT = config.maxRetryCount;
 
   const handleSuccess = (res: ProductSearchResponse): void => {
@@ -64,6 +70,17 @@ const useRecommendationSearch = ({
     setProductResults([]);
   };
 
+  const getFilters = (): string[] => {
+    const filters = [];
+    if (priceFilter) {
+      filters.push(`${productDetails.price}:${priceFilter.minPrice || 0},${priceFilter.maxPrice || Number.MAX_SAFE_INTEGER}`);
+    }
+    if (categoryFilter?.size) {
+      filters.push(`${productDetails.category}:${Array.from(categoryFilter).join(' OR ')}`);
+    }
+    return filters;
+  };
+
   const searchById = (): void => {
     const params = config.searchSettings;
     params['return_product_info'] = true;
@@ -71,9 +88,14 @@ const useRecommendationSearch = ({
     params['sort_by'] = '';
 
     if (sortType === SortType.PRICE_HTL) {
-      params['sort_by'] = `${config.displaySettings.productDetails.price}:desc`;
+      params['sort_by'] = `${productDetails.price}:desc`;
     } else if (sortType === SortType.PRICE_LTH) {
-      params['sort_by'] = `${config.displaySettings.productDetails.price}:asc`;
+      params['sort_by'] = `${productDetails.price}:asc`;
+    }
+
+    const filters = getFilters();
+    if (filters.length > 0) {
+      params['filters'] = filters;
     }
 
     productSearch.searchById(productId, params, handleSuccess, handleError);
@@ -137,14 +159,14 @@ const useRecommendationSearch = ({
     }
   }, [response]);
 
-  // Trigger search when productId changes
+  // Trigger search when product id / sort type / filter  changes
   useEffect(() => {
     if (productId) {
       searchById();
     } else {
       resetSearch();
     }
-  }, [productId, sortType]);
+  }, [productId, sortType, categoryFilter, priceFilter]);
 
   // Attempt the API call again up to the maximum allowed retries
   useEffect(() => {

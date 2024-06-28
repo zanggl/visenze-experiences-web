@@ -1,20 +1,21 @@
 import type { FC, ReactElement } from 'react';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { Button } from '@nextui-org/button';
 import { SortType } from '../../../common/types/constants';
+import type { ScreenType } from '../icon-triggered-grid';
 
 /**
- * A component for dynamically selecting and applying product result sorting options.
+ * A component for selecting and applying product result sorting options.
  */
 
 interface SortOptionsProps {
   sortType: SortType;
   setSortType: (selectedOption: SortType) => void;
-  setEnableSortOptions: (enableSortOptions: boolean) => void;
+  setScreen: (screen: ScreenType | null) => void;
   className: string;
 }
 
-const SortOptions: FC<SortOptionsProps> = ({ sortType, setSortType, setEnableSortOptions, className }): ReactElement => {
+const SortOptions: FC<SortOptionsProps> = ({ sortType, setSortType, setScreen, className }): ReactElement => {
   const [selectedOption, setSelectedOption] = useState<SortType>(sortType);
 
   return (
@@ -38,12 +39,12 @@ const SortOptions: FC<SortOptionsProps> = ({ sortType, setSortType, setEnableSor
         </label>
       </div>
       <div className='flex justify-around py-4 lg:ml-auto lg:justify-normal lg:gap-4 lg:py-0'>
-        <Button className='rounded border bg-white px-14 text-black' radius='none' onClick={() => setEnableSortOptions(false)}>
+        <Button className='rounded border bg-white px-14 text-black' radius='none' onClick={() => setScreen(null)}>
           Cancel
         </Button>
         <Button className='rounded border bg-buttonPrimary px-14 text-white' radius='none' onClick={() => {
           setSortType(selectedOption);
-          setEnableSortOptions(false);
+          setScreen(null);
         }}
         >
           <span className='text-buttonPrimary'>Apply</span>
@@ -53,4 +54,4 @@ const SortOptions: FC<SortOptionsProps> = ({ sortType, setSortType, setEnableSor
   );
 };
 
-export default SortOptions;
+export default memo(SortOptions);
