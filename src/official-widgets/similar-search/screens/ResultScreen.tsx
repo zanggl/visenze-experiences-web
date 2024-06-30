@@ -14,8 +14,8 @@ import ArrowDownIcon from '../../../common/icons/ArrowDownIcon';
 import ArrowUpIcon from '../../../common/icons/ArrowUpIcon';
 import Footer from '../../../common/components/Footer';
 import Header from '../components/Header';
-import PrevArrow from '../../../common/components/PrevArrow';
-import NextArrow from '../../../common/components/NextArrow';
+import PrevArrow from '../components/PrevArrow';
+import NextArrow from '../components/NextArrow';
 import useBreakpoint from '../../../common/components/hooks/use-breakpoint';
 import { QUERY_MAX_CHARACTER_LENGTH } from '../../../common/constants';
 
