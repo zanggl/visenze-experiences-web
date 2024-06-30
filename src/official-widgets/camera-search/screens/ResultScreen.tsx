@@ -5,7 +5,7 @@ import { Chip } from '@nextui-org/chip';
 import { Input } from '@nextui-org/input';
 import { Listbox, ListboxItem } from '@nextui-org/listbox';
 import { useSwipeable } from 'react-swipeable';
-import { cn } from '@nextui-org/system';
+import { cn } from '@nextui-org/theme';
 import type { ProcessedProduct } from '../../../common/types/product';
 import { WidgetDataContext, WidgetResultContext } from '../../../common/types/contexts';
 import FileDropzone from '../components/FileDropzone';
@@ -153,10 +153,9 @@ const ResultScreen: FC<ResultScreenProps> = ({
           key={`keyword-${index}`}
           size='md'
           variant='bordered'
-          className={cn(
-            keyword === selectedChip ? 'bg-blue-200 hover:bg-red-200' : '',
-            'hover:bg-blue-200 cursor-pointer',
-          )}
+          className={cn('hover:bg-blue-200 cursor-pointer', {
+            'bg-blue-200': keyword === selectedChip,
+          })}
           onClick={() => {
             onKeywordSearch(search, keyword === selectedChip ? '' : keyword);
             scrollToResultsTop();

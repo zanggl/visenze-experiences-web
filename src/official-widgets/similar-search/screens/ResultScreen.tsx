@@ -5,7 +5,7 @@ import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { Chip } from '@nextui-org/chip';
 import { Listbox, ListboxItem } from '@nextui-org/listbox';
-import { cn } from '@nextui-org/system';
+import { cn } from '@nextui-org/theme';
 import { WidgetDataContext, WidgetResultContext } from '../../../common/types/contexts';
 import type { ProcessedProduct } from '../../../common/types/product';
 import type { SearchImage } from '../../../common/types/image';
@@ -165,10 +165,9 @@ const ResultScreen: FC<ResultScreenProps> = ({
           key={`keyword-${index}`}
           size='md'
           variant='bordered'
-          className={cn(
-            keyword === selectedChip ? 'bg-blue-200 hover:bg-red-200' : '',
-            'hover:bg-blue-200 cursor-pointer',
-          )}
+          className={cn('hover:bg-blue-200 cursor-pointer', {
+            'bg-blue-200': keyword === selectedChip,
+          })}
           onClick={() => {
             onKeywordSearch(search, keyword === selectedChip ? '' : keyword);
             scrollToResultsTop();
