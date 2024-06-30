@@ -253,6 +253,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
           'absolute bottom-8 left-0 w-full pt-1 transition-all duration-700',
         )}>
         <div className='bg-primary px-3 pt-2'>
+          {/* Refinement Text Bar */}
           <Input
             classNames={{
               input: '!text-mobile-searchBarText !font-mobile-searchBarText',
@@ -283,6 +284,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
             data-pw='ss-refinement-text-bar'
           />
 
+          {/* Autocomplete Chips */}
           <div className='no-scrollbar mb-2 flex flex-row gap-1 overflow-scroll pt-2' data-pw='ss-autocomplete-chips'>
             {getAutocompleteChips()}
           </div>
@@ -324,8 +326,9 @@ const ResultScreen: FC<ResultScreenProps> = ({
             </div>
           </div>
 
-          <div className='flex size-full flex-col pb-4 pt-8' data-pw='ss-product-result-carousel'>
-            <div className='relative w-3/4'>
+          <div className='flex size-full flex-col pb-4 pt-8'>
+            {/* Product Result Carousel */}
+            <div className='relative w-3/4' data-pw='ss-product-result-carousel'>
               <div className='absolute h-80 w-full rounded-xl'>
                 <PrevArrow isDisabled={carouselPos === 0} onClickHandler={onClickPrevArrow}
                            iconColour={customizations?.colours.background.buttonSecondary}/>
@@ -351,6 +354,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
 
             <div className='z-30 h-1/5 w-3/4'>
               <div className='relative'>
+                {/* Autocomplete Suggestions */}
                 <Listbox
                   style={autocompleteSuggestionsStyle}
                   classNames={{ base: 'absolute w-full overflow-y-auto rounded-t-lg border-1 border-gray-200 bg-white transition-all' }}
@@ -370,6 +374,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                   ))}
                 </Listbox>
 
+                {/* Refinement Text Bar */}
                 <div className='relative z-20 border-t-1 border-gray-200 bg-primary px-2 pt-3'>
                   <Input
                     classNames={{
@@ -400,6 +405,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                   />
                 </div>
 
+                {/* Autocomplete Chips */}
                 <div className='relative z-20 flex min-h-10 items-center bg-primary px-3 pb-1 pt-2'>
                   {
                     trendingKeywords.length > 0
