@@ -82,32 +82,30 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
   }, []);
 
   return (
-    <div className='size-full md:overflow-hidden lg:rounded-3xl'>
+    <div className='w-full md:overflow-hidden lg:rounded-3xl'>
       <Header onCloseHandler={onModalClose} />
       <div className='size-full bg-primary'>
         <div className='flex flex-col md:flex-row'>
-          <div className='md:w-1/3 md:px-10'>
-            <div className='h-52 px-24 md:px-2'>
-              <FileDropzone onImageUpload={onImageUpload} name='upload-icon'>
-                <div
-                  className='flex w-full flex-col items-center rounded-3xl border border-black py-1 text-center text-medium'>
-                  {
-                    customizations?.icons.upload
-                      ? <img className='w-3/5 rounded-lg object-cover object-center lg:h-full' src={customizations?.icons.upload}/>
-                      : <UploadIcon className='size-2/5 py-5'/>
-                  }
+          <div className='px-1/5 md:w-1/3 md:px-10'>
+            <FileDropzone onImageUpload={onImageUpload} name='upload-icon'>
+              <div
+                className='flex w-full flex-col items-center rounded-3xl border border-black py-1 text-center text-medium'>
+                {
+                  customizations?.icons.upload
+                    ? <img className='w-3/5 rounded-lg object-cover object-center lg:h-full' src={customizations?.icons.upload}/>
+                    : <UploadIcon className='size-2/5 py-5'/>
+                }
 
-                  <p className='calls-to-action-text hidden px-3 py-2 text-primary md:block'>
-                    drag an image to <br/>
-                    search or <span className='underline'>click to browse</span>
-                  </p>
+                <p className='calls-to-action-text hidden px-3 py-2 text-primary md:block'>
+                  drag an image to <br/>
+                  search or <span className='underline'>click to browse</span>
+                </p>
 
-                  <p className='calls-to-action-text pt-3 text-primary md:hidden'>
-                    tap here to <br className='md:hidden'/> search an image
-                  </p>
-                </div>
-              </FileDropzone>
-            </div>
+                <p className='calls-to-action-text pt-3 text-primary md:hidden'>
+                  tap here to <br className='md:hidden'/> search an image
+                </p>
+              </div>
+            </FileDropzone>
           </div>
 
           <div className='py-5 md:w-2/3 md:border-l-2 md:border-gray-300 md:px-12 md:pt-0'>
