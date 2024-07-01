@@ -2,7 +2,7 @@ import type { FC, Key, ReactElement } from 'react';
 import { useRef } from 'react';
 import { Listbox, ListboxSection, ListboxItem } from '@nextui-org/listbox';
 import { Input } from '@nextui-org/input';
-import { cn } from '@nextui-org/system';
+import { cn } from '@nextui-org/theme';
 import MagnifyingGlassIcon from '../../../common/icons/MagnifyingGlassIcon';
 import type { ProcessedProduct } from '../../../common/types/product';
 import { QUERY_MAX_CHARACTER_LENGTH } from '../../../common/constants';
@@ -64,8 +64,8 @@ const SearchBarWithDropdown: FC<SearchBarWithDropdownProps> = ({ searchBarValue,
       {/* Autocomplete dropdown */}
       {
         <div className={cn(
-          showDropdown && autocompleteResults.length > 0 && searchBarValue !== '' ? 'top-12 h-60' : 'top-6 h-0',
           'absolute w-full transition-height z-20 overflow-hidden rounded-md border-b border-l border-r border-gray-200',
+          showDropdown && autocompleteResults.length > 0 && searchBarValue !== '' ? 'top-12 h-60' : 'top-6 h-0',
         )} data-pw='srp-autocomplete-dropdown'>
           <Listbox
             onAction={(key: Key) => handleMultisearchWithQuery(String(key))}

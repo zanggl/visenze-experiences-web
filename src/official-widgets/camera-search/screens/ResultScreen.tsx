@@ -5,7 +5,7 @@ import { Chip } from '@nextui-org/chip';
 import { Input } from '@nextui-org/input';
 import { Listbox, ListboxItem } from '@nextui-org/listbox';
 import { useSwipeable } from 'react-swipeable';
-import { cn } from '@nextui-org/system';
+import { cn } from '@nextui-org/theme';
 import type { ProcessedProduct } from '../../../common/types/product';
 import { WidgetDataContext, WidgetResultContext } from '../../../common/types/contexts';
 import FileDropzone from '../components/FileDropzone';
@@ -153,10 +153,9 @@ const ResultScreen: FC<ResultScreenProps> = ({
           key={`keyword-${index}`}
           size='md'
           variant='bordered'
-          className={cn(
-            keyword === selectedChip ? 'bg-blue-200 hover:bg-red-200' : '',
-            'hover:bg-blue-200 cursor-pointer',
-          )}
+          className={cn('hover:bg-blue-200 cursor-pointer', {
+            'bg-blue-200': keyword === selectedChip,
+          })}
           onClick={() => {
             onKeywordSearch(search, keyword === selectedChip ? '' : keyword);
             scrollToResultsTop();
@@ -239,6 +238,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
           'absolute bottom-8 left-0 w-full pt-1 transition-all duration-700',
         )}>
         <div className='bg-primary px-3 pt-2'>
+          {/* Refinement Text Bar */}
           <Input
             classNames={{
               input: '!text-mobile-searchBarText !font-mobile-searchBarText',
@@ -269,6 +269,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
             data-pw='cs-refinement-text-bar'
           />
 
+          {/* Autocomplete Chips */}
           <div className='no-scrollbar mb-2 flex flex-row gap-1 overflow-scroll pt-2' data-pw='cs-autocomplete-chips'>
             {getAutocompleteChips()}
           </div>
@@ -336,6 +337,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
 
             <div className='z-10 col-span-2 h-1/5'>
               <div className='relative'>
+                {/* Autocomplete Suggestions */}
                 <Listbox
                   style={autocompleteSuggestionsStyle}
                   classNames={{ base: 'absolute w-full overflow-y-auto border-t-1 border-gray-200 bg-white transition-all' }}
@@ -355,6 +357,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                   ))}
                 </Listbox>
 
+                {/* Refinement Text Bar */}
                 <div className='relative z-20 border-t-1 border-gray-200 bg-primary px-5 pt-2'>
                   <Input
                     classNames={{
@@ -385,6 +388,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                   />
                 </div>
 
+                {/* Autocomplete Chips */}
                 <div className='relative z-20 flex min-h-10 items-center bg-primary px-5 pb-3 pt-2'>
                   {
                     trendingKeywords.length > 0

@@ -1,6 +1,6 @@
 import type { FC, MouseEventHandler } from 'react';
 import { Button } from '@nextui-org/button';
-import { cn } from '@nextui-org/system';
+import { cn } from '@nextui-org/theme';
 
 interface NextArrowProps {
   className?: string;
@@ -10,7 +10,7 @@ interface NextArrowProps {
 const NextArrow: FC<NextArrowProps> = ({ className, onClick }) => (
   <div
     className={cn(
-    'absolute -right-12 top-1/2 z-20 flex w-12 transition-opacity',
+      'absolute -right-12 top-1/2 z-20 flex w-12 transition-opacity',
       className?.includes('slick-disabled') ? 'opacity-0' : 'opacity-100',
   )}>
     <Button

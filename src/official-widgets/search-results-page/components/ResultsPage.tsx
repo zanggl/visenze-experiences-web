@@ -2,7 +2,7 @@ import type { FC, ReactElement } from 'react';
 import { useRef, useState } from 'react';
 import { Button } from '@nextui-org/button';
 import { Image } from '@nextui-org/image';
-import { cn } from '@nextui-org/system';
+import { cn } from '@nextui-org/theme';
 import type { ProcessedProduct } from '../../../common/types/product';
 import Result from './Result';
 import CloseIcon from '../../../common/icons/CloseIcon';
@@ -63,8 +63,8 @@ const ResultsPage: FC<ResultsPageProps> = ({ results, autocompleteResults, handl
                 <div
                   key={product.product_id}
                   className={cn(
-                    product.product_id === activeProduct?.product_id ? 'border border-gray-500' : 'opacity-60',
                     'relative h-full flex-shrink-0 cursor-pointer',
+                    product.product_id === activeProduct?.product_id ? 'border border-gray-500' : 'opacity-60',
                   )}
                   onClick={() => {
                     handleMultisearchWithProduct(product);

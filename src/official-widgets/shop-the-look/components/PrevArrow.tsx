@@ -1,6 +1,6 @@
 import type { FC, MouseEventHandler } from 'react';
 import { Button } from '@nextui-org/button';
-import { cn } from '@nextui-org/system';
+import { cn } from '@nextui-org/theme';
 
 interface PrevArrowProps {
   className?: string;
