@@ -71,7 +71,6 @@ const useRecommendationSearch = ({
   };
 
   const getFilters = (): string[] => {
-    // TODO Fix multiple filters bug
     const filters = [];
     if (priceFilter) {
       filters.push(`${productDetails.price}:${priceFilter.minPrice || 0},${priceFilter.maxPrice || Number.MAX_SAFE_INTEGER}`);
