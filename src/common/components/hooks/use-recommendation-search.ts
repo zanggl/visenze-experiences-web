@@ -1,21 +1,27 @@
-import { useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import type { ObjectProductResponse, ProductSearchResponse, ProductSearchResponseSuccess } from 'visearch-javascript-sdk';
 import type { WidgetClient, WidgetConfig } from '../../visenze-core';
+import { SortType } from '../../types/constants';
 import { Actions, Category } from '../../types/tracking-constants';
 import type { ProcessedProduct } from '../../types/product';
-import { getFlattenProducts } from '../../utils';
+import { getFlattenProduct, getFlattenProducts } from '../../utils';
+import type { PriceFilter } from '../../types/filter';
 
 interface RecommendationSearchProps {
   productSearch: WidgetClient;
   config: WidgetConfig;
   productId: string;
   retryCount: number;
+  sortType?: SortType;
+  categoryFilter?: Set<string>;
+  priceFilter?: PriceFilter | null;
 }
 
 export interface RecommendationSearch {
   metadata: Record<string, any>;
   error: string;
   resetSearch: () => void;
+  productInfo: ProcessedProduct | undefined;
   productResults: ProcessedProduct[];
   referenceImageUrl: string;
   objectIndex: number;
@@ -28,14 +34,19 @@ const useRecommendationSearch = ({
   config,
   productId,
   retryCount,
+  sortType,
+  priceFilter,
+  categoryFilter,
 }: RecommendationSearchProps): RecommendationSearch => {
   const [response, setResponse] = useState<ProductSearchResponseSuccess | undefined>();
   const [metadata, setMetadata] = useState<Record<string, any>>({});
   const [productResults, setProductResults] = useState<ProcessedProduct[]>([]);
   const [referenceImageUrl, setReferenceImageUrl] = useState<string>('');
   const [objects, setObjects] = useState<ObjectProductResponse[]>([]);
+  const [productInfo, setProductInfo] = useState<ProcessedProduct | undefined>();
   const [objectIndex, setObjectIndex] = useState<number>(0);
   const [error, setError] = useState<string>('');
+  const productDetails = config.displaySettings.productDetails;
   const MAX_RETRY_COUNT = config.maxRetryCount;
 
   const handleSuccess = (res: ProductSearchResponse): void => {
@@ -59,10 +70,35 @@ const useRecommendationSearch = ({
     setProductResults([]);
   };
 
+  const getFilters = (): string[] => {
+    // TODO Fix multiple filters bug
+    const filters = [];
+    if (priceFilter) {
+      filters.push(`${productDetails.price}:${priceFilter.minPrice || 0},${priceFilter.maxPrice || Number.MAX_SAFE_INTEGER}`);
+    }
+    if (categoryFilter?.size) {
+      filters.push(`${productDetails.category}:${Array.from(categoryFilter).join(' OR ')}`);
+    }
+    return filters;
+  };
+
   const searchById = (): void => {
     const params = config.searchSettings;
     params['return_product_info'] = true;
     params['show_best_product_images'] = true;
+    params['sort_by'] = '';
+
+    if (sortType === SortType.PRICE_HTL) {
+      params['sort_by'] = `${productDetails.price}:desc`;
+    } else if (sortType === SortType.PRICE_LTH) {
+      params['sort_by'] = `${productDetails.price}:asc`;
+    }
+
+    const filters = getFilters();
+    if (filters.length > 0) {
+      params['filters'] = filters;
+    }
+
     productSearch.searchById(productId, params, handleSuccess, handleError);
   };
 
@@ -101,6 +137,10 @@ const useRecommendationSearch = ({
     if (response?.status === 'OK') {
       const metadata = getMetadata();
       const results = parseResults(response);
+      if (response.product_info) {
+        const productInfo = getFlattenProduct(response.product_info);
+        setProductInfo(productInfo);
+      }
       setReferenceImageUrl(response.product_info?.main_image_url  || '');
       setProductResults(results);
       setMetadata(metadata);
@@ -120,14 +160,14 @@ const useRecommendationSearch = ({
     }
   }, [response]);
 
-  // Trigger search when productId changes
+  // Trigger search when product id / sort type / filter  changes
   useEffect(() => {
     if (productId) {
       searchById();
     } else {
       resetSearch();
     }
-  }, [productId]);
+  }, [productId, sortType, categoryFilter, priceFilter]);
 
   // Attempt the API call again up to the maximum allowed retries
   useEffect(() => {
@@ -145,6 +185,7 @@ const useRecommendationSearch = ({
 
   return {
     metadata,
+    productInfo,
     productResults,
     error,
     resetSearch,
