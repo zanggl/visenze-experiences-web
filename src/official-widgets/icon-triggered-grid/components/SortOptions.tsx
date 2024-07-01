@@ -1,6 +1,7 @@
 import type { FC, ReactElement } from 'react';
 import { memo, useState } from 'react';
 import { Button } from '@nextui-org/button';
+import { cn } from '@nextui-org/theme';
 import { SortType } from '../../../common/types/constants';
 import type { ScreenType } from '../icon-triggered-grid';
 
@@ -19,7 +20,7 @@ const SortOptions: FC<SortOptionsProps> = ({ sortType, setSortType, setScreen, c
   const [selectedOption, setSelectedOption] = useState<SortType>(sortType);
 
   return (
-    <div className={className}>
+    <div className={cn('bg-primary', className)}>
       <div className='primary-text py-3 text-center lg:py-0 lg:text-start'>Sort</div>
       <div className='flex h-full flex-col gap-2 border-1 p-4'>
         {/* Relevance option */}

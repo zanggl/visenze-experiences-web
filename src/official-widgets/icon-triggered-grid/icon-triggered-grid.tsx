@@ -117,7 +117,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
       </Button>
 
       <ViSenzeModal open={dialogVisible} layout={breakpoint} onClose={onModalClose}>
-        <div className='relative flex size-full flex-col lg:flex-row lg:justify-between lg:divide-x-1'>
+        <div className='relative flex size-full flex-col bg-primary lg:flex-row lg:justify-between lg:divide-x-1'>
           {/* Close Button */}
           <Button isIconOnly className='absolute right-3 top-3 z-10 border-none bg-transparent' onClick={onModalClose} data-pw='itg-close-button'>
             <CloseIcon className='size-6'/>
@@ -145,7 +145,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
             <Footer className='mt-auto hidden bg-transparent lg:flex'/>
           </div>
 
-          <div className='relative flex w-full flex-col px-6 pb-4 lg:w-7/10 lg:pt-[6.5%]'>
+          <div className='relative flex w-full flex-col bg-primary px-6 pb-4 lg:w-7/10 lg:pt-[6.5%]'>
             <div className='flex items-center pb-4'>
               {/* Sort Type */}
               <div className='calls-to-action-text text-primary'>Sort: {sortType}</div>
@@ -187,7 +187,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
             {
               screen === ScreenType.SORT
               && <SortOptions
-                className='absolute left-0 top-14 hidden h-9/10 w-full flex-col justify-between gap-4 bg-white px-8 pb-8 pt-4 text-primary lg:flex'
+                className='absolute left-0 top-14 hidden h-9/10 w-full flex-col justify-between gap-4 px-8 pb-8 pt-4 text-primary lg:flex'
                 sortType={sortType}
                 setSortType={setSortType}
                 setScreen={setScreen}
@@ -197,7 +197,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
             {
               screen === ScreenType.FILTER
               && <FilterOptions
-                className='absolute left-0 top-14 hidden h-9/10 w-full flex-col justify-between gap-4 bg-white px-8 pb-8 pt-4 text-primary lg:flex'
+                className='absolute left-0 top-14 hidden h-9/10 w-full flex-col justify-between gap-4 px-8 pb-8 pt-4 text-primary lg:flex'
                 categorySet={categorySet}
                 priceFilter={priceFilter}
                 setPriceFilter={setPriceFilter}

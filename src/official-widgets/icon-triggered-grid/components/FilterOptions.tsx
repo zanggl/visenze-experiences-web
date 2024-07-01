@@ -3,6 +3,7 @@ import { useMemo, memo, useState } from 'react';
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { Accordion, AccordionItem } from '@nextui-org/accordion';
+import { cn } from '@nextui-org/theme';
 import type { ScreenType } from '../icon-triggered-grid';
 import type { ProcessedProduct } from '../../../common/types/product';
 import LeftChevronIcon from '../../../common/icons/LeftChevronIcon';
@@ -67,7 +68,7 @@ const FilterOptions: FC<FilterOptionsProps> = ({
   };
 
   return (
-    <div className={className}>
+    <div className={cn('bg-primary', className)}>
       <div className='primary-text py-3 text-center lg:py-0 lg:text-start'>Filter</div>
       <div className='flex h-full flex-col gap-2 overflow-y-auto border-1'>
         <Accordion className='divide-y-1 px-0'>
