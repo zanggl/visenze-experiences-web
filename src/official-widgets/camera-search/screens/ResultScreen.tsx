@@ -298,8 +298,8 @@ const ResultScreen: FC<ResultScreenProps> = ({
               </div>
 
               {searchHistory && searchHistory?.length > 1 && (
-                <div className='pt-4 text-medium'>
-                  <p className='text-primary'>Previous views</p>
+                <div className='pt-4'>
+                  <span className='calls-to-action-text text-primary'>Previous views</span>
                   <div className='no-scrollbar flex h-full flex-row gap-1 overflow-scroll pt-1' data-pw='cs-previous-views'>
                     {searchHistory
                       ?.slice(1)
@@ -352,7 +352,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                   }}>
                   {inputSuggestions.map((keyword, index) => (
                     <ListboxItem key={keyword} className={cn(keyword === search ? 'bg-gray' : '', 'pl-8')}>
-                      <span data-pw={`autocomplete-suggestion-${index + 1}`}>{keyword}</span>
+                      <span className='text-base' data-pw={`autocomplete-suggestion-${index + 1}`}>{keyword}</span>
                     </ListboxItem>
                   ))}
                 </Listbox>
