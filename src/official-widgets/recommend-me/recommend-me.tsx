@@ -86,6 +86,7 @@ const RecommendMe = memo((props: {
               inputWrapper: 'border-l-0 rounded-r',
               input: 'text-mobile-searchBarText md:text-tablet-searchBarText lg:text-desktop-searchBarText font-mobile-searchBarText md:font-tablet-searchBarText '
                 + 'lg:font-desktop-searchBarText',
+              clearButton: 'text-[18px]',
             }}
             disabled={isStreaming}
             isClearable

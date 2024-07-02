@@ -257,6 +257,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
           <Input
             classNames={{
               input: '!text-mobile-searchBarText !font-mobile-searchBarText',
+              clearButton: 'text-[18px]',
             }}
             isClearable
             maxLength={QUERY_MAX_CHARACTER_LENGTH}
@@ -379,6 +380,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                   <Input
                     classNames={{
                       input: 'text-tablet-searchBarText lg:text-desktop-searchBarText font-tablet-searchBarText lg:font-desktop-searchBarText',
+                      clearButton: 'text-[18px]',
                     }}
                     isClearable
                     maxLength={QUERY_MAX_CHARACTER_LENGTH}
