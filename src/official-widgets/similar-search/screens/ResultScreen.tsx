@@ -172,7 +172,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
             onKeywordSearch(search, keyword === selectedChip ? '' : keyword);
             scrollToResultsTop();
           }}>
-          <span className='calls-to-action-text text-primary' data-pw={`ss-autocomplete-chip-${index + 1}`}>{keyword}</span>
+          <span className='calls-to-action-text leading-6 text-primary' data-pw={`ss-autocomplete-chip-${index + 1}`}>{keyword}</span>
         </Chip>
       ));
     }

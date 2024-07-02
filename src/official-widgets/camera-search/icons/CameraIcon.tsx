@@ -1,7 +1,7 @@
 import type { FC, ReactElement } from 'react';
 
 interface CameraIconProps {
-  onClickHandler: () => void;
+  onClickHandler: (event: any) => void;
 }
 
 const CameraIcon: FC<CameraIconProps> = ({ onClickHandler }): ReactElement => (

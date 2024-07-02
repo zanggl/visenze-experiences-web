@@ -160,7 +160,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
             onKeywordSearch(search, keyword === selectedChip ? '' : keyword);
             scrollToResultsTop();
           }}>
-          <span className='calls-to-action-text text-primary' data-pw={`cs-autocomplete-chip-${index + 1}`}>{keyword}</span>
+          <span className='calls-to-action-text leading-6 text-primary' data-pw={`cs-autocomplete-chip-${index + 1}`}>{keyword}</span>
         </Chip>
       ));
     }
@@ -289,7 +289,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                 <HotspotPreview className='w-3/5' referenceImage={getReferenceImage()}/>
 
                 <FileDropzone onImageUpload={onImageUpload} name='upload-icon'>
-                  <p className='px-3 py-2 text-medium'>
+                  <p className='px-3 py-2 text-medium leading-6'>
                     <span className='calls-to-action-text text-primary'>drag an image to</span> <br/>
                     <span className='calls-to-action-text text-primary'>search or </span>
                     <span className='calls-to-action-text text-primary underline'>click to browse</span>

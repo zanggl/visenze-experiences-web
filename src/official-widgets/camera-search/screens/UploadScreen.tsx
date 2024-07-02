@@ -96,12 +96,12 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
                     : <UploadIcon className='size-2/5 py-5'/>
                 }
 
-                <p className='calls-to-action-text hidden px-3 py-2 text-primary md:block'>
+                <p className='calls-to-action-text hidden px-3 py-2 leading-6 text-primary md:block'>
                   drag an image to <br/>
                   search or <span className='underline'>click to browse</span>
                 </p>
 
-                <p className='calls-to-action-text pt-3 text-primary md:hidden'>
+                <p className='calls-to-action-text pt-3 leading-6 text-primary md:hidden'>
                   tap here to <br className='md:hidden'/> search an image
                 </p>
               </div>
