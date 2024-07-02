@@ -158,13 +158,15 @@ const CameraSearch = memo((props: {
     multisearchWithParams(params);
   };
 
-  const onCameraButtonClick = useCallback((): void => {
+  const onCameraButtonClick = (event: any): void => {
+    event.stopPropagation();
+    event.preventDefault();
     productSearch.send(Actions.CLICK, {
       label: Labels.ENTER,
       cat: Category.ENTRANCE,
     });
     setDialogVisible(true);
-  }, []);
+  };
 
   const getScreen = (): ReactElement => {
     switch (screen) {

@@ -1,4 +1,5 @@
 const {nextui} = require('@nextui-org/theme');
+const defaultTheme = require('tailwindcss/defaultTheme');
 
 const getFontObj = (configName) => {
   const deviceTypes = ['mobile', 'tablet', 'desktop'];
@@ -25,6 +26,36 @@ const getColourObj = (configName) => {
   return colourObj;
 };
 
+// Convert all rem units to px units
+function remToPx(input, fontSize = 16) {
+  if (input == null) {
+    return input;
+  }
+  switch (typeof input) {
+    case 'object':
+      if (Array.isArray(input)) {
+        return input.map((val) => remToPx(val, fontSize));
+      }
+      const ret = {};
+      for (const key in input) {
+        ret[key] = remToPx(input[key], fontSize);
+      }
+      return ret;
+    case 'string':
+      return input.replace(
+        /(\d*\.?\d+)rem$/,
+        (_, val) => `${parseFloat(val) * fontSize}px`,
+      );
+    case 'function':
+      return eval(input.toString().replace(
+        /(\d*\.?\d+)rem/g,
+        (_, val) => `${parseFloat(val) * fontSize}px`,
+      ));
+    default:
+      return input;
+  }
+}
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -32,13 +63,14 @@ module.exports = {
     './node_modules/@nextui-org/theme/dist/components/(button|card|chip|image|input|listbox|spacer|skeleton).js',
   ],
   theme: {
+    ...remToPx(defaultTheme),
     extend: {
       textColor: getColourObj('text'),
       backgroundColor: getColourObj('background'),
       fontSize: getFontObj('fontSize'),
       fontWeight: getFontObj('fontWeight'),
       height: {
-        108: '27rem',
+        108: '432px',
       },
       spacing: {
         '19/20': '95%',

@@ -160,7 +160,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
             onKeywordSearch(search, keyword === selectedChip ? '' : keyword);
             scrollToResultsTop();
           }}>
-          <span className='calls-to-action-text text-primary' data-pw={`cs-autocomplete-chip-${index + 1}`}>{keyword}</span>
+          <span className='calls-to-action-text leading-6 text-primary' data-pw={`cs-autocomplete-chip-${index + 1}`}>{keyword}</span>
         </Chip>
       ));
     }
@@ -289,7 +289,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                 <HotspotPreview className='w-3/5' referenceImage={getReferenceImage()}/>
 
                 <FileDropzone onImageUpload={onImageUpload} name='upload-icon'>
-                  <p className='px-3 py-2 text-medium'>
+                  <p className='px-3 py-2 text-medium leading-6'>
                     <span className='calls-to-action-text text-primary'>drag an image to</span> <br/>
                     <span className='calls-to-action-text text-primary'>search or </span>
                     <span className='calls-to-action-text text-primary underline'>click to browse</span>
@@ -298,8 +298,8 @@ const ResultScreen: FC<ResultScreenProps> = ({
               </div>
 
               {searchHistory && searchHistory?.length > 1 && (
-                <div className='pt-4 text-medium'>
-                  <p className='text-primary'>Previous views</p>
+                <div className='pt-4'>
+                  <span className='calls-to-action-text text-primary'>Previous views</span>
                   <div className='no-scrollbar flex h-full flex-row gap-1 overflow-scroll pt-1' data-pw='cs-previous-views'>
                     {searchHistory
                       ?.slice(1)
@@ -352,7 +352,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                   }}>
                   {inputSuggestions.map((keyword, index) => (
                     <ListboxItem key={keyword} className={cn(keyword === search ? 'bg-gray' : '', 'pl-8')}>
-                      <span data-pw={`autocomplete-suggestion-${index + 1}`}>{keyword}</span>
+                      <span className='text-base' data-pw={`autocomplete-suggestion-${index + 1}`}>{keyword}</span>
                     </ListboxItem>
                   ))}
                 </Listbox>

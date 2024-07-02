@@ -127,7 +127,9 @@ const SimilarSearch: FC<SimilarSearchProps> = ({ configs, productSearch, element
     multisearchWithParams(params);
   };
 
-  const onPopupIconClick = (): void => {
+  const onPopupIconClick = (event: any): void => {
+    event.stopPropagation();
+    event.preventDefault();
     productSearch.send(Actions.CLICK, {
       cat: Category.ENTRANCE,
       label: Labels.ICON,
