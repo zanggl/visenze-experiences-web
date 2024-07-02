@@ -16,7 +16,7 @@ interface WidgetData extends WidgetConfig {
 }
 
 export interface WidgetResultContextValue {
-  products?: ProductType[];
+  productTypes?: ProductType[];
   image?: SearchImage;
   imageId?: string;
   productInfo?: ProcessedProduct;

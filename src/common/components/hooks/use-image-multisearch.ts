@@ -4,7 +4,7 @@ import type { WidgetClient, WidgetConfig } from '../../visenze-core';
 import { Actions, Category } from '../../types/tracking-constants';
 import type { SearchImage } from '../../types/image';
 import type { BoxData, ProcessedProduct } from '../../types/product';
-import { getFlattenProducts, parseBox } from '../../utils';
+import { getFlattenProducts, parseBox, parseToProductTypes } from '../../utils';
 
 const getMetadata = (
   response: ProductSearchResponseSuccess,
@@ -54,25 +54,6 @@ const parseResults = (res: ProductSearchResponseSuccess, boxData?: BoxData): Pro
   return [];
 };
 
-const parseProducts = (res: ProductSearchResponseSuccess): ProductType[] => {
-  if (res.product_types?.length) {
-    return res.product_types;
-  } else if ('objects' in res) {
-    const productTypes: ProductType[] = [];
-    res.objects?.map((objResult) => {
-      productTypes.push({
-        box: objResult.box,
-        attributes: objResult.attributes,
-        score: objResult.score,
-        type: objResult.type,
-        box_type: '',
-      });
-    });
-    return productTypes;
-  }
-  return [];
-};
-
 interface ImageMultisearchProps {
   productSearch: WidgetClient;
   image: SearchImage | undefined;
@@ -83,7 +64,7 @@ interface ImageMultisearchProps {
 export interface ImageMultisearch {
   imageId: string;
   metadata: Record<string, any>;
-  products: ProductType[];
+  productTypes: ProductType[];
   error: string;
   resetSearch: () => void;
   multisearchWithParams: (params: Record<string, any>) => void;
@@ -102,7 +83,7 @@ const useImageMultisearch = ({
   const [imageId, setImageId] = useState<string>('');
   const [metadata, setMetadata] = useState<Record<string, any>>({});
   const [productResults, setProductResults] = useState<ProcessedProduct[]>([]);
-  const [products, setProducts] = useState<ProductType[]>([]);
+  const [productTypes, setProductTypes] = useState<ProductType[]>([]);
   const [error, setError] = useState<string>('');
   const [autocompleteResults, setAutocompleteResults] = useState<string[]>([]);
 
@@ -136,12 +117,12 @@ const useImageMultisearch = ({
     setMetadata({});
     setResponse(undefined);
     setProductResults([]);
-    setProducts([]);
+    setProductTypes([]);
   };
 
   const getProductType = (boxData: BoxData | undefined): ProductType | BoxData | undefined => {
     if (boxData?.index) {
-      return products[boxData.index];
+      return productTypes[boxData.index];
     } else {
       return boxData;
     }
@@ -183,9 +164,9 @@ const useImageMultisearch = ({
       setMetadata(metadata);
       setImageId(response.im_id ?? '');
 
-      const products = parseProducts(response);
-      if (products.length) {
-        setProducts(products);
+      const productTypes = parseToProductTypes(response);
+      if (productTypes.length) {
+        setProductTypes(productTypes);
       }
 
       autocompleteWithQuery('');
@@ -215,7 +196,7 @@ const useImageMultisearch = ({
     imageId,
     metadata,
     productResults,
-    products,
+    productTypes,
     error,
     autocompleteResults,
     resetSearch,

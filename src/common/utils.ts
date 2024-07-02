@@ -1,4 +1,4 @@
-import type { Product } from 'visearch-javascript-sdk';
+import type { Product, ProductSearchResponseSuccess, ProductType } from 'visearch-javascript-sdk';
 import type { CroppedBox } from './types/box';
 import type { ProcessedProduct } from './types/product';
 
@@ -54,3 +54,23 @@ export const getURL = (
   }
   return url;
 };
+
+export const parseToProductTypes = (res: ProductSearchResponseSuccess): ProductType[] => {
+  if (res.product_types?.length) {
+    return res.product_types;
+  } else if ('objects' in res) {
+    const productTypes: ProductType[] = [];
+    res.objects?.map((objResult) => {
+      productTypes.push({
+        box: objResult.box,
+        attributes: objResult.attributes,
+        score: objResult.score,
+        type: objResult.type,
+        box_type: '',
+      });
+    });
+    return productTypes;
+  }
+  return [];
+};
+

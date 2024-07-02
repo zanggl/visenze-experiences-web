@@ -39,7 +39,7 @@ const SimilarSearch: FC<SimilarSearchProps> = ({ configs, productSearch, element
     imageId,
     productResults,
     autocompleteResults,
-    products,
+    productTypes,
     metadata,
     error,
     resetSearch,
@@ -115,7 +115,7 @@ const SimilarSearch: FC<SimilarSearchProps> = ({ configs, productSearch, element
       limit: configs.searchSettings.limit,
       get_all_fl: true,
     };
-    const product = boxData?.index ? products[boxData.index] : boxData;
+    const product = boxData?.index ? productTypes[boxData.index] : boxData;
 
     if (product) {
       params.box = parseBox(product.box);
@@ -215,7 +215,7 @@ const SimilarSearch: FC<SimilarSearchProps> = ({ configs, productSearch, element
   return (
     <WidgetResultContext.Provider
       value={{
-        products,
+        productTypes,
         autocompleteResults,
         productResults,
         imageId,

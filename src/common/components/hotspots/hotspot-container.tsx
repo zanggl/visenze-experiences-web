@@ -12,7 +12,7 @@ interface HotspotContainerProps {
   croppingContext: CroppingContextValue;
   file?: string;
   isCropOn?: boolean;
-  products: ProductType[];
+  productTypes: ProductType[];
   isMobile?: boolean;
   breakpoint: WidgetBreakpoint;
 }
@@ -133,8 +133,8 @@ export default class HotspotContainer extends Component<HotspotContainerProps, H
     if (this.props.file) {
       this.setState({ file: this.props.file, isShow: true });
     }
-    if (this.props.products.length > 0) {
-      this.onCropBoxInit(this.props.products);
+    if (this.props.productTypes.length > 0) {
+      this.onCropBoxInit(this.props.productTypes);
     }
   }
 
@@ -142,8 +142,8 @@ export default class HotspotContainer extends Component<HotspotContainerProps, H
     if (this.props.isCropOn !== prevProps.isCropOn) {
       this.onLoad();
     }
-    if (this.props.products !== prevProps.products && this.props.file !== prevProps.file) {
-      this.onCropBoxInit(this.props.products);
+    if (this.props.productTypes !== prevProps.productTypes && this.props.file !== prevProps.file) {
+      this.onCropBoxInit(this.props.productTypes);
     }
   }
 

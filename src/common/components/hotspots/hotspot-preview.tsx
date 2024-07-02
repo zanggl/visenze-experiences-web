@@ -1,29 +1,27 @@
-import type { FC } from 'react';
+import type { FC, ReactElement } from 'react';
 import { useContext } from 'react';
 import HotspotContainer from './hotspot-container';
 import { CroppingContext, WidgetResultContext } from '../../types/contexts';
 import useBreakpoint from '../hooks/use-breakpoint';
 
 interface HotspotPreviewProps {
-  onNewSearch?: () => void;
-  onMoreLikeThis?: (imUrl: string) => void;
   referenceImage: string;
   className?: string;
 }
 
 const HotspotPreview: FC<HotspotPreviewProps> = ({ referenceImage, className }) => {
-  const { products } = useContext(WidgetResultContext);
+  const { productTypes } = useContext(WidgetResultContext);
   const breakpoint = useBreakpoint();
 
   return (
     <div className={className}>
       <CroppingContext.Consumer>
-        {(croppingContext): JSX.Element => (
+        {(croppingContext): ReactElement => (
           <HotspotContainer
             breakpoint={breakpoint}
             croppingContext={croppingContext}
             file={referenceImage}
-            products={products ?? []}
+            productTypes={productTypes ?? []}
           />
         )}
       </CroppingContext.Consumer>
