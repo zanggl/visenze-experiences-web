@@ -10,6 +10,7 @@ export enum WidgetType {
   CAMERA_SEARCH = 'camera_search',
   SIMILAR_SEARCH = 'similar_search',
   SEARCH_RESULTS_PAGE = 'search_results_page',
+  SHOPPING_ASSISTANT = 'shopping_assistant',
   RECOMMEND_ME = 'recommend_me',
   MORE_LIKE_THIS = 'more_like_this',
   SHOP_THE_LOOK = 'shop_the_look',
