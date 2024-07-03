@@ -22,7 +22,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, index, queryId }) => {
   const breakpoint = useBreakpoint();
-  const { productSearch } = useContext(WidgetDataContext);
+  const { productSearch, debugMode } = useContext(WidgetDataContext);
   const targetRef = useRef<HTMLAnchorElement>(null);
 
   // Send Product View tracking event when the product is in view
@@ -59,6 +59,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index, queryId }) =>
 
   return (
       <a href={product.product_url} ref={targetRef} onClick={() => {
+        if (debugMode) {
+          return;
+        }
         productSearch.send(Actions.PRODUCT_CLICK, {
           label: 'dialogue',
           pid: product.pid,
