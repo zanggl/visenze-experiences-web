@@ -1,0 +1,383 @@
+import { fetchEventSource } from '@microsoft/fetch-event-source';
+import { memo, type ReactElement, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import useBreakpoint from '../../common/components/hooks/use-breakpoint';
+import type { WidgetClient, WidgetConfig } from '../../common/visenze-core';
+import { RootContext } from '../../common/components/shadow-wrapper';
+import ViSenzeModal from '../../common/components/modal/visenze-modal';
+import CloseIcon from '../../common/icons/CloseIcon';
+import NewChatIcon from './icons/NewChatIcon';
+import SubmitChatIcon from './icons/SubmitChatIcon';
+import type { Chat } from './components/ChatWindow';
+import ChatWindow from './components/ChatWindow';
+import type { Product } from './components/ProductCard';
+
+const defaultInitialMessages = [
+    'Let\'s get started',
+    'Tell us about what your styling needs and we will help you find the perfect item for you',
+];
+
+interface ChatAreaProps {
+  message: string;
+  onMessageChange: (message: string) => void;
+  onOverflowChange: (overflow: boolean) => void;
+  onEnter: () => void;
+}
+
+const ChatArea: React.FC<ChatAreaProps> = ({ message, onMessageChange, onOverflowChange, onEnter }) => {
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [overflow, setOverflow] = useState(false);
+  const unitHeight = 24;
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, []);
+
+  useEffect(() => {
+    onOverflowChange(overflow);
+  }, [overflow]);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = '0px';
+      const maxHeight = Math.min(textareaRef.current.scrollHeight, 5 * unitHeight);
+
+      textareaRef.current.style.height = `${maxHeight}px`;
+      setOverflow(textareaRef.current.scrollHeight >= 5 * unitHeight);
+    }
+  }, [textareaRef, message]);
+
+  return (
+      <textarea value={message}
+                placeholder='Type your message'
+                ref={textareaRef}
+                style={{ height: `${unitHeight}px` }}
+                onChange={(e) => onMessageChange(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.code === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    onEnter();
+                  }
+                }}/>
+  );
+};
+
+const ShoppingAssistant = memo((props: {
+  configs: WidgetConfig;
+  productSearch: WidgetClient;
+}) => {
+  const { configs, productSearch } = props;
+  const breakpoint = useBreakpoint();
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [message, setMessage] = useState('');
+  const root = useContext(RootContext);
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [chatId, setChatId] = useState('');
+  const [isWaiting, setIsWaiting] = useState(true);
+  const [allowUserInput, setAllowUserInput] = useState(false);
+  const [latestMessage, setLatestMessage] = useState('');
+  const [chatBoxOverflow, setChatBoxOverflow] = useState(false);
+
+  const startNewChat = (): void => {
+    setChatId('');
+    setChats([]);
+    setMessage('');
+    setIsWaiting(true);
+    setAllowUserInput(false);
+  };
+
+  const onModalClose = useCallback((): void => {
+    setDialogVisible(false);
+    setTimeout(() => {
+      startNewChat();
+    }, 300);
+  }, []);
+
+  const sendMessage = async (
+    messageToSend: string,
+    chatIdParam = '',
+  ): Promise<void> => {
+    if (!messageToSend) {
+      return;
+    }
+    if (!configs.appSettings.appKey || !configs.appSettings.placementId) {
+      console.error('App Key or Placement ID not found');
+      return;
+    }
+    setIsWaiting(true);
+    setMessage('');
+    setChats((chats1) => [
+      ...chats1,
+      {
+        chatId: '',
+        requestId: '',
+        author: 'user',
+        messages: [messageToSend],
+      },
+    ]);
+
+    let chatIdFromResp = '';
+    let reqIdFromResp = '';
+    const tokens: string[] = [];
+    let currentLine = 0;
+    let latestPid = '';
+    let lastLineWithProduct = 0;
+    let messageToDisplay = '';
+    let isFetchingProduct = false;
+    let hasReceivedFirstToken = false;
+    const chatIdToUse = chatIdParam || chatId;
+    const products: Product[] = [];
+    // Retrieve user id and session id from ViSearch client
+    let uid = '';
+    let sid = '';
+    productSearch.visearch.getUid((uidResp) => {
+      uid = uidResp;
+    });
+    productSearch.visearch.getSid((sidResp) => {
+      sid = sidResp;
+    });
+    setAllowUserInput(false);
+    const params = new URLSearchParams({
+      app_key: configs.appSettings.appKey,
+      placement_id: configs.appSettings.placementId.toString(),
+      chat_id: chatIdToUse,
+      q: messageToSend,
+      va_uid: uid,
+      va_sid: sid,
+    });
+    fetchEventSource(`${configs.appSettings.endpoint}/v1/product/multisearch/chat/shopping-assistant?${params.toString()}`, {
+      openWhenHidden: true,
+      onmessage: (ev) => {
+        if (ev.event === 'chat_id') {
+          chatIdFromResp = JSON.parse(ev.data).value;
+          setChatId(chatIdFromResp);
+        } else if (ev.event === 'reqid') {
+          reqIdFromResp = JSON.parse(ev.data).value;
+        } else if (ev.event === 'chat_token') {
+          setIsWaiting(false);
+          if (!hasReceivedFirstToken) {
+            hasReceivedFirstToken = true;
+          }
+          const token = JSON.parse(ev.data).value;
+          tokens.push(token);
+          const newlines = token.split('\n').length - 1;
+          const currentTokens = tokens.join('');
+          const currentTokensSplit = currentTokens.split('\n');
+          if (newlines && currentLine === lastLineWithProduct) {
+            currentLine += newlines;
+            const productToDisplay = products.filter((prod) => prod.pid === latestPid);
+            if (productToDisplay.length) {
+              const parts = currentTokensSplit[lastLineWithProduct].match(
+                  /\*\*.*\*\* - (.*)/,
+              );
+              if (parts?.length) {
+                [, productToDisplay[0].description] = parts;
+              }
+              setChats((chats1) => {
+                if (chats1[chats1.length - 1].author !== 'products') {
+                  return [
+                    ...chats1,
+                    {
+                      chatId: chatIdFromResp,
+                      requestId: reqIdFromResp,
+                      messages: [],
+                      author: 'products',
+                      products: [productToDisplay[0]],
+                    },
+                  ];
+                }
+                return chats1.map((ch, idx) => {
+                  if (idx === chats1.length - 1) {
+                    return {
+                      ...ch,
+                      products: (ch.products || []).concat(productToDisplay[0]),
+                    };
+                  }
+                  return ch;
+                });
+              });
+            }
+          } else if (newlines) {
+            currentLine += newlines;
+          }
+          const currentLineContent = currentTokensSplit[currentLine];
+          const pidInCurrentLine = currentLineContent.match(/\[\[(.*)]]/);
+          if (pidInCurrentLine && lastLineWithProduct < currentLine) {
+            [, latestPid] = pidInCurrentLine;
+            lastLineWithProduct = currentLine;
+            if (!isFetchingProduct) {
+              isFetchingProduct = true;
+              setChats((chats1) => [...chats1, {
+                chatId: chatIdFromResp,
+                requestId: reqIdFromResp,
+                messages: [currentTokensSplit.filter((t) => t)[0]],
+                author: 'bot',
+                products: [],
+              }]);
+            }
+          }
+          if (isFetchingProduct) {
+            messageToDisplay = currentTokensSplit.slice(currentLine).join('\n');
+          } else {
+            messageToDisplay = currentTokens;
+          }
+          setLatestMessage(messageToDisplay);
+        } else if (ev.event === 'product') {
+          const data = JSON.parse(ev.data);
+          products.push({
+            pid: data.product_id,
+            title: data.data.title,
+            description: '',
+            image_url: data.main_image_url,
+            price: data.data.price.currency + data.data.price.value,
+            product_url: data.data.product_url,
+            review_rating: data.data.review_rating,
+            review_count: data.data.review_count,
+          });
+        }
+      },
+      onclose: () => {
+        const constructedResponse = tokens.join('');
+        const constructedResponseLines = constructedResponse.split('\n');
+        if (products.length) {
+          const afterText = constructedResponseLines[constructedResponseLines.length - 1];
+          setChats((chats1) => [...chats1, {
+            chatId: chatIdFromResp,
+            requestId: reqIdFromResp,
+            messages: [afterText],
+            author: 'bot',
+            products: [],
+          }]);
+        } else {
+          setChats((chats1) => [...chats1, {
+            chatId: chatIdFromResp,
+            requestId: reqIdFromResp,
+            messages: [constructedResponse],
+            author: 'bot',
+            products: [],
+          }]);
+        }
+        setLatestMessage('');
+        setAllowUserInput(true);
+      },
+      onerror: (err) => {
+        console.error(err);
+      },
+    });
+  };
+
+  const openDialog = (initialMessages: string[]): void => {
+    if (dialogVisible) {
+      return;
+    }
+    const renderChat = (idx: number): void => {
+      if (idx > initialMessages.length) {
+        setIsWaiting(false);
+        setAllowUserInput(true);
+        return;
+      }
+      setTimeout(() => {
+        setChats(() => [{
+          chatId: '',
+          requestId: '',
+          author: 'bot',
+          messages: initialMessages.slice(0, idx),
+        }]);
+        renderChat(idx + 1);
+      }, 2000);
+    };
+    setDialogVisible(true);
+    renderChat(1);
+  };
+
+  const onChatButtonClick = useCallback((): void => {
+    openDialog(defaultInitialMessages);
+  }, []);
+
+  const getScreen = (): ReactElement => (
+      <div className={`vi-shopping-assistant-container ${breakpoint}`}>
+        <div className={`vi-shopping-assistant-header ${breakpoint}`}>
+          <div className='close-icon' onClick={onModalClose}>
+            <CloseIcon />
+          </div>
+        </div>
+        <ChatWindow isWaiting={isWaiting} chats={chats} latestMessage={latestMessage} />
+        <div className={`vi-shopping-assistant-chat ${breakpoint}`}>
+          <div className={`vi-shopping-assistant-chatbox ${chatBoxOverflow ? 'compact-vertical-padding' : ''}`}>
+            <ChatArea message={message}
+                      onMessageChange={setMessage}
+                      onOverflowChange={(overflow) => {
+                        setChatBoxOverflow(overflow);
+                      }}
+                      onEnter={() => {
+                        if (!allowUserInput) {
+                          return;
+                        }
+                        sendMessage(message);
+                      }} />
+            <div className={`submit-icon ${allowUserInput ? '' : 'disabled'}`}>
+              <SubmitChatIcon onClickHandler={() => {
+                if (!allowUserInput) {
+                  return;
+                }
+                sendMessage(message);
+              }} />
+            </div>
+          </div>
+        </div>
+      </div>
+  );
+
+  // Accompanying logic to open the widget via the widget client's openWidget function
+  useEffect(() => {
+    const element = document.querySelector(configs.displaySettings.cssSelector) as HTMLElement | null;
+    const callback = (mutationList: MutationRecord[]): void => {
+      mutationList.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-visenze-dialog-open') {
+          if (element && element.dataset.visenzeDialogOpen === 'true') {
+            const runtimeParamsString = element.dataset.visenzeRuntimeParams;
+            let initialMessages = defaultInitialMessages;
+            if (runtimeParamsString) {
+              const runtimeParams = JSON.parse(runtimeParamsString);
+              if (runtimeParams.initial_messages) {
+                initialMessages = runtimeParams.initial_messages;
+              }
+            }
+            openDialog(initialMessages);
+          }
+        }
+      });
+    };
+    const observer = new MutationObserver(callback);
+    if (element) {
+      observer.observe(element, {
+        attributes: true,
+        childList: false,
+        subtree: false,
+      });
+    }
+    return (): void => {
+      observer.disconnect();
+    };
+  }, []);
+
+  if (!root) {
+    return <></>;
+  }
+
+  return (
+      <>
+        {configs.customizations?.icons.cameraButton
+            ? <img src={configs.customizations.icons.cameraButton} onClick={onChatButtonClick}
+                   className='size-7 cursor-pointer'></img>
+            : <NewChatIcon onClickHandler={onChatButtonClick}/>
+        }
+        <ViSenzeModal open={dialogVisible} layout={breakpoint} onClose={onModalClose}>
+          {getScreen()}
+        </ViSenzeModal>
+      </>
+  );
+});
+
+export default ShoppingAssistant;

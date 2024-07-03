@@ -15,6 +15,8 @@
     "start:search-results-page": "webpack-dev-server --env dir=official-widgets/search-results-page --config webpack.dev.js",
     "build:recommend-me": "webpack --env dir=official-widgets/recommend-me name=recommend-me entry=index.tsx --config webpack.config.js",
     "start:recommend-me": "webpack-dev-server --env dir=official-widgets/recommend-me --config webpack.dev.js",
+    "build:shopping-assistant": "webpack --env dir=official-widgets/shopping-assistant name=shopping-assistant entry=index.tsx --config webpack.config.js",
+    "start:shopping-assistant": "webpack-dev-server --env dir=official-widgets/shopping-assistant --config webpack.dev.js",
     "build:more-like-this": "webpack --env dir=official-widgets/more-like-this name=more-like-this entry=index.tsx --config webpack.config.js",
     "start:more-like-this": "webpack-dev-server --env dir=official-widgets/more-like-this --config webpack.dev.js",
     "build:shop-the-look": "webpack --env dir=official-widgets/shop-the-look name=shop-the-look entry=index.tsx --config webpack.config.js",
