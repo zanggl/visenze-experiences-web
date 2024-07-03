@@ -22,7 +22,7 @@ This widget is designed to power recommendation experiences in ecommerce website
       ```sh
       npm run start:shopping-assistant
       ```
-      The dev server will be available at `http://localhost:8080` and will automatically reload for changes made in `src/official-widgets/shop-the-look` folder.
+      The dev server will be available at `http://localhost:8080` and will automatically reload for changes made in `src/official-widgets/shopping-assistant` folder.
 2. To bundle the widget:
    ```sh
    npm run build:shopping-assistant
