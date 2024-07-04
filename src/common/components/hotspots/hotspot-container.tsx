@@ -92,7 +92,7 @@ const HotspotContainer: FC<HotspotContainerProps> = ({
               className='object-cover object-center lg:h-full'
               ref={imageRef}
               src={referenceImage}
-              onLoad={() => setTimeout(() => onLoad(), 500)} // Delay needed to get correct image width and height for calculation in onLoad
+              onLoad={() => setTimeout(() => onLoad(), 250)} // Delay needed to get correct image width and height for calculation in onLoad
               data-pw='hotspot-reference-image'
             />
             <div
