@@ -51,28 +51,11 @@ const CameraSearch = memo((props: {
     productSearch,
   });
 
-  const toggleCropMode = useCallback(() => {
-    if (screen === ScreenType.CROPPING) {
-      setScreen(ScreenType.RESULT);
-    } else if (screen === ScreenType.RESULT) {
-      setScreen(ScreenType.CROPPING);
-    }
-  }, [screen]);
-
-  const setCroppingApply = useCallback((data: BoxData) => {
-    setScreen(ScreenType.LOADING);
-    setBoxData(data);
-  }, []);
-
-  const setBox = useCallback((data: BoxData) => {
-    setBoxData(data);
-  }, []);
-
   const cropContextValue: CroppingContextValue = {
     boxData,
-    toggleCropMode,
-    setCroppingApply,
-    setBoxData: setBox,
+    setBoxData: (data: BoxData) => {
+      setBoxData(data);
+    },
   };
 
   const resetData = (): void => {

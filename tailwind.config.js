@@ -84,6 +84,9 @@ module.exports = {
         '3/20': '15%',
         '1/8': '12.5%',
       },
+      boxShadow: {
+        'around': '0 0 2000px 2000px rgba(0, 0, 0, 0.25)',
+      },
     },
   },
   darkMode: 'class',
