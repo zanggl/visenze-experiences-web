@@ -41,7 +41,7 @@ const getWebpackConfig = (config, version) => {
         'process.env.BUILD_ENV': JSON.stringify(buildEnv),
       }),
       new IgnorePlugin({
-        resourceRegExp: /\/iconv-loader$|\.eot$|\.svg$|\.ttf$|\.woff$|\.gif$/,
+        resourceRegExp: /\/iconv-loader$/,
       }),
       new ESLintPlugin({
         extensions: ['ts', 'tsx', 'js', 'jsxs'],
