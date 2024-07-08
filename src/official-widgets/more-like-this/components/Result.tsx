@@ -1,6 +1,5 @@
 import type { FC } from 'react';
 import { useState, useEffect, useRef, useContext } from 'react';
-import { Skeleton } from '@nextui-org/skeleton';
 import { WidgetDataContext, WidgetResultContext } from '../../../common/types/contexts';
 import ResultLogicImpl from '../../../common/client/result-logic';
 import type { ProcessedProduct } from '../../../common/types/product';
@@ -83,12 +82,16 @@ const Result: FC<ResultProps> = ({ index, result }) => {
     setIsLoading(false);
   }, []);
 
+  if (isLoading) {
+    return <></>;
+  }
+
   return (
     <a className={`${debugMode ? '' : 'cursor-pointer'}`} ref={targetRef} onClick={debugMode ? undefined : onClick}>
-      <Skeleton classNames={{ content: 'aspect-[2/3]' }} isLoaded={!isLoading}>
+      <div className='aspect-[2/3]'>
         <img className='size-full object-cover' src={result.im_url}/>
-      </Skeleton>
-      <Skeleton className='pt-2' isLoaded={!isLoading}>
+      </div>
+      <div className='pt-2'>
         <span className='product-card-title line-clamp-1 text-primary'>{getProductName()}</span>
         {
           getOriginalPrice()
@@ -101,7 +104,7 @@ const Result: FC<ResultProps> = ({ index, result }) => {
               <span className='product-card-price text-primary'>${getPrice()}</span>
             )
         }
-      </Skeleton>
+      </div>
     </a>
   );
 };
