@@ -57,14 +57,14 @@ const EmbeddedGrid: FC<EmbeddedGridProps> = ({ config, productSearch, productId 
   return (
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
-        <div className='bg-primary'>
+        <div className='bg-primary' data-pw='eg-container'>
           {/* Widget Title */}
-          <div className='widget-title py-2 text-center text-primary md:py-4'>You may also like</div>
+          <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='eg-widget-title'>You may also like</div>
 
-          {/* Product card grid */}
-          <div className='grid grid-cols-2 gap-x-2 gap-y-4 md:grid-cols-5'>
+          {/* Product result grid */}
+          <div className='grid grid-cols-2 gap-x-2 gap-y-4 md:grid-cols-5' data-pw='eg-product-result-grid'>
             {productResults.map((result, index) => (
-              <div key={`${result.product_id}-${index}`}>
+              <div key={`${result.product_id}-${index}`} data-pw={`eg-product-result-card-${index + 1}`}>
                 <Result
                   index={index}
                   result={result}
