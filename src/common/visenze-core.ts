@@ -251,11 +251,12 @@ export interface WidgetConfig {
       [I in IconName]: string;
     };
     images: ImageWithLabel[];
-  }
-  debugMode: boolean,
-  disableAnalytics: boolean,
-  maxRetryCount: number,
-  vttSource: string,
+  };
+  hideTrigger: boolean;
+  debugMode: boolean;
+  disableAnalytics: boolean;
+  maxRetryCount: number;
+  vttSource: string;
 }
 
 interface MediaQueryFeatures {

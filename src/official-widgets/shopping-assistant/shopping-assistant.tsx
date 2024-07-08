@@ -368,11 +368,15 @@ const ShoppingAssistant = memo((props: {
 
   return (
       <>
-        {configs.customizations?.icons.cameraButton
-            ? <img src={configs.customizations.icons.cameraButton} onClick={onChatButtonClick}
-                   className='size-7 cursor-pointer'></img>
-            : <NewChatIcon onClickHandler={onChatButtonClick}/>
-        }
+        {!configs.hideTrigger && (
+            <>
+              {configs.customizations?.icons.cameraButton
+                  ? <img src={configs.customizations.icons.cameraButton} onClick={onChatButtonClick}
+                         className='size-7 cursor-pointer'></img>
+                  : <NewChatIcon onClickHandler={onChatButtonClick}/>
+              }
+            </>
+        )}
         <ViSenzeModal open={dialogVisible} layout={breakpoint} onClose={onModalClose}>
           {getScreen()}
         </ViSenzeModal>
