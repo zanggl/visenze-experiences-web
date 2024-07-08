@@ -23,6 +23,15 @@ interface ChatAreaProps {
   onEnter: () => void;
 }
 
+// Product line can look like one of these:
+// [[pid]] **title** - ...
+// 1. [[pid]] **title** - ...
+const PRODUCT_LINE_REGEX = /^(?:\d+\.? )?\[\[(.*)]]/;
+
+// Sometimes an image can be returned by the bot, in a markdown-compatible format:
+//     ![title](im_url)
+const IMAGE_LINE_REGEX = /^ *!\[/;
+
 const ChatArea: React.FC<ChatAreaProps> = ({ message, onMessageChange, onOverflowChange, onEnter }) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [overflow, setOverflow] = useState(false);
@@ -151,7 +160,6 @@ const ShoppingAssistant = memo((props: {
       onmessage: (ev) => {
         if (ev.event === 'chat_id') {
           chatIdFromResp = JSON.parse(ev.data).value;
-          setChatId(chatIdFromResp);
         } else if (ev.event === 'reqid') {
           reqIdFromResp = JSON.parse(ev.data).value;
         } else if (ev.event === 'chat_token') {
@@ -202,16 +210,25 @@ const ShoppingAssistant = memo((props: {
             currentLine += newlines;
           }
           const currentLineContent = currentTokensSplit[currentLine];
-          const pidInCurrentLine = currentLineContent.match(/\[\[(.*)]]/);
+          const pidInCurrentLine = currentLineContent.match(PRODUCT_LINE_REGEX);
           if (pidInCurrentLine && lastLineWithProduct < currentLine) {
             [, latestPid] = pidInCurrentLine;
             lastLineWithProduct = currentLine;
             if (!isFetchingProduct) {
               isFetchingProduct = true;
+              const tokensToDisplay: string[] = [];
+              // Traverse the lines until the first PID line is found
+              // eslint-disable-next-line no-restricted-syntax
+              for (const tkn of currentTokensSplit) {
+                if (tkn && tkn.match(PRODUCT_LINE_REGEX)) {
+                  break;
+                }
+                tokensToDisplay.push(tkn);
+              }
               setChats((chats1) => [...chats1, {
                 chatId: chatIdFromResp,
                 requestId: reqIdFromResp,
-                messages: [currentTokensSplit.filter((t) => t)[0]],
+                messages: [tokensToDisplay.join('\n').trim()],
                 author: 'bot',
                 products: [],
               }]);
@@ -241,7 +258,16 @@ const ShoppingAssistant = memo((props: {
         const constructedResponse = tokens.join('');
         const constructedResponseLines = constructedResponse.split('\n');
         if (products.length) {
-          const afterText = constructedResponseLines[constructedResponseLines.length - 1];
+          const tokensToDisplay: string[] = [];
+          // Traverse the lines in reverse until the first PID line is found
+          // eslint-disable-next-line no-restricted-syntax
+          for (const tkn of [...constructedResponseLines].reverse()) {
+            if (tkn && (tkn.match(PRODUCT_LINE_REGEX) || tkn.match(IMAGE_LINE_REGEX))) {
+              break;
+            }
+            tokensToDisplay.push(tkn);
+          }
+          const afterText = tokensToDisplay.reverse().join('\n').trim();
           setChats((chats1) => [...chats1, {
             chatId: chatIdFromResp,
             requestId: reqIdFromResp,
@@ -271,7 +297,7 @@ const ShoppingAssistant = memo((props: {
     if (dialogVisible) {
       return;
     }
-    const renderChat = (idx: number): void => {
+    const renderChat = (idx: number, cId: string): void => {
       if (idx > initialMessages.length) {
         setIsWaiting(false);
         setAllowUserInput(true);
@@ -279,16 +305,19 @@ const ShoppingAssistant = memo((props: {
       }
       setTimeout(() => {
         setChats(() => [{
-          chatId: '',
+          chatId: cId,
           requestId: '',
           author: 'bot',
           messages: initialMessages.slice(0, idx),
         }]);
-        renderChat(idx + 1);
+        renderChat(idx + 1, cId);
       }, 2000);
     };
     setDialogVisible(true);
-    renderChat(1);
+    productSearch.visearch.generateUuid((uuid) => {
+      setChatId(uuid);
+      renderChat(1, uuid);
+    });
   };
 
   const onChatButtonClick = useCallback((): void => {
@@ -368,11 +397,15 @@ const ShoppingAssistant = memo((props: {
 
   return (
       <>
-        {configs.customizations?.icons.cameraButton
-            ? <img src={configs.customizations.icons.cameraButton} onClick={onChatButtonClick}
-                   className='size-7 cursor-pointer'></img>
-            : <NewChatIcon onClickHandler={onChatButtonClick}/>
-        }
+        {!configs.hideTrigger && (
+            <>
+              {configs.customizations?.icons.cameraButton
+                  ? <img src={configs.customizations.icons.cameraButton} onClick={onChatButtonClick}
+                         className='size-7 cursor-pointer'></img>
+                  : <NewChatIcon onClickHandler={onChatButtonClick}/>
+              }
+            </>
+        )}
         <ViSenzeModal open={dialogVisible} layout={breakpoint} onClose={onModalClose}>
           {getScreen()}
         </ViSenzeModal>

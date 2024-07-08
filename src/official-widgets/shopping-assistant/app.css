@@ -217,6 +217,10 @@
     &:focus::placeholder {
       color: black;
     }
+
+    &:focus-visible {
+      outline: none;
+    }
   }
 
   .submit-icon {
