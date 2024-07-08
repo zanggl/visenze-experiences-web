@@ -23,6 +23,15 @@ interface ChatAreaProps {
   onEnter: () => void;
 }
 
+// Product line can look like one of these:
+// [[pid]] **title** - ...
+// 1. [[pid]] **title** - ...
+const PRODUCT_LINE_REGEX = /^(?:\d+\.? )?\[\[(.*)]]/;
+
+// Sometimes an image can be returned by the bot, in a markdown-compatible format:
+//     ![title](im_url)
+const IMAGE_LINE_REGEX = /^ *!\[/;
+
 const ChatArea: React.FC<ChatAreaProps> = ({ message, onMessageChange, onOverflowChange, onEnter }) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [overflow, setOverflow] = useState(false);
@@ -202,16 +211,25 @@ const ShoppingAssistant = memo((props: {
             currentLine += newlines;
           }
           const currentLineContent = currentTokensSplit[currentLine];
-          const pidInCurrentLine = currentLineContent.match(/\[\[(.*)]]/);
+          const pidInCurrentLine = currentLineContent.match(PRODUCT_LINE_REGEX);
           if (pidInCurrentLine && lastLineWithProduct < currentLine) {
             [, latestPid] = pidInCurrentLine;
             lastLineWithProduct = currentLine;
             if (!isFetchingProduct) {
               isFetchingProduct = true;
+              const tokensToDisplay: string[] = [];
+              // Traverse the lines until the first PID line is found
+              // eslint-disable-next-line no-restricted-syntax
+              for (const tkn of currentTokensSplit) {
+                if (tkn && tkn.match(PRODUCT_LINE_REGEX)) {
+                  break;
+                }
+                tokensToDisplay.push(tkn);
+              }
               setChats((chats1) => [...chats1, {
                 chatId: chatIdFromResp,
                 requestId: reqIdFromResp,
-                messages: [currentTokensSplit.filter((t) => t)[0]],
+                messages: [tokensToDisplay.join('\n').trim()],
                 author: 'bot',
                 products: [],
               }]);
@@ -241,7 +259,16 @@ const ShoppingAssistant = memo((props: {
         const constructedResponse = tokens.join('');
         const constructedResponseLines = constructedResponse.split('\n');
         if (products.length) {
-          const afterText = constructedResponseLines[constructedResponseLines.length - 1];
+          const tokensToDisplay: string[] = [];
+          // Traverse the lines in reverse until the first PID line is found
+          // eslint-disable-next-line no-restricted-syntax
+          for (const tkn of [...constructedResponseLines].reverse()) {
+            if (tkn && (tkn.match(PRODUCT_LINE_REGEX) || tkn.match(IMAGE_LINE_REGEX))) {
+              break;
+            }
+            tokensToDisplay.push(tkn);
+          }
+          const afterText = tokensToDisplay.reverse().join('\n').trim();
           setChats((chats1) => [...chats1, {
             chatId: chatIdFromResp,
             requestId: reqIdFromResp,
