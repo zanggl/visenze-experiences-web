@@ -160,7 +160,6 @@ const ShoppingAssistant = memo((props: {
       onmessage: (ev) => {
         if (ev.event === 'chat_id') {
           chatIdFromResp = JSON.parse(ev.data).value;
-          setChatId(chatIdFromResp);
         } else if (ev.event === 'reqid') {
           reqIdFromResp = JSON.parse(ev.data).value;
         } else if (ev.event === 'chat_token') {
@@ -298,7 +297,7 @@ const ShoppingAssistant = memo((props: {
     if (dialogVisible) {
       return;
     }
-    const renderChat = (idx: number): void => {
+    const renderChat = (idx: number, cId: string): void => {
       if (idx > initialMessages.length) {
         setIsWaiting(false);
         setAllowUserInput(true);
@@ -306,16 +305,19 @@ const ShoppingAssistant = memo((props: {
       }
       setTimeout(() => {
         setChats(() => [{
-          chatId: '',
+          chatId: cId,
           requestId: '',
           author: 'bot',
           messages: initialMessages.slice(0, idx),
         }]);
-        renderChat(idx + 1);
+        renderChat(idx + 1, cId);
       }, 2000);
     };
     setDialogVisible(true);
-    renderChat(1);
+    productSearch.visearch.generateUuid((uuid) => {
+      setChatId(uuid);
+      renderChat(1, uuid);
+    });
   };
 
   const onChatButtonClick = useCallback((): void => {
