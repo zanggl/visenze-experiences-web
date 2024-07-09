@@ -95,9 +95,9 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
   return (
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
-        <div className='bg-primary'>
+        <div className='bg-primary' data-pw='sl-container'>
           {/* Widget Title */}
-          <div className='widget-title py-2 text-center text-primary md:py-4'>You may also like</div>
+          <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='sl-widget-title'>You may also like</div>
 
           {/* Reference Image and Product Card Grid container */}
           <div className='relative flex flex-col gap-y-4 md:flex-row'>
@@ -105,6 +105,7 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
             <div className='relative md:h-full md:w-2/5'>
               {objectDots.map((obj, index) => (
                 <button
+                  data-pw='sl-hotspot-dot'
                   className={
                     `group absolute z-10 flex items-center justify-center rounded-full bg-[#515151] transition-all
                     duration-300 hover:size-6 hover:-translate-x-3 hover:-translate-y-3 hover:ring-1 hover:ring-white
@@ -123,14 +124,16 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
                   className='object-fit size-full'
                   src={referenceImageUrl}
                   onLoad={onImageLoad}
+                  data-pw='sl-reference-image'
                 />
               </Skeleton>
             </div>
 
             {/* Product card grid */}
-            <div className='grid grid-cols-2 gap-x-2 gap-y-4 md:absolute md:right-0 md:top-0 md:h-full md:w-[59%] md:grid-cols-3 md:overflow-y-scroll'>
+            <div className='grid grid-cols-2 gap-x-2 gap-y-4 md:absolute md:right-0 md:top-0 md:h-full md:w-[59%] md:grid-cols-3 md:overflow-y-scroll'
+                 data-pw='sl-product-result-grid'>
               {productResults.map((result, index) => (
-                <div key={`${result.product_id}-${index}`}>
+                <div key={`${result.product_id}-${index}`} data-pw={`sl-product-result-card-${index + 1}`}>
                   <Result
                     index={index}
                     result={result}
