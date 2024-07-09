@@ -57,7 +57,7 @@ const EmbeddedGrid: FC<EmbeddedGridProps> = ({ config, productSearch, productId 
   return (
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
-        <div className='bg-primary' data-pw='eg-container'>
+        <div className='bg-primary'>
           {/* Widget Title */}
           <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='eg-widget-title'>You may also like</div>
 
@@ -74,7 +74,7 @@ const EmbeddedGrid: FC<EmbeddedGridProps> = ({ config, productSearch, productId 
           </div>
 
           {/* ViSenze Footer */}
-          <Footer className='bg-transparent py-4 md:py-8'/>
+          <Footer className='bg-transparent py-4 md:py-8' dataPw='eg-visenze-footer'/>
         </div>
       </WidgetResultContext.Provider>
     </>

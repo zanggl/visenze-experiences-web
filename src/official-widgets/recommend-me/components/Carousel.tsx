@@ -22,7 +22,7 @@ const Carousel: FC<CarouselProps> = ({ results, searchValue, removeFromHistory }
   }, []);
 
   return (
-    <div data-pw='rm-product-card-carousel'>
+    <div data-pw='rm-product-result-carousel'>
       <div className='relative flex items-center pb-2 pt-4 text-primary'>
         <div className='flex w-full' data-pw='rm-carousel-title'>
           <span>Results for &quot;</span>

@@ -95,7 +95,7 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
   return (
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
-        <div className='bg-primary' data-pw='sl-container'>
+        <div className='bg-primary'>
           {/* Widget Title */}
           <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='sl-widget-title'>You may also like</div>
 
@@ -144,7 +144,7 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
           </div>
 
           {/* ViSenze Footer */}
-          <Footer className='bg-transparent py-4 md:py-8'/>
+          <Footer className='bg-transparent py-4 md:py-8' dataPw='sl-visenze-footer'/>
         </div>
       </WidgetResultContext.Provider>
     </>

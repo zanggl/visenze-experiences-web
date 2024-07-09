@@ -451,7 +451,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
     <>
       {breakpoint === 'mobile' && getMobileView()}
       {(breakpoint === 'tablet' || breakpoint === 'desktop') && getTabletAndDesktopView()}
-      <Footer className='fixed bottom-0 bg-white py-2 md:absolute lg:rounded-b-3xl' data-pw='ss-visenze-footer'/>
+      <Footer className='fixed bottom-0 bg-white py-2 md:absolute lg:rounded-b-3xl' dataPw='ss-visenze-footer'/>
     </>
   );
 };
