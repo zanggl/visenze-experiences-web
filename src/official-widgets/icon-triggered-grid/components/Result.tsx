@@ -88,11 +88,11 @@ const Result: FC<ResultProps> = ({ index, result, isReferenceProduct }) => {
   }
 
   return (
-    <a className={`${debugMode ? '' : 'cursor-pointer'}`} ref={targetRef} onClick={debugMode ? undefined : onClick} data-pw={`itg-product-result-card-${index + 1}`}>
+    <a className={`${debugMode ? '' : 'cursor-pointer'}`} ref={targetRef} onClick={debugMode ? undefined : onClick}>
       <div className='aspect-[2/3]'>
         <img className='size-full object-cover' src={result.im_url}/>
       </div>
-      <div className={`flex w-full flex-col py-2 ${isReferenceProduct && 'border-1'}`}>
+      <div className={`flex w-full flex-col px-1 py-2 ${isReferenceProduct && 'border-1'}`}>
         <span className='product-card-title truncate text-primary'>{getProductName()}</span>
         {
           getOriginalPrice()

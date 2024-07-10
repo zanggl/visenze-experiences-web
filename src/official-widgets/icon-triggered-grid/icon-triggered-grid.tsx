@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useEffect, useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Button } from '@nextui-org/button';
 import { Actions, Category, Labels } from '../../common/types/tracking-constants';
 import { WidgetResultContext } from '../../common/types/contexts';
@@ -9,7 +9,7 @@ import { SortType, WidgetBreakpoint } from '../../common/types/constants';
 import { RootContext } from '../../common/components/shadow-wrapper';
 import ViSenzeModal from '../../common/components/modal/visenze-modal';
 import useRecommendationSearch from '../../common/components/hooks/use-recommendation-search';
-import IconTriggeredGridIcon from '../../common/icons/IconTriggeredGridIcon';
+import IconTriggeredGridIcon from './components/IconTriggeredGridIcon';
 import Footer from '../../common/components/Footer';
 import Result from './components/Result';
 import CloseIcon from '../../common/icons/CloseIcon';
@@ -54,25 +54,18 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
     categoryFilter,
   });
 
-  const resetData = (): void => {
-    setRetryCount(0);
-  };
-
   const onModalClose = useCallback((): void => {
     setDialogVisible(false);
     setSortType(SortType.RELEVANCE);
     setCategoryFilter(new Set());
     setPriceFilter(null);
+    setRetryCount(0);
     if (productResults.length > 0) {
       productSearch.send(Actions.CLOSE, {
         label: Labels.PAGE,
         metadata,
       });
     }
-
-    setTimeout(() => {
-      resetData();
-    }, 300);
   }, [productResults]);
 
   // Retrieve categories from product results
@@ -126,13 +119,13 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
           <div className='flex flex-col border-none p-4 lg:w-3/10 lg:px-10 lg:py-6'>
             {/* Widget Title */}
             <div className='flex items-center'>
-              <div className='widget-title text-primary'>You may also like</div>
+              <div className='widget-title text-primary' data-pw='itg-widget-title'>You may also like</div>
             </div>
 
             {/* Reference Product */}
             {
               productInfo
-              && <div className='pt-4 lg:pt-8'>
+              && <div className='pt-4 lg:pt-8' data-pw='itg-reference-product'>
                 <Result
                   index={0}
                   result={productInfo}
@@ -141,14 +134,14 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
               </div>
             }
 
-            {/* ViSenze Footer */}
-            <Footer className='mt-auto hidden bg-transparent lg:flex'/>
+            {/* ViSenze Footer desktop */}
+            <Footer className='mt-auto hidden bg-transparent lg:flex' dataPw='itg-visenze-footer-desktop'/>
           </div>
 
           <div className='relative flex w-full flex-col bg-primary px-6 pb-4 lg:w-7/10 lg:pt-[6.5%]'>
             <div className='flex items-center pb-4'>
               {/* Sort Type */}
-              <div className='calls-to-action-text text-primary'>Sort: {sortType}</div>
+              <div className='text-lg text-primary'>Sort: {sortType}</div>
               {/* Sort and Filter buttons */}
               <div className='ml-auto flex gap-2'>
                 <Button
@@ -156,6 +149,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
                   size='sm'
                   radius='none'
                   onClick={() => setScreen(ScreenType.SORT)}
+                  data-pw='itg-sort-button'
                 >
                   <span className='calls-to-action-text text-buttonPrimary'>Sort</span>
                 </Button>
@@ -164,6 +158,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
                   size='sm'
                   radius='none'
                   onClick={() => setScreen(ScreenType.FILTER)}
+                  data-pw='itg-filter-button'
                 >
                   <span className='calls-to-action-text text-buttonPrimary'>Filter</span>
                 </Button>
@@ -171,9 +166,9 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
             </div>
 
             {/* Product Result Grid */}
-            <div className='grid grid-cols-2 gap-x-2 gap-y-4 overflow-y-auto lg:grid-cols-3'>
+            <div className='grid grid-cols-2 gap-x-2 gap-y-4 overflow-y-auto lg:grid-cols-3' data-pw='itg-product-result-grid'>
               {productResults.map((result, index) => (
-                <div key={`${result.product_id}-${index}`}>
+                <div key={`${result.product_id}-${index}`} data-pw={`itg-product-result-card-${index + 1}`}>
                   <Result
                     index={index}
                     result={result}
@@ -183,9 +178,12 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
               ))}
             </div>
 
+            {/* ViSenze Footer mobile */}
+            <Footer className='mt-auto bg-transparent pt-4 lg:hidden' dataPw='itg-visenze-footer-mobile'/>
+
             {/* Sort Options Desktop */}
             {
-              screen === ScreenType.SORT
+              screen === ScreenType.SORT && breakpoint === WidgetBreakpoint.DESKTOP
               && <SortOptions
                 className='absolute left-0 top-14 hidden h-9/10 w-full flex-col justify-between gap-4 px-8 pb-8 pt-4 text-primary lg:flex'
                 sortType={sortType}
@@ -195,7 +193,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
             }
             {/* Filter Options Desktop */}
             {
-              screen === ScreenType.FILTER
+              screen === ScreenType.FILTER && breakpoint === WidgetBreakpoint.DESKTOP
               && <FilterOptions
                 className='absolute left-0 top-14 hidden h-9/10 w-full flex-col justify-between gap-4 px-8 pb-8 pt-4 text-primary lg:flex'
                 categorySet={categorySet}
