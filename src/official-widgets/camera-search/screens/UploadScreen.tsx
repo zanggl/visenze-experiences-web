@@ -157,7 +157,7 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
         </div>
       </div>
 
-      <Footer className='sticky bottom-0 bg-white py-2 md:absolute md:justify-start md:pl-20 lg:rounded-b-3xl'/>
+      <Footer className='sticky bottom-0 bg-white py-2 md:absolute md:justify-start md:pl-20 lg:rounded-b-3xl' dataPw='cs-visenze-footer'/>
     </div>
   );
 };

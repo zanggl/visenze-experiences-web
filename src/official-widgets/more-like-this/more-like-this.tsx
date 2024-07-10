@@ -105,13 +105,13 @@ const MoreLikeThis: FC<MoreLikeThisProps> = ({ config, productSearch, productId 
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
         {/* Widget Title */}
-        <div className='widget-title py-2 text-center text-primary md:py-4'>More like this</div>
+        <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='mlt-widget-title'>More like this</div>
 
-        {/* Product card carousel */}
-        <div className='relative pr-1 lg:px-10'>
+        {/* Product Result Carousel */}
+        <div className='relative pr-1 lg:px-10' data-pw='mlt-product-result-carousel'>
           <Slider {...settings}>
             {productResults.map((result, index) => (
-              <div className='p-1 md:p-2' key={`${result.product_id}-${index}`}>
+              <div className='p-1 md:p-2' key={`${result.product_id}-${index}`} data-pw={`mlt-product-result-card-${index + 1}`}>
                 <Result
                   index={index}
                   result={result}
@@ -122,7 +122,7 @@ const MoreLikeThis: FC<MoreLikeThisProps> = ({ config, productSearch, productId 
         </div>
 
         {/* ViSenze Footer */}
-        <Footer className='bg-transparent py-4 md:py-8'/>
+        <Footer className='bg-transparent py-4 md:py-8' dataPw='mlt-visenze-footer'/>
       </WidgetResultContext.Provider>
     </>
   );

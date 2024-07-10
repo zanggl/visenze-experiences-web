@@ -12,7 +12,9 @@ const NextArrow: FC<NextArrowProps> = ({ className, onClick }) => (
     className={cn(
       'absolute -right-12 top-1/2 z-20 flex w-12 transition-opacity',
       className?.includes('slick-disabled') ? 'opacity-0' : 'opacity-100',
-  )}>
+    )}
+    data-pw='stl-next-arrow'
+  >
     <Button
       isIconOnly
       disableRipple

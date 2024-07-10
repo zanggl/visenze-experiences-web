@@ -14,7 +14,7 @@ const PrevArrow: FC<PrevArrowProps> = ({ onClickHandler, isDisabled = false, ico
         'absolute left-0 flex h-full w-12 items-center bg-gradient-to-l from-transparent to-white transition-all',
         isDisabled ? 'opacity-0 z-0' : 'opacity-100 z-20',
       )}
-      data-pw='previous-arrow'
+      data-pw='ss-prev-arrow'
     >
       <Button
         isIconOnly

@@ -12,7 +12,9 @@ const PrevArrow: FC<PrevArrowProps> = ({ className, onClick }) => (
     className={cn(
       'absolute -left-10 top-1/2 z-20 flex w-12 transition-opacity',
       className?.includes('slick-disabled') ? 'opacity-0' : 'opacity-100',
-    )}>
+    )}
+    data-pw='mlt-prev-arrow'
+  >
     <Button
       isIconOnly
       disableRipple
