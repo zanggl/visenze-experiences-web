@@ -28,7 +28,8 @@ const Style: FC = () => {
     if (ref) {
       const template = document.head.querySelector(`#vi_template__${widgetType}`) as HTMLTemplateElement;
       const styleTag = template.shadowRoot?.getElementById(`vi_style__${widgetType}__${version}`) as HTMLStyleElement;
-      ref.innerHTML = styleTag.innerHTML;
+      // Convert NextUI CSS variable values from rem to px
+      ref.innerHTML = styleTag.innerHTML.replace(/(\d*\.?\d+)rem/g, (_, val) => `${parseFloat(val) * 16}px`);
     }
   }, []);
   return <style ref={onRefChange}></style>;
