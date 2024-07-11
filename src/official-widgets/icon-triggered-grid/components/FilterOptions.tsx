@@ -69,7 +69,7 @@ const FilterOptions: FC<FilterOptionsProps> = ({
 
   return (
     <div className={cn('bg-primary', className)}>
-      <div className='primary-text py-3 text-center lg:py-0 lg:text-start'>Filter</div>
+      <div className='primary-text py-3 text-center text-lg lg:py-0 lg:text-start'>Filter</div>
       <div className='flex h-full flex-col gap-2 overflow-y-auto border-1'>
         <Accordion className='divide-y-1 px-0'>
           {/* Price Filter */}
@@ -79,6 +79,7 @@ const FilterOptions: FC<FilterOptionsProps> = ({
             key='price'
             title='Price'
             indicator={({ isOpen }) => (isOpen ? <LeftChevronIcon className='size-4 -rotate-90'/> : <LeftChevronIcon className='size-4'/>)}
+            data-pw='itg-price-filter'
           >
             <div className='mb-4 flex w-full gap-4'>
               <Input
@@ -95,6 +96,7 @@ const FilterOptions: FC<FilterOptionsProps> = ({
                 isInvalid={isPriceInvalid}
                 errorMessage={'Min price must be less than max price'}
                 startContent={<span className='text-small text-default-400'>$</span>}
+                data-pw='itg-min-price-filter'
               />
               <Input
                 className='w-1/2'
@@ -110,6 +112,7 @@ const FilterOptions: FC<FilterOptionsProps> = ({
                 isInvalid={isPriceInvalid}
                 errorMessage={'Max price must be more than min price'}
                 startContent={<span className='text-small text-default-400'>$</span>}
+                data-pw='itg-max-price-filter'
               />
             </div>
           </AccordionItem>
@@ -121,12 +124,13 @@ const FilterOptions: FC<FilterOptionsProps> = ({
             key='category'
             title='Category'
             indicator={({ isOpen }) => (isOpen ? <LeftChevronIcon className='size-4 -rotate-90'/> : <LeftChevronIcon className='size-4'/>)}
+            data-pw='itg-category-filter'
           >
             <div className='flex flex-col gap-2 px-4 pb-4'>
-              {Array.from(categorySet).map((category) => (
-                <label key={category} className='cursor-pointer'>
+              {Array.from(categorySet).map((category, index) => (
+                <label key={category} className='cursor-pointer' data-pw={`itg-category-filter-${index + 1}`}>
                   <input className='mr-2' type='checkbox' value={category} checked={selectedCategories.has(category)} onChange={handleCheckboxChange}/>
-                  {getCategoryTitleCase(category)}
+                  <span className='calls-to-action-text'>{getCategoryTitleCase(category)}</span>
                 </label>
               ))}
             </div>
@@ -136,10 +140,10 @@ const FilterOptions: FC<FilterOptionsProps> = ({
 
       {/* Cancel & Apply buttons */}
       <div className='flex justify-around py-2 lg:ml-auto lg:justify-normal lg:gap-4 lg:py-0'>
-        <Button className='rounded border bg-white px-14 text-black' radius='none' onClick={() => setScreen(null)}>
+        <Button className='rounded border bg-white px-14 text-black' radius='none' onClick={() => setScreen(null)} data-pw='itg-cancel-filter-button'>
           Cancel
         </Button>
-        <Button className='rounded border bg-buttonPrimary px-14 text-white' radius='none' onClick={() => {
+        <Button className='rounded border bg-buttonPrimary px-14 text-white' radius='none' data-pw='itg-apply-filter-button' onClick={() => {
           if (!isPriceInvalid) {
             setPriceFilter({ minPrice: Number(minPrice) || null, maxPrice: Number(maxPrice) || null });
           }
