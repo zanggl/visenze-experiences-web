@@ -143,7 +143,7 @@ const ShopTheLook: FC<ShopTheLookProps> = ({ config, productSearch, productId })
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
         {/* Widget Title */}
-        <div className='widget-title py-2 text-center text-primary md:py-4'>Shop The Look</div>
+        <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='stl-widget-title'>Shop The Look</div>
 
         <div className='items-center justify-center md:flex md:flex-row md:gap-4 lg:gap-0'>
           {/* Reference Image */}
@@ -151,6 +151,7 @@ const ShopTheLook: FC<ShopTheLookProps> = ({ config, productSearch, productId })
             <div className='relative'>
               {objectDots.map((obj, index) => (
                 <button
+                  data-pw='stl-hotspot-dot'
                   className={
                     `group absolute z-10 flex items-center justify-center rounded-full bg-[#515151] transition-all 
                     duration-300 hover:size-6 hover:-translate-x-3 hover:-translate-y-3 hover:ring-1 hover:ring-white
@@ -168,16 +169,17 @@ const ShopTheLook: FC<ShopTheLookProps> = ({ config, productSearch, productId })
                   className='object-fit size-full'
                   src={referenceImageUrl}
                   onLoad={onImageLoad}
+                  data-pw='stl-reference-image'
                 />
               </Skeleton>
             </div>
           </div>
 
-          {/* Product card carousel */}
-          <div className='relative pr-1 pt-4 md:w-13/20 lg:w-7/10 lg:px-10'>
+          {/* Product Result Carousel */}
+          <div className='relative pr-1 pt-4 md:w-13/20 lg:w-7/10 lg:px-10' data-pw='stl-product-result-carousel'>
             <Slider {...settings}>
               {productResults.map((result, index) => (
-                <div className='p-1 md:p-2' key={`${result.product_id}-${index}`}>
+                <div className='p-1 md:p-2' key={`${result.product_id}-${index}`} data-pw={`stl-product-result-card-${index + 1}`}>
                   <Result
                     index={index}
                     result={result}
@@ -189,7 +191,7 @@ const ShopTheLook: FC<ShopTheLookProps> = ({ config, productSearch, productId })
         </div>
 
         {/* ViSenze Footer */}
-        <Footer className='bg-transparent py-4 md:py-8'/>
+        <Footer className='bg-transparent py-4 md:py-8' dataPw='stl-visenze-footer'/>
       </WidgetResultContext.Provider>
     </>
   );

@@ -1,6 +1,5 @@
 import { useContext, memo, useRef, useEffect, useState } from 'react';
 import { Button } from '@nextui-org/button';
-import { Skeleton } from '@nextui-org/skeleton';
 import { WidgetDataContext, WidgetResultContext } from '../../../common/types/contexts';
 import type { ProcessedProduct } from '../../../common/types/product';
 import ResultLogicImpl from '../../../common/client/result-logic';
@@ -88,51 +87,47 @@ const Result = memo(({
     setIsLoading(false);
   }, []);
 
+  if (isLoading) {
+    return <></>;
+  }
+
   return (
     <a className={`${debugMode ? '' : 'cursor-pointer'}`} ref={targetRef} onClick={debugMode ? undefined : onClick} data-pw={`cs-product-result-card-${index + 1}`}>
-      <Skeleton
-        className='flex h-4/5'
-        classNames={{ content: 'self-end' }}
-        isLoaded={!isLoading}
-      >
-        <div className='relative'>
-          <img className='object-fit size-full' src={result.im_url} data-pw={`cs-product-result-card-image-${index + 1}`}/>
-          <Button
-            isIconOnly
-            size='sm'
-            radius='full'
-            className='absolute bottom-3 right-3 z-10 bg-white shadow-md'
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              onMoreLikeThis({ imgUrl: result.im_url });
-              clearSearch();
-            }}
-            data-pw='cs-more-like-this-button'
-          >
-            {
-              customizations?.icons.moreLikeThis
-                ? <img src={customizations.icons.moreLikeThis} className='size-5'></img>
-                : <MoreLikeThisIcon className='size-5'/>
-            }
-          </Button>
-        </div>
-      </Skeleton>
-      <div className='h-1/5 pt-2'>
-        <Skeleton isLoaded={!isLoading}>
-          <span className='product-card-title line-clamp-1 font-semibold text-primary'>{getProductName()}</span>
+      <div className='relative h-4/5'>
+        <img className='object-fit size-full' src={result.im_url} data-pw={`cs-product-result-card-image-${index + 1}`}/>
+        <Button
+          isIconOnly
+          size='sm'
+          radius='full'
+          className='absolute bottom-3 right-3 z-10 bg-white shadow-md'
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            onMoreLikeThis({ imgUrl: result.im_url });
+            clearSearch();
+          }}
+          data-pw='cs-more-like-this-button'
+        >
           {
-            getOriginalPrice()
-              ? (
-                <div className='flex gap-1'>
-                  <span className='product-card-price text-red-500'>${getPrice()}</span>
-                  <span className='product-card-price text-gray-400 line-through'>${getOriginalPrice()}</span>
-                </div>
-              ) : (
-                <span className='product-card-price text-primary'>${getPrice()}</span>
-              )
+            customizations?.icons.moreLikeThis
+              ? <img src={customizations.icons.moreLikeThis} className='size-5'></img>
+              : <MoreLikeThisIcon className='size-5'/>
           }
-        </Skeleton>
+        </Button>
+      </div>
+      <div className='h-1/5 pt-2'>
+        <span className='product-card-title line-clamp-1 font-semibold text-primary'>{getProductName()}</span>
+        {
+          getOriginalPrice()
+            ? (
+              <div className='flex gap-1'>
+                <span className='product-card-price text-red-500'>${getPrice()}</span>
+                <span className='product-card-price text-gray-400 line-through'>${getOriginalPrice()}</span>
+              </div>
+            ) : (
+              <span className='product-card-price text-primary'>${getPrice()}</span>
+            )
+        }
       </div>
     </a>
   );

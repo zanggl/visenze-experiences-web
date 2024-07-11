@@ -2,11 +2,12 @@ import type { FC, ReactElement } from 'react';
 import { cn } from '@nextui-org/theme';
 
 interface FooterProps {
-  className?: string;
+  className?: string
+  dataPw?: string,
 }
 
-const Footer: FC<FooterProps> = ({ className }): ReactElement => (
-  <div className={cn('z-10 flex w-full justify-center items-center', className)} data-pw='visenze-footer'>
+const Footer: FC<FooterProps> = ({ className, dataPw }): ReactElement => (
+  <div className={cn('z-10 flex w-full justify-center items-center', className)} data-pw={dataPw}>
     <p className='text-xs'>POWERED BY </p>
     <img
       src='https://visenze-static.s3.amazonaws.com/demos/ms-adidas/ViSenze-FullColor-Horizontal.png'
