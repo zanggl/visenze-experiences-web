@@ -28,8 +28,6 @@ export interface WidgetResultContextValue {
 
 export interface CroppingContextValue {
   boxData?: BoxData;
-  toggleCropMode?: () => void;
-  setCroppingApply?: (data: BoxData) => void;
   setBoxData?: (data: BoxData) => void;
 }
 

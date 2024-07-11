@@ -12,12 +12,12 @@ import FileDropzone from '../components/FileDropzone';
 import { ScreenType } from '../../../common/types/constants';
 import type { SearchImage } from '../../../common/types/image';
 import Result from '../components/Result';
-import HotspotPreview from '../../../common/components/hotspots/hotspot-preview';
 import Footer from '../../../common/components/Footer';
 import Header from '../components/Header';
 import ArrowUpIcon from '../../../common/icons/ArrowUpIcon';
 import ArrowDownIcon from '../../../common/icons/ArrowDownIcon';
 import useBreakpoint from '../../../common/components/hooks/use-breakpoint';
+import HotspotContainer from '../../../common/components/hotspots/hotspot-container';
 import { Actions, Category, Labels } from '../../../common/types/tracking-constants';
 import { QUERY_MAX_CHARACTER_LENGTH } from '../../../common/constants';
 
@@ -176,7 +176,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
           {...minimizedDrawerHandler}
           {...mobileInputFocusHandler}>
           <div className={cn('transition-all duration-500', showFullResults ? 'opacity-0' : 'w-full opacity-100')}>
-            <HotspotPreview className='w-full' referenceImage={getReferenceImage()}/>
+            <HotspotContainer referenceImage={getReferenceImage()}/>
           </div>
 
           <div
@@ -287,7 +287,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
           <div className='relative left-0 row-span-1 h-full w-1/3 border-r-2 border-gray-300 px-8'>
             <div className='flex h-full flex-col px-2'>
               <div className='flex w-full flex-col items-center rounded-3xl border border-black pt-2 text-center'>
-                <HotspotPreview className='w-3/5' referenceImage={getReferenceImage()}/>
+                <HotspotContainer className='w-3/5' referenceImage={getReferenceImage()}/>
 
                 <FileDropzone onImageUpload={onImageUpload} name='upload-icon'>
                   <p className='px-3 py-2 text-medium leading-6'>

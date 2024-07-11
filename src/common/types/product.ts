@@ -7,17 +7,5 @@ export interface ProcessedProduct extends Record<string, any> {
 
 export interface BoxData {
   box: CroppedBox;
-  index?: number;
-  wasFromCrop?: boolean;
+  index: number;
 }
-
-// export interface ProductMetadata {
-//   pos: number;
-//   pid: string;
-//   currency_unit: any;
-//   category: string;
-//   stock_quantity: string;
-//   product_name: string;
-//   brand: string;
-//   currency_code: string;
-// }

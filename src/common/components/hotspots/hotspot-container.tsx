@@ -1,197 +1,123 @@
-import type { ProductType } from 'visearch-javascript-sdk';
-import type { ReactElement, RefObject } from 'react';
-import { Component, createRef } from 'react';
-import Hotspot from './hotspot';
+import type { FC } from 'react';
+import { useEffect, useContext, useState, useRef } from 'react';
+import { cn } from '@nextui-org/theme';
+import { CroppingContext, WidgetResultContext } from '../../types/contexts';
 import { isSameBox } from '../../box-utils';
 import type { CroppedBox } from '../../types/box';
-import type { CroppingContextValue } from '../../types/contexts';
-import type { WidgetBreakpoint } from '../../types/constants';
+import Hotspot from './hotspot';
 
 interface HotspotContainerProps {
-  box?: CroppedBox;
-  croppingContext: CroppingContextValue;
-  file?: string;
-  isCropOn?: boolean;
-  productTypes: ProductType[];
-  isMobile?: boolean;
-  breakpoint: WidgetBreakpoint;
+  referenceImage: string;
+  className?: string;
 }
 
-interface HotspotContainerState {
-  widthScale: number;
-  heightScale: number;
-  isShow: boolean;
-  imageChangedEventToken: string;
-  cropBoxInitEventToken: string;
-  file: string;
-  imageHeight: number;
-  imageWidth: number;
-  selected: number;
-  boxes: CroppedBox[];
-  cropInserted: boolean;
-}
+const HotspotContainer: FC<HotspotContainerProps> = ({
+  referenceImage,
+  className,
+}) => {
+  const { productTypes = [] } = useContext(WidgetResultContext);
+  const croppingContext = useContext(CroppingContext);
+  const [imageHeight, setImageHeight] = useState(0);
+  const [imageWidth, setImageWidth] = useState(0);
+  const [heightScale, setHeightScale] = useState(1);
+  const [widthScale, setWidthScale] = useState(1);
+  const [selectedHotspot, setSelectedHotspot] = useState(-1);
+  const [croppedBoxes, setCroppedBoxes] = useState<CroppedBox[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const boxRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
 
-export default class HotspotContainer extends Component<HotspotContainerProps, HotspotContainerState> {
-  boxRef!: RefObject<HTMLDivElement>;
-
-  imageRef!: RefObject<HTMLImageElement>;
-
-  constructor(props: HotspotContainerProps) {
-    super(props);
-    this.state = {
-      isShow: false,
-      imageChangedEventToken: '',
-      cropBoxInitEventToken: '',
-      file: '',
-      imageHeight: 0,
-      imageWidth: 0,
-      selected: -1,
-      widthScale: 1,
-      heightScale: 1,
-      boxes: [],
-      cropInserted: false,
-    };
-    this.boxRef = createRef();
-    this.imageRef = createRef();
-  }
-
-  onCropBoxInit(productTypes: ProductType[]): void {
-    const boxes = productTypes.map((productType) => {
+  const onCropBoxInit = (): void => {
+    const boxes: CroppedBox[] = productTypes.map((productType) => {
       const dataBox = productType.box;
       return {
-        x1: dataBox[0] * this.state.widthScale,
-        y1: dataBox[1] * this.state.heightScale,
-        x2: dataBox[2] * this.state.widthScale,
-        y2: dataBox[3] * this.state.heightScale,
+        x1: dataBox[0] * widthScale,
+        y1: dataBox[1] * heightScale,
+        x2: dataBox[2] * widthScale,
+        y2: dataBox[3] * heightScale,
       };
     });
-    const data = this.validateCroppedBox(boxes);
-    this.setState({ boxes: data.boxes });
-    this.setState({ selected: data.selected });
-  }
+    setCroppedBoxes(boxes);
 
-  onLoad(): void {
-    const img = this.imageRef.current;
+    const croppedBox = croppingContext.boxData?.box;
+    if (croppedBox) {
+      const index = boxes.findIndex((box) => isSameBox(box, croppedBox));
+      if (index !== -1) setSelectedHotspot(index);
+    } else {
+      setSelectedHotspot(0);
+    }
+  };
+
+  const handleInnerDotClick = (index: number): void => {
+    setSelectedHotspot(index);
+    if (croppingContext.setBoxData) {
+      croppingContext.setBoxData({
+        box: croppedBoxes[index],
+        index,
+      });
+    }
+  };
+
+  const onLoad = (): void => {
+    const img = imageRef.current;
     if (!img) {
       return;
     }
-    const imageWidth = img.clientWidth;
-    const imageHeight = img.clientHeight;
-    const widthScale = img.clientWidth / img.naturalWidth;
-    const heightScale = img.clientHeight / img.naturalHeight;
+    setImageWidth(img.clientWidth);
+    setImageHeight(img.clientHeight);
+    setWidthScale(img.clientWidth / img.naturalWidth);
+    setHeightScale(img.clientHeight / img.naturalHeight);
+  };
 
-    this.setState({
-      imageWidth,
-      imageHeight,
-      widthScale,
-      heightScale,
-    });
+  useEffect(() => {
+    if (productTypes.length > 0) {
+      onCropBoxInit();
+    }
+  }, [productTypes]);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
+
+  if (isLoading) {
+    return <></>;
   }
 
-  validateCroppedBox(boxes: CroppedBox[]): {
-    boxes: CroppedBox[];
-    selected: number;
-  } {
-    const croppedBox = this.props.croppingContext.boxData?.box;
-    if (croppedBox) {
-      for (let i = 0; i < boxes.length; i += 1) {
-        if (isSameBox(boxes[i], croppedBox)) {
-          return { boxes, selected: i };
-        }
-      }
-      boxes.unshift(croppedBox);
-      this.setState({ cropInserted: true });
-    }
-    return { boxes, selected: 0 };
-  }
-
-  handleUpdateDot(index: number): void {
-    this.setState({ selected: index });
-  }
-
-  handleInnerDotClick(index: number): void {
-    // imgClassName: 'vs-cropper-image-selected' to add when cropping
-    const wasFromCroppedImage = this.state.cropInserted;
-    if (wasFromCroppedImage) {
-      const curBoxes = this.state.boxes;
-      curBoxes.shift();
-      this.setState({ boxes: curBoxes });
-      this.setState({ cropInserted: false });
-      index -= 1;
-    }
-    this.handleUpdateDot(index);
-    if (this.props.croppingContext.setBoxData) {
-      this.props.croppingContext.setBoxData({
-        box: this.state.boxes[index],
-        index,
-        wasFromCrop: wasFromCroppedImage,
-      });
-    }
-  }
-
-  componentDidMount(): void {
-    if (this.props.file) {
-      this.setState({ file: this.props.file, isShow: true });
-    }
-    if (this.props.productTypes.length > 0) {
-      this.onCropBoxInit(this.props.productTypes);
-    }
-  }
-
-  componentDidUpdate(prevProps: HotspotContainerProps): void {
-    if (this.props.isCropOn !== prevProps.isCropOn) {
-      this.onLoad();
-    }
-    if (this.props.productTypes !== prevProps.productTypes && this.props.file !== prevProps.file) {
-      this.onCropBoxInit(this.props.productTypes);
-    }
-  }
-
-  render(): ReactElement {
-    return (
-      <div className='flex w-full justify-center'>
-        <div className='size-full overflow-hidden'>
-          <div className='relative size-full text-center' ref={this.boxRef}>
-            {this.state.isShow && (
-              <>
-                <img
-                  className='object-cover object-center lg:h-full'
-                  ref={this.imageRef}
-                  src={this.state.file}
-                  onLoad={() => setTimeout(() => this.onLoad(), 250)} // Delay needed to get correct image width and height for calculation in onLoad
-                  data-pw='hotspot-reference-image'
+  return (
+    <div className={cn('flex w-full justify-center', className)}>
+      <div className='size-full overflow-hidden'>
+        <div className='relative size-full text-center' ref={boxRef}>
+          <>
+            <img
+              className='object-cover object-center lg:h-full'
+              ref={imageRef}
+              src={referenceImage}
+              onLoad={() => setTimeout(() => onLoad(), 250)} // Delay needed to get correct image width and height for calculation in onLoad
+              data-pw='hotspot-reference-image'
+            />
+            <div
+              className='absolute top-1/2 inline-block max-h-full max-w-full -translate-x-1/2 -translate-y-1/2'
+              style={{
+                width: imageWidth,
+                height: imageHeight,
+              }}>
+              {croppedBoxes.map((box, index) => (
+                <Hotspot
+                  key={index}
+                  index={index}
+                  box={box}
+                  heightScale={heightScale}
+                  widthScale={widthScale}
+                  isSelected={selectedHotspot === index}
+                  handleInnerDotClick={handleInnerDotClick}
                 />
-                <div
-                  className='absolute top-1/2 inline-block max-h-full max-w-full -translate-x-1/2 -translate-y-1/2'
-                  style={{
-                    width: this.state.imageWidth,
-                    height: this.state.imageHeight,
-                  }}>
-                  {this.state.boxes.map((box, index) => (
-                    <Hotspot
-                      box={box}
-                      croppingContext={this.props.croppingContext}
-                      croppedBox={this.props.croppingContext.boxData?.box}
-                      heightScale={this.state.heightScale}
-                      widthScale={this.state.widthScale}
-                      imageWidth={this.state.imageWidth}
-                      imageHeight={this.state.imageHeight}
-                      isSelected={this.state.selected === index}
-                      handleUpdateDot={this.handleUpdateDot.bind(this)}
-                      handleInnerDotClick={this.handleInnerDotClick.bind(this)}
-                      index={index}
-                      key={index}
-                      isCropOn={!!this.props.isCropOn}
-                      enable={true}
-                      isMobile={!!this.props.isMobile}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
+              ))}
+            </div>
+          </>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+export default HotspotContainer;
