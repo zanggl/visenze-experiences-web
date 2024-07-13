@@ -17,7 +17,7 @@ import HotspotContainer from '../../common/components/hotspots/hotspot-container
 import type { BoxData, ProcessedProduct } from '../../common/types/product';
 import { getFlattenProducts } from '../../common/utils';
 import HotspotRecommendations from './components/HotspotRecommendations';
-import { CroppingProvider } from '../../common/types/providers';
+import CroppingProvider from '../../common/components/providers/CroppingProvider';
 
 interface ShoppableInstagramFeedProps {
   config: WidgetConfig;

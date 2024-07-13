@@ -1,7 +1,7 @@
 import type { FC, ReactNode } from 'react';
 import { useState } from 'react';
-import { CroppingContext } from './contexts';
-import type { BoxData } from './product';
+import { CroppingContext } from '../../types/contexts';
+import type { BoxData } from '../../types/product';
 
 interface CroppingProviderProps {
   children: ReactNode,
@@ -19,5 +19,4 @@ const CroppingProvider: FC<CroppingProviderProps> = ({ children, boxData, setBox
   );
 };
 
-// eslint-disable-next-line import/prefer-default-export
-export { CroppingProvider };
+export default CroppingProvider;

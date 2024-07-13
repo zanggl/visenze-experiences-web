@@ -16,7 +16,7 @@ import useImageMultisearch from '../../common/components/hooks/use-image-multise
 import CameraIcon from './icons/CameraIcon';
 import LoadingIcon from './icons/LoadingIcon';
 import { QUERY_MAX_CHARACTER_LENGTH } from '../../common/constants';
-import { CroppingProvider } from '../../common/types/providers';
+import CroppingProvider from '../../common/components/providers/CroppingProvider';
 
 const CameraSearch = memo((props: {
   configs: WidgetConfig;
