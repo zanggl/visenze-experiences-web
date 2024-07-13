@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
-import type { ObjectProductResponse, ProductSearchResponse, ProductSearchResponseSuccess } from 'visearch-javascript-sdk';
+import type {
+  ObjectProductResponse,
+  ProductSearchResponse,
+  ProductSearchResponseSuccess,
+  ProductType,
+} from 'visearch-javascript-sdk';
 import type { WidgetClient, WidgetConfig } from '../../visenze-core';
 import { SortType } from '../../types/constants';
 import { Actions, Category } from '../../types/tracking-constants';
 import type { ProcessedProduct } from '../../types/product';
-import { getFlattenProduct, getFlattenProducts } from '../../utils';
+import { getFlattenProduct, getFlattenProducts, parseToProductTypes } from '../../utils';
 import type { PriceFilter } from '../../types/filter';
 
 interface RecommendationSearchProps {
@@ -23,6 +28,7 @@ export interface RecommendationSearch {
   resetSearch: () => void;
   productInfo: ProcessedProduct | undefined;
   productResults: ProcessedProduct[];
+  productTypes: ProductType[];
   referenceImageUrl: string;
   objectIndex: number;
   setObjectIndex: (objectIndex: number) => void;
@@ -44,6 +50,7 @@ const useRecommendationSearch = ({
   const [referenceImageUrl, setReferenceImageUrl] = useState<string>('');
   const [objects, setObjects] = useState<ObjectProductResponse[]>([]);
   const [productInfo, setProductInfo] = useState<ProcessedProduct | undefined>();
+  const [productTypes, setProductTypes] = useState<ProductType[]>([]);
   const [objectIndex, setObjectIndex] = useState<number>(0);
   const [error, setError] = useState<string>('');
   const productDetails = config.displaySettings.productDetails;
@@ -68,6 +75,7 @@ const useRecommendationSearch = ({
     setMetadata({});
     setResponse(undefined);
     setProductResults([]);
+    setProductTypes([]);
   };
 
   const getFilters = (): string[] => {
@@ -145,6 +153,11 @@ const useRecommendationSearch = ({
       setMetadata(metadata);
       setObjects(response.objects || []);
 
+      const productTypes = parseToProductTypes(response);
+      if (productTypes.length > 0) {
+        setProductTypes(productTypes);
+      }
+
       // Model Outfit should be the reference image if strategy is STL
       const strategy: any = response.strategy;
       if (strategy.algorithm === 'STL') {
@@ -186,6 +199,7 @@ const useRecommendationSearch = ({
     metadata,
     productInfo,
     productResults,
+    productTypes,
     error,
     resetSearch,
     referenceImageUrl,

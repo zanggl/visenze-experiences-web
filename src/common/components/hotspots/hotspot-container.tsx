@@ -9,19 +9,22 @@ import Hotspot from './hotspot';
 interface HotspotContainerProps {
   referenceImage: string;
   className?: string;
+  noSelectedHotspot?: boolean;
+  handleBoxClick?: () => void;
 }
 
 const HotspotContainer: FC<HotspotContainerProps> = ({
   referenceImage,
   className,
+  noSelectedHotspot,
+  handleBoxClick,
 }) => {
   const { productTypes = [] } = useContext(WidgetResultContext);
-  const croppingContext = useContext(CroppingContext);
+  const { selectedHotspot, setSelectedHotspot, boxData, setBoxData } = useContext(CroppingContext);
   const [imageHeight, setImageHeight] = useState(0);
   const [imageWidth, setImageWidth] = useState(0);
   const [heightScale, setHeightScale] = useState(1);
   const [widthScale, setWidthScale] = useState(1);
-  const [selectedHotspot, setSelectedHotspot] = useState(-1);
   const [croppedBoxes, setCroppedBoxes] = useState<CroppedBox[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const boxRef = useRef<HTMLDivElement>(null);
@@ -38,8 +41,9 @@ const HotspotContainer: FC<HotspotContainerProps> = ({
       };
     });
     setCroppedBoxes(boxes);
+    if (noSelectedHotspot) return;
 
-    const croppedBox = croppingContext.boxData?.box;
+    const croppedBox = boxData?.box;
     if (croppedBox) {
       const index = boxes.findIndex((box) => isSameBox(box, croppedBox));
       if (index !== -1) setSelectedHotspot(index);
@@ -48,14 +52,13 @@ const HotspotContainer: FC<HotspotContainerProps> = ({
     }
   };
 
-  const handleInnerDotClick = (index: number): void => {
+  const handleHotspotClick = (index: number): void => {
     setSelectedHotspot(index);
-    if (croppingContext.setBoxData) {
-      croppingContext.setBoxData({
-        box: croppedBoxes[index],
-        index,
-      });
-    }
+    setBoxData?.({
+      box: croppedBoxes[index],
+      index,
+    });
+    handleBoxClick?.();
   };
 
   const onLoad = (): void => {
@@ -109,7 +112,7 @@ const HotspotContainer: FC<HotspotContainerProps> = ({
                   heightScale={heightScale}
                   widthScale={widthScale}
                   isSelected={selectedHotspot === index}
-                  handleInnerDotClick={handleInnerDotClick}
+                  handleHotspotClick={handleHotspotClick}
                 />
               ))}
             </div>
