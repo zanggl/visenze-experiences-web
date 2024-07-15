@@ -3,6 +3,7 @@ import { useMemo, memo, useState } from 'react';
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { Accordion, AccordionItem } from '@nextui-org/accordion';
+import { Checkbox } from '@nextui-org/checkbox';
 import { cn } from '@nextui-org/theme';
 import type { ScreenType } from '../icon-triggered-grid';
 import type { ProcessedProduct } from '../../../common/types/product';
@@ -78,7 +79,7 @@ const FilterOptions: FC<FilterOptionsProps> = ({
             classNames={{ content: 'py-0 flex justify-center' }}
             key='price'
             title='Price'
-            indicator={({ isOpen }) => (isOpen ? <LeftChevronIcon className='size-4 -rotate-90'/> : <LeftChevronIcon className='size-4'/>)}
+            indicator={<LeftChevronIcon className='size-4'/>}
             data-pw='itg-price-filter'
           >
             <div className='mb-4 flex w-full gap-4'>
@@ -123,15 +124,21 @@ const FilterOptions: FC<FilterOptionsProps> = ({
             classNames={{ content: 'py-0' }}
             key='category'
             title='Category'
-            indicator={({ isOpen }) => (isOpen ? <LeftChevronIcon className='size-4 -rotate-90'/> : <LeftChevronIcon className='size-4'/>)}
+            indicator={<LeftChevronIcon className='size-4'/>}
             data-pw='itg-category-filter'
           >
             <div className='flex flex-col gap-2 px-4 pb-4'>
               {Array.from(categorySet).map((category, index) => (
-                <label key={category} className='cursor-pointer' data-pw={`itg-category-filter-${index + 1}`}>
-                  <input className='mr-2' type='checkbox' value={category} checked={selectedCategories.has(category)} onChange={handleCheckboxChange}/>
+                <Checkbox
+                  isSelected={selectedCategories.has(category)}
+                  key={category}
+                  value={category}
+                  onChange={handleCheckboxChange}
+                  color='secondary'
+                  data-pw={`itg-category-filter-${index + 1}`}
+                >
                   <span className='calls-to-action-text'>{getCategoryTitleCase(category)}</span>
-                </label>
+                </Checkbox>
               ))}
             </div>
           </AccordionItem>
