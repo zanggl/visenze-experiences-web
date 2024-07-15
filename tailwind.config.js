@@ -60,7 +60,7 @@ function remToPx(input, fontSize = 16) {
 module.exports = {
   content: [
     './src/**/*.{html,js,ts,jsx,tsx}',
-    './node_modules/@nextui-org/theme/dist/components/(button|card|chip|image|input|listbox|spacer|skeleton).js',
+    './node_modules/@nextui-org/theme/dist/components/(button|card|chip|image|input|listbox|spacer|skeleton|spinner).js',
   ],
   theme: {
     ...remToPx(defaultTheme),

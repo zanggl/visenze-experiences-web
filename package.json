@@ -62,6 +62,7 @@
     "@nextui-org/listbox": "^2.1.19",
     "@nextui-org/skeleton": "^2.0.27",
     "@nextui-org/spacer": "^2.0.27",
+    "@nextui-org/spinner": "^2.0.30",
     "@nextui-org/system": "^2.1.2",
     "@nextui-org/theme": "^2.2.6",
     "framer-motion": "^11.1.8",
