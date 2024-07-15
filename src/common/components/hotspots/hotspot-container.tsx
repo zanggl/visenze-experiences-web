@@ -8,6 +8,7 @@ import Hotspot from './hotspot';
 
 interface HotspotContainerProps {
   referenceImage: string;
+  referenceImageClassName?: string;
   className?: string;
   noSelectedHotspot?: boolean;
   handleBoxClick?: () => void;
@@ -15,6 +16,7 @@ interface HotspotContainerProps {
 
 const HotspotContainer: FC<HotspotContainerProps> = ({
   referenceImage,
+  referenceImageClassName,
   className,
   noSelectedHotspot,
   handleBoxClick,
@@ -92,7 +94,7 @@ const HotspotContainer: FC<HotspotContainerProps> = ({
         <div className='relative size-full text-center' ref={boxRef}>
           <>
             <img
-              className='object-cover object-center lg:h-full'
+              className={cn('object-cover size-full', referenceImageClassName)}
               ref={imageRef}
               src={referenceImage}
               onLoad={() => setTimeout(() => onLoad(), 250)} // Delay needed to get correct image width and height for calculation in onLoad
