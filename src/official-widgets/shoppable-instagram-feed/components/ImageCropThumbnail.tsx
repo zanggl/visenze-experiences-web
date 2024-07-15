@@ -3,6 +3,11 @@ import type { ReactNode, FC } from 'react';
 import { cn } from '@nextui-org/theme';
 import { CroppingContext } from '../../../common/types/contexts';
 
+/**
+ * This component is responsible for rendering a cropped thumbnail of an image based on the provided box coordinates.
+ * It uses a canvas element to display the cropped portion of the image.
+ */
+
 interface ImageCropThumbnailProps {
   imageUrl: string;
   box: number[];
@@ -13,10 +18,6 @@ interface ImageCropThumbnailProps {
 const ImageCropThumbnail: FC<ImageCropThumbnailProps> = ({ imageUrl, box, index }): ReactNode => {
   const { selectedHotspot, setSelectedHotspot } = useContext(CroppingContext);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  const canvasClickHandler = (): void => {
-    setSelectedHotspot(index);
-  };
 
   const getCroppedImage = useCallback(async () => {
     const image = new Image();
@@ -67,9 +68,7 @@ const ImageCropThumbnail: FC<ImageCropThumbnailProps> = ({ imageUrl, box, index 
     getCroppedImage();
   }, [getCroppedImage]);
 
-  return <canvas ref={canvasRef} className={cn('size-16 cursor-pointer rounded-xl', {
-    'opacity-50': selectedHotspot !== index,
-  })} onClick={canvasClickHandler} />;
+  return <canvas ref={canvasRef} className={cn('size-16 cursor-pointer rounded-xl', selectedHotspot !== index && 'opacity-50')} onClick={() => setSelectedHotspot(index)} />;
 };
 
 export default memo(ImageCropThumbnail);

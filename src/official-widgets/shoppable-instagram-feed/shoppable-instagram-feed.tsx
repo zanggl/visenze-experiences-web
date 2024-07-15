@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import { useEffect, useState, useContext } from 'react';
 import { Button } from '@nextui-org/button';
+import { Spinner } from '@nextui-org/spinner';
 import type { WidgetClient, WidgetConfig } from '../../common/visenze-core';
 import { RootContext } from '../../common/components/shadow-wrapper';
 import {
@@ -35,6 +36,7 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
   const [boxData, setBoxData] = useState<BoxData | undefined>();
   const [galleryProducts, setGalleryProducts] = useState<ProcessedProduct[]>([]);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+  const [page, setPage] = useState(1);
   const { appSettings } = useContext(WidgetDataContext);
 
   const {
@@ -49,14 +51,6 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
     retryCount,
     productId: activeProductId,
   });
-
-  // const objectResults = useMemo(() => {
-  //   const processedProducts: ProcessedProduct[][] = [];
-  //   objects.forEach((object) => {
-  //     processedProducts.push(getFlattenProducts(object.result));
-  //   });
-  //   return processedProducts;
-  // }, [objects]);
 
   const instagramImageClickHandler = (result: ProcessedProduct): void => {
     setActiveProductId(result.product_id);
@@ -77,19 +71,35 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
     }
   }, [error]);
 
+  // Retrieve gallery products
   useEffect(() => {
     const fetchGalleryProducts = async (): Promise<void> => {
-      const response = await fetch(`${appSettings.endpoint}/v1/product/linked/gallery/browse?placement_id=${appSettings.placementId}&app_key=${appSettings.appKey}&limit=10`);
+      const response = await fetch(`${appSettings.endpoint}/v1/product/linked/gallery/browse?placement_id=${appSettings.placementId}&app_key=${appSettings.appKey}&limit=100`);
       const data = await response.json();
       setGalleryProducts(getFlattenProducts(data.result));
       setIsLoading(false);
     };
-
     fetchGalleryProducts();
   }, []);
 
+  // Load more images when reaching the bottom of the page
+  useEffect(() => {
+    const handleScroll = (): void => {
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return (): void => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   if (!root || isLoading) {
-    return <></>;
+    return (
+      <div className='flex justify-center py-20'>
+        <Spinner color='secondary'/>
+      </div>
+    );
   }
 
   if (error) {
@@ -104,10 +114,10 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
   return (
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults, productTypes }}>
-        <div className='bg-primary'>
+        <div>
           {/* Product Image Grid */}
           <div className='grid grid-cols-3 gap-0.5'>
-            {galleryProducts.map((result, index) => (
+            {galleryProducts.slice(0, page * 20).map((result, index) => (
               <div key={`${result.im_url}-${index}`}>
                 <InstagramImage
                   index={index}
@@ -122,19 +132,27 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
           <Footer className='bg-transparent py-4 md:py-8'/>
         </div>
 
-        {/* Modal with hotspots on image */}
         <CroppingProvider boxData={boxData} setBoxData={setBoxData}>
-          <ViSenzeModal open={openModal} onClose={onCloseHandler} layout={breakpoint} className='left-[unset] top-[unset] h-1/2 w-7/10 rounded-xl'>
+          {/* Modal showing hotspots on selected image */}
+          <ViSenzeModal open={openModal} onClose={onCloseHandler} layout={breakpoint}
+                        className='left-[unset] top-[unset] h-[500px] w-[300px] rounded-xl'>
             <div className='flex size-full flex-col bg-primary pt-1/5'>
               <Button isIconOnly className='absolute right-2 top-2 bg-transparent' onClick={onCloseHandler} data-pw='sif-close-button'>
                 <CloseIcon className='size-6'/>
               </Button>
                 {
                   productTypes.length > 0
-                  && <HotspotContainer referenceImage={activeImageUrl} noSelectedHotspot={true} handleBoxClick={() => setOpenDrawer(true)}/>
+                  && <HotspotContainer
+                    referenceImage={activeImageUrl}
+                    referenceImageClassName='aspect-[3/4]'
+                    noSelectedHotspot={true}
+                    handleBoxClick={() => setOpenDrawer(true)}
+                  />
                 }
             </div>
           </ViSenzeModal>
+
+          {/* Modal which displays product recommendations for the selected hotspot */}
           <HotspotRecommendations openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} objects={objects} activeImageUrl={activeImageUrl} />
         </CroppingProvider>
       </WidgetResultContext.Provider>

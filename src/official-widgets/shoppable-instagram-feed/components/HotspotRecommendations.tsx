@@ -7,6 +7,16 @@ import { CroppingContext, WidgetResultContext } from '../../../common/types/cont
 import { getFlattenProducts } from '../../../common/utils';
 import Result from './Result';
 import ImageCropThumbnail from './ImageCropThumbnail';
+import CloseIcon from '../../../common/icons/CloseIcon';
+
+/**
+ * This component displays a modal with product recommendations based on selected hotspots in an image.
+ * It includes:
+ * - A close button to dismiss the modal.
+ * - Thumbnails of cropped image areas representing different hotspots.
+ * - A grid of product results for the selected hotspot.
+ * - A message indicating no results if there are no products for the selected hotspot.
+ */
 
 interface HotspotRecommendationsProps {
   objects: ObjectProductResponse[];
@@ -21,7 +31,10 @@ const HotspotRecommendations: FC<HotspotRecommendationsProps> = ({ objects, open
 
   const closeDrawerHandler = (): void => {
     setOpenDrawer(false);
-    setSelectedHotspot?.(-1);
+    // Wait for drawer closing animation to finish before resetting
+    setTimeout(() => {
+      setSelectedHotspot?.(-1);
+    }, 300);
   };
 
   const results = useMemo(() => {
@@ -32,10 +45,18 @@ const HotspotRecommendations: FC<HotspotRecommendationsProps> = ({ objects, open
   return (
     <ViSenzeModal open={openDrawer} onClose={closeDrawerHandler} layout='mobile' className='bottom-0 top-[unset] h-9/10 w-full rounded-t-xl'>
       <div className='flex size-full flex-col bg-primary'>
-        <Button className='flex flex-shrink-0 justify-center bg-primary' size='sm' onClick={closeDrawerHandler}>
+        {/* Close Button Tablet/Desktop */}
+        <Button isIconOnly className='absolute right-3 top-2 hidden bg-transparent md:flex' onClick={closeDrawerHandler} data-pw='sif-hotspot-recommendations-close-button-desktop'>
+          <CloseIcon className='size-6'/>
+        </Button>
+
+        {/* Close Button Mobile */}
+        <Button className='flex flex-shrink-0 justify-center bg-primary md:hidden' size='sm' onClick={closeDrawerHandler} data-pw='sif-hotspot-recommendations-close-button-mobile'>
           <div className='h-1 w-12 bg-gray-400'></div>
         </Button>
-        <span className='text-center font-bold'>In this photo</span>
+
+        {/* Image Crop Thumbnails */}
+        <span className='calls-to-action-text text-center font-bold md:pt-3'>In this photo</span>
         <div className='flex justify-center gap-x-3 py-3'>
           {
             productTypes?.map((productType, index) => (
@@ -45,7 +66,9 @@ const HotspotRecommendations: FC<HotspotRecommendationsProps> = ({ objects, open
             ))
           }
         </div>
-        <div className='grid grid-cols-2 gap-x-2 gap-y-4 overflow-y-auto px-2 pb-4 md:grid-cols-5' data-pw='sif-product-result-grid'>
+
+        {/* Product Result Grid */}
+        <div className='grid grid-cols-2 gap-x-2 gap-y-4 overflow-y-auto px-2 pb-4 md:grid-cols-3 lg:grid-cols-4' data-pw='sif-product-result-grid'>
           {
             results.map((result, index) => (
               <div key={`${result.product_id}-${index}`} data-pw={`sif-product-result-card-${index + 1}`}>
@@ -57,6 +80,8 @@ const HotspotRecommendations: FC<HotspotRecommendationsProps> = ({ objects, open
             ))
           }
         </div>
+
+        {/* No Results Message */}
         {
           results.length === 0
           && <div className='flex size-full items-center justify-center'>There are no results for this hotspot</div>
