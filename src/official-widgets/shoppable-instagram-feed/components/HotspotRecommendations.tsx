@@ -56,7 +56,7 @@ const HotspotRecommendations: FC<HotspotRecommendationsProps> = ({ objects, open
         </Button>
 
         {/* Image Crop Thumbnails */}
-        <span className='calls-to-action-text text-center font-bold md:pt-3'>In this photo</span>
+        <span className='calls-to-action-text text-center font-bold text-primary md:pt-3'>In this photo</span>
         <div className='flex justify-center gap-x-3 py-3'>
           {
             productTypes?.map((productType, index) => (
