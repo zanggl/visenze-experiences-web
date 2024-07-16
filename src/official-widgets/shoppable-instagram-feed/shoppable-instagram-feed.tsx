@@ -115,10 +115,10 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults, productTypes }}>
         <div>
-          {/* Product Image Grid */}
-          <div className='grid grid-cols-3 gap-0.5'>
+          {/* Gallery Products Grid */}
+          <div className='grid grid-cols-3 gap-0.5' data-pw='sif-gallery-products-grid'>
             {galleryProducts.slice(0, page * 20).map((result, index) => (
-              <div key={`${result.im_url}-${index}`}>
+              <div key={`${result.im_url}-${index}`} data-pw={`sif-gallery-product-${index + 1}`}>
                 <InstagramImage
                   index={index}
                   result={result}
@@ -129,15 +129,15 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
           </div>
 
           {/* ViSenze Footer */}
-          <Footer className='bg-transparent py-4 md:py-8'/>
+          <Footer className='bg-transparent py-4 md:py-8' dataPw='sif-visenze-footer'/>
         </div>
 
         <CroppingProvider boxData={boxData} setBoxData={setBoxData}>
           {/* Modal showing hotspots on selected image */}
           <ViSenzeModal open={openModal} onClose={onCloseHandler} layout={breakpoint}
                         className='left-[unset] top-[unset] h-[500px] w-[300px] rounded-xl'>
-            <div className='flex size-full flex-col bg-primary pt-1/5'>
-              <Button isIconOnly className='absolute right-2 top-2 bg-transparent' onClick={onCloseHandler} data-pw='sif-close-button'>
+            <div className='flex size-full flex-col bg-primary pt-1/5' data-pw='sif-image-hotspot-modal'>
+              <Button isIconOnly className='absolute right-2 top-2 bg-transparent' onClick={onCloseHandler} data-pw='sif-modal-close-button'>
                 <CloseIcon className='size-6'/>
               </Button>
                 {
@@ -152,7 +152,7 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
             </div>
           </ViSenzeModal>
 
-          {/* Modal which displays product recommendations for the selected hotspot */}
+          {/* Drawer which displays product recommendations for the selected hotspot */}
           <HotspotRecommendations openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} objects={objects} activeImageUrl={activeImageUrl} />
         </CroppingProvider>
       </WidgetResultContext.Provider>

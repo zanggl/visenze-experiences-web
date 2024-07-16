@@ -55,7 +55,7 @@ const Hotspot: FC<HotspotProps> = ({
           handleHotspotClick(index);
         }
       }}
-      data-pw='hotspot'
+      data-pw={`hotspot-${index + 1}`}
     ></div>
   );
 };

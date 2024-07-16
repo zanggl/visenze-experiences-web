@@ -10,9 +10,9 @@ import ImageCropThumbnail from './ImageCropThumbnail';
 import CloseIcon from '../../../common/icons/CloseIcon';
 
 /**
- * This component displays a modal with product recommendations based on selected hotspots in an image.
+ * This component displays a drawer with product recommendations based on selected hotspots in an image.
  * It includes:
- * - A close button to dismiss the modal.
+ * - A close button to dismiss the drawer.
  * - Thumbnails of cropped image areas representing different hotspots.
  * - A grid of product results for the selected hotspot.
  * - A message indicating no results if there are no products for the selected hotspot.
@@ -44,14 +44,14 @@ const HotspotRecommendations: FC<HotspotRecommendationsProps> = ({ objects, open
 
   return (
     <ViSenzeModal open={openDrawer} onClose={closeDrawerHandler} layout='mobile' className='bottom-0 top-[unset] h-9/10 w-full rounded-t-xl'>
-      <div className='flex size-full flex-col bg-primary'>
+      <div className='flex size-full flex-col bg-primary' data-pw='sif-hotspot-recommendations'>
         {/* Close Button Tablet/Desktop */}
-        <Button isIconOnly className='absolute right-3 top-2 hidden bg-transparent md:flex' onClick={closeDrawerHandler} data-pw='sif-hotspot-recommendations-close-button-desktop'>
+        <Button isIconOnly className='absolute right-3 top-2 hidden bg-transparent md:flex' onClick={closeDrawerHandler} data-pw='sif-drawer-close-button-desktop'>
           <CloseIcon className='size-6'/>
         </Button>
 
         {/* Close Button Mobile */}
-        <Button className='flex flex-shrink-0 justify-center bg-primary md:hidden' size='sm' onClick={closeDrawerHandler} data-pw='sif-hotspot-recommendations-close-button-mobile'>
+        <Button className='flex flex-shrink-0 justify-center bg-primary md:hidden' size='sm' onClick={closeDrawerHandler} data-pw='sif-drawer-close-button-mobile'>
           <div className='h-1 w-12 bg-gray-400'></div>
         </Button>
 
@@ -60,7 +60,7 @@ const HotspotRecommendations: FC<HotspotRecommendationsProps> = ({ objects, open
         <div className='flex justify-center gap-x-3 py-3'>
           {
             productTypes?.map((productType, index) => (
-              <div key={index}>
+              <div key={index} data-pw={`image-crop-thumbnail-${index + 1}`}>
                 <ImageCropThumbnail imageUrl={activeImageUrl} box={productType.box} index={index}/>
               </div>
             ))
