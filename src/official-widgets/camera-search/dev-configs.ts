@@ -1,4 +1,3 @@
-import * as English from './locales/en.json';
 import type { RecursivePartial, WidgetConfig } from '../../common/visenze-core';
 
 export const devConfigs: RecursivePartial<WidgetConfig> = {
@@ -20,12 +19,6 @@ export const devConfigs: RecursivePartial<WidgetConfig> = {
       title: '',
       price: '',
       originalPrice: '',
-    },
-  },
-  languageSettings: {
-    locale: 'en',
-    text: {
-      en: English,
     },
   },
   callbacks: {

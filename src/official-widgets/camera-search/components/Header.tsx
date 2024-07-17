@@ -23,15 +23,15 @@ const Header: FC<HeaderProps> = ({ onCloseHandler, onBackHandler, isResultScreen
               <BackIcon className='size-6'/>
             </Button>
             <p className='widget-title hidden text-2xl text-primary md:block' data-pw='cs-widget-title'>
-              {intl.formatMessage({ id: 'resultScreenTitle' })}
+              {intl.formatMessage({ id: 'cameraSearch.resultScreenTitle' })}
             </p>
           </>
         )
         : (
           <p className='widget-title text-center text-primary' data-pw='cs-widget-title'>
-            {intl.formatMessage({ id: 'uploadScreenTitle.part1' })}&nbsp;
+            {intl.formatMessage({ id: 'cameraSearch.uploadScreenTitle.part1' })}&nbsp;
             <br className='md:hidden'/>
-            {intl.formatMessage({ id: 'uploadScreenTitle.part2' })}
+            {intl.formatMessage({ id: 'cameraSearch.uploadScreenTitle.part2' })}
           </p>
         )
       }

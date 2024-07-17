@@ -1,0 +1,15 @@
+{
+  "cameraSearch.uploadScreenTitle.part1": "SHOW US WHAT",
+  "cameraSearch.uploadScreenTitle.part2": "YOU'RE LOOKING FOR",
+  "cameraSearch.resultScreenTitle": "HERE'S WHAT WE FOUND",
+  "cameraSearch.dragImageToSearch.part1": "drag an image to",
+  "cameraSearch.dragImageToSearch.part2": "search or",
+  "cameraSearch.dragImageToSearch.part3": "click to browse",
+  "cameraSearch.tapToSearchImage.part1": "tap here to",
+  "cameraSearch.tapToSearchImage.part2": "search an image",
+  "cameraSearch.tapProductGallery.part1": "or tap our trending",
+  "cameraSearch.tapProductGallery.part2": "product gallery below",
+  "cameraSearch.useCamera": "USE CAMERA",
+  "cameraSearch.trending": "Trending:",
+  "cameraSearch.previousViews": "Previous views"
+}

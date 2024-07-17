@@ -284,10 +284,10 @@ const ResultScreen: FC<ResultScreenProps> = ({
 
                 <FileDropzone onImageUpload={onImageUpload} name='upload-icon'>
                   <p className='calls-to-action-text px-3 py-2 leading-6 text-primary'>
-                    {intl.formatMessage({ id: 'dragImageToSearch.part1' })}<br/>
-                    {intl.formatMessage({ id: 'dragImageToSearch.part2' })}
+                    {intl.formatMessage({ id: 'cameraSearch.dragImageToSearch.part1' })}<br/>
+                    {intl.formatMessage({ id: 'cameraSearch.dragImageToSearch.part2' })}
                     <span className='underline'>
-                      &nbsp;{intl.formatMessage({ id: 'dragImageToSearch.part3' })}
+                      &nbsp;{intl.formatMessage({ id: 'cameraSearch.dragImageToSearch.part3' })}
                     </span>
                   </p>
                 </FileDropzone>
@@ -296,7 +296,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
               {searchHistory && searchHistory.length > 1 && (
                 <div>
                   <span className='calls-to-action-text text-primary'>
-                    {intl.formatMessage({ id: 'previousViews' })}
+                    {intl.formatMessage({ id: 'cameraSearch.previousViews' })}
                   </span>
                   <div className='no-scrollbar flex h-full flex-row gap-1 overflow-scroll pt-1' data-pw='cs-previous-views'>
                     {searchHistory
@@ -391,7 +391,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                   {
                     trendingKeywords.length > 0
                     && <p className='calls-to-action-text pr-2 text-primary'>
-                         {intl.formatMessage({ id: 'trending' })}
+                         {intl.formatMessage({ id: 'cameraSearch.trending' })}
                        </p>
                   }
                   <div data-pw='cs-autocomplete-chips' className='flex gap-1'>

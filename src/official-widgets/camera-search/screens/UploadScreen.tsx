@@ -99,17 +99,17 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
                 }
 
                 <p className='calls-to-action-text hidden px-3 py-2 leading-6 text-primary md:block'>
-                  {intl.formatMessage({ id: 'dragImageToSearch.part1' })}<br/>
-                  {intl.formatMessage({ id: 'dragImageToSearch.part2' })}&nbsp;
+                  {intl.formatMessage({ id: 'cameraSearch.dragImageToSearch.part1' })}<br/>
+                  {intl.formatMessage({ id: 'cameraSearch.dragImageToSearch.part2' })}&nbsp;
                   <span className='underline'>
-                    {intl.formatMessage({ id: 'dragImageToSearch.part3' })}
+                    {intl.formatMessage({ id: 'cameraSearch.dragImageToSearch.part3' })}
                   </span>
                 </p>
 
                 <p className='calls-to-action-text pt-3 leading-6 text-primary md:hidden'>
-                  {intl.formatMessage({ id: 'tapToSearchImage.part1' })}
+                  {intl.formatMessage({ id: 'cameraSearch.tapToSearchImage.part1' })}
                   <br className='md:hidden'/>
-                  {intl.formatMessage({ id: 'tapToSearchImage.part2' })}
+                  {intl.formatMessage({ id: 'cameraSearch.tapToSearchImage.part2' })}
                 </p>
               </div>
             </FileDropzone>
@@ -117,9 +117,9 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
 
           <div className='py-5 md:w-2/3 md:border-l-2 md:border-gray-300 md:px-12 md:pt-0'>
             <p className='calls-to-action-text px-14 pb-3 text-center text-primary md:px-0 md:text-left'>
-              {intl.formatMessage({ id: 'tapProductGallery.part1' })}&nbsp;
+              {intl.formatMessage({ id: 'cameraSearch.tapProductGallery.part1' })}&nbsp;
               <br className='md:hidden'/>
-              {intl.formatMessage({ id: 'tapProductGallery.part2' })}
+              {intl.formatMessage({ id: 'cameraSearch.tapProductGallery.part2' })}
             </p>
 
             <div className='grid grid-cols-2 gap-2 px-5 md:gap-4 md:px-0'>
@@ -159,7 +159,7 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
           <div className='pb-5'>
             <FileDropzone onImageUpload={onImageUpload} name='use-camera'>
               <div className='mx-16 mt-3 rounded-full bg-buttonPrimary py-2 text-center font-bold text-buttonPrimary md:hidden'>
-                {intl.formatMessage({ id: 'useCamera' })}
+                {intl.formatMessage({ id: 'cameraSearch.useCamera' })}
               </div>
             </FileDropzone>
           </div>
