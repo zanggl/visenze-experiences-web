@@ -240,7 +240,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
             isClearable
             maxLength={QUERY_MAX_CHARACTER_LENGTH}
             type='filters'
-            placeholder='type here to refine your results'
+            placeholder={intl.formatMessage({ id: 'cameraSearch.searchBarPlaceholder' })}
             value={search}
             onValueChange={(input): void => {
               setSearch(input);
@@ -364,7 +364,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                     isClearable
                     maxLength={QUERY_MAX_CHARACTER_LENGTH}
                     type='filters'
-                    placeholder='type here to refine your results'
+                    placeholder={intl.formatMessage({ id: 'cameraSearch.searchBarPlaceholder' })}
                     value={search}
                     onClick={() => setShowInputSuggest(true)}
                     onBlur={() => setTimeout(() => setShowInputSuggest(false), 100)}

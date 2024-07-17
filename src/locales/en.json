@@ -10,6 +10,10 @@
   "cameraSearch.tapProductGallery.part1": "or tap our trending",
   "cameraSearch.tapProductGallery.part2": "product gallery below",
   "cameraSearch.useCamera": "USE CAMERA",
+  "cameraSearch.searchBarPlaceholder": "Type here to refine your results...",
   "cameraSearch.trending": "Trending:",
-  "cameraSearch.previousViews": "Previous views"
+  "cameraSearch.previousViews": "Previous views",
+  "similarSearch.title": "MORE LIKE THIS",
+  "similarSearch.searchBarPlaceholder": "Type here to refine your results...",
+  "similarSearch.trending": "Trending:"
 }
