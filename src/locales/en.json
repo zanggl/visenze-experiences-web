@@ -15,5 +15,6 @@
   "cameraSearch.previousViews": "Previous views",
   "similarSearch.title": "MORE LIKE THIS",
   "similarSearch.searchBarPlaceholder": "Type here to refine your results...",
-  "similarSearch.trending": "Trending:"
+  "similarSearch.trending": "Trending:",
+  "searchResultsPage.searchBarPlaceholder": "What are you looking for?"
 }
