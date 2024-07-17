@@ -1,6 +1,7 @@
 import type { FC, ReactNode } from 'react';
 import { useContext, useEffect } from 'react';
 import { Card, CardFooter } from '@nextui-org/card';
+import { useIntl } from 'react-intl';
 import FileDropzone from '../components/FileDropzone';
 import type { ScreenType } from '../../../common/types/constants';
 import type { SearchImage } from '../../../common/types/image';
@@ -18,6 +19,7 @@ interface UploadScreenProps {
 
 const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) => {
   const { productSearch, customizations } = useContext(WidgetDataContext);
+  const intl = useIntl();
 
   const onGallerySelect = (index: number): void => {
     // Send Upload Click Sample event when a gallery image is clicked
@@ -82,10 +84,10 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
   }, []);
 
   return (
-    <div className='w-full md:overflow-hidden lg:rounded-3xl'>
+    <div className='w-full md:overflow-hidden'>
       <Header onCloseHandler={onModalClose} />
       <div className='size-full bg-primary'>
-        <div className='flex flex-col md:flex-row'>
+        <div className='flex flex-col pb-5 md:flex-row'>
           <div className='px-1/5 md:w-1/3 md:px-10'>
             <FileDropzone onImageUpload={onImageUpload} name='upload-icon'>
               <div
@@ -97,12 +99,17 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
                 }
 
                 <p className='calls-to-action-text hidden px-3 py-2 leading-6 text-primary md:block'>
-                  drag an image to <br/>
-                  search or <span className='underline'>click to browse</span>
+                  {intl.formatMessage({ id: 'dragImageToSearch.part1' })}<br/>
+                  {intl.formatMessage({ id: 'dragImageToSearch.part2' })}&nbsp;
+                  <span className='underline'>
+                    {intl.formatMessage({ id: 'dragImageToSearch.part3' })}
+                  </span>
                 </p>
 
                 <p className='calls-to-action-text pt-3 leading-6 text-primary md:hidden'>
-                  tap here to <br className='md:hidden'/> search an image
+                  {intl.formatMessage({ id: 'tapToSearchImage.part1' })}
+                  <br className='md:hidden'/>
+                  {intl.formatMessage({ id: 'tapToSearchImage.part2' })}
                 </p>
               </div>
             </FileDropzone>
@@ -110,7 +117,9 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
 
           <div className='py-5 md:w-2/3 md:border-l-2 md:border-gray-300 md:px-12 md:pt-0'>
             <p className='calls-to-action-text px-14 pb-3 text-center text-primary md:px-0 md:text-left'>
-              or tap our trending <br className='md:hidden'/> product gallery below
+              {intl.formatMessage({ id: 'tapProductGallery.part1' })}&nbsp;
+              <br className='md:hidden'/>
+              {intl.formatMessage({ id: 'tapProductGallery.part2' })}
             </p>
 
             <div className='grid grid-cols-2 gap-2 px-5 md:gap-4 md:px-0'>
@@ -150,7 +159,7 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
           <div className='pb-5'>
             <FileDropzone onImageUpload={onImageUpload} name='use-camera'>
               <div className='mx-16 mt-3 rounded-full bg-buttonPrimary py-2 text-center font-bold text-buttonPrimary md:hidden'>
-                USE CAMERA
+                {intl.formatMessage({ id: 'useCamera' })}
               </div>
             </FileDropzone>
           </div>
