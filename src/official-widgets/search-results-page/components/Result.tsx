@@ -82,8 +82,10 @@ const Result: FC<ResultProps> = ({ index, result, onClickMoreLikeThisHandler }) 
 
   return (
     <a className={`size-full ${debugMode ? '' : 'cursor-pointer'}`} ref={targetRef} onClick={debugMode ? undefined : onClick} data-pw={`srp-product-result-card-${index + 1}`}>
-      <div className='relative h-4/5'>
-        <img className='object-fit size-full' src={result.im_url} data-pw={`srp-product-result-card-image-${index + 1}`}/>
+      <div className='relative'>
+        <div className='aspect-[2/3]'>
+          <img className='object-fit size-full' src={result.im_url} data-pw={`srp-product-result-card-image-${index + 1}`}/>
+        </div>
         <Button
           isIconOnly
           size='sm'
@@ -103,7 +105,7 @@ const Result: FC<ResultProps> = ({ index, result, onClickMoreLikeThisHandler }) 
           }
         </Button>
       </div>
-      <div className='h-1/5 pt-2'>
+      <div className='pt-2'>
         <span className='product-card-title line-clamp-1 font-semibold text-primary'>{getProductName()}</span>
         {
           getOriginalPrice()
