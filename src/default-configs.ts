@@ -1,4 +1,4 @@
-import * as English from './locales/en.json';
+import * as English from './common/locales/en.json';
 import type { WidgetConfig } from './common/visenze-core';
 
 const DEFAULT_CONFIGS: WidgetConfig = {
