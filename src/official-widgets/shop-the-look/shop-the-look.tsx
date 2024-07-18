@@ -5,6 +5,7 @@ import type { Settings } from 'react-slick';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 import { Skeleton } from '@nextui-org/skeleton';
+import { useIntl } from 'react-intl';
 import type { WidgetClient, WidgetConfig } from '../../common/visenze-core';
 import { RootContext } from '../../common/components/shadow-wrapper';
 import { WidgetResultContext } from '../../common/types/contexts';
@@ -34,6 +35,7 @@ const ShopTheLook: FC<ShopTheLookProps> = ({ config, productSearch, productId })
   const [objectDots, setObjectDots] = useState<ObjectDot[]>([]);
   const [retryCount, setRetryCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const intl = useIntl();
 
   const {
     productResults,
@@ -133,8 +135,8 @@ const ShopTheLook: FC<ShopTheLookProps> = ({ config, productSearch, productId })
   if (error) {
     return (
       <div className='flex h-60 flex-col items-center justify-center gap-4'>
-        <span className='text-md font-bold'>Sorry, something went wrong</span>
-        <span className='text-sm'>Please refresh to try again</span>
+        <span className='text-md font-bold'>{intl.formatMessage({ id: 'shopTheLook.errorMessage.part1' })}</span>
+        <span className='text-sm'>{intl.formatMessage({ id: 'shopTheLook.errorMessage.part2' })}</span>
       </div>
     );
   }
@@ -143,7 +145,7 @@ const ShopTheLook: FC<ShopTheLookProps> = ({ config, productSearch, productId })
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
         {/* Widget Title */}
-        <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='stl-widget-title'>Shop The Look</div>
+        <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='stl-widget-title'>{intl.formatMessage({ id: 'shopTheLook.title' })}</div>
 
         <div className='items-center justify-center md:flex md:flex-row md:gap-4 lg:gap-0'>
           {/* Reference Image */}

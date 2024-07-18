@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Button } from '@nextui-org/button';
+import { useIntl } from 'react-intl';
 import { Actions, Category, Labels } from '../../common/types/tracking-constants';
 import { WidgetResultContext } from '../../common/types/contexts';
 import useBreakpoint from '../../common/components/hooks/use-breakpoint';
@@ -16,6 +17,7 @@ import CloseIcon from '../../common/icons/CloseIcon';
 import SortOptions from './components/SortOptions';
 import FilterOptions from './components/FilterOptions';
 import type { PriceFilter } from '../../common/types/filter';
+import { getSortTypeIntlId } from '../../common/utils';
 
 export enum ScreenType {
   SORT = 'sort',
@@ -38,6 +40,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
   const [priceFilter, setPriceFilter] = useState<PriceFilter | null>(null);
   const [categorySet, setCategorySet] = useState<Set<string>>(new Set());
   const root = useContext(RootContext);
+  const intl = useIntl();
 
   const {
     productInfo,
@@ -119,7 +122,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
           <div className='flex flex-col border-none p-4 lg:w-3/10 lg:px-10 lg:py-6'>
             {/* Widget Title */}
             <div className='flex items-center'>
-              <div className='widget-title text-primary' data-pw='itg-widget-title'>You may also like</div>
+              <div className='widget-title text-primary' data-pw='itg-widget-title'>{intl.formatMessage({ id: 'iconTriggeredGrid.title' })}</div>
             </div>
 
             {/* Reference Product */}
@@ -141,7 +144,10 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
           <div className='relative flex w-full flex-col bg-primary px-6 pb-4 lg:w-7/10 lg:pt-[6.5%]'>
             <div className='flex items-center pb-4'>
               {/* Sort Type */}
-              <div className='text-lg text-primary'>Sort: {sortType}</div>
+              <div className='text-lg text-primary'>
+                {intl.formatMessage({ id: 'iconTriggeredGrid.sort' })}:&nbsp;
+                {intl.formatMessage({ id: getSortTypeIntlId(sortType) })}
+              </div>
               {/* Sort and Filter buttons */}
               <div className='ml-auto flex gap-2'>
                 <Button
@@ -151,7 +157,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
                   onClick={() => setScreen(ScreenType.SORT)}
                   data-pw='itg-sort-button'
                 >
-                  <span className='calls-to-action-text text-buttonPrimary'>Sort</span>
+                  <span className='calls-to-action-text text-buttonPrimary'>{intl.formatMessage({ id: 'iconTriggeredGrid.sort' })}</span>
                 </Button>
                 <Button
                   className='rounded bg-black bg-buttonPrimary'
@@ -160,7 +166,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
                   onClick={() => setScreen(ScreenType.FILTER)}
                   data-pw='itg-filter-button'
                 >
-                  <span className='calls-to-action-text text-buttonPrimary'>Filter</span>
+                  <span className='calls-to-action-text text-buttonPrimary'>{intl.formatMessage({ id: 'iconTriggeredGrid.filter' })}</span>
                 </Button>
               </div>
             </div>

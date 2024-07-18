@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import { useEffect, useState, useContext, useRef } from 'react';
 import { Skeleton } from '@nextui-org/skeleton';
+import { useIntl } from 'react-intl';
 import type { WidgetClient, WidgetConfig } from '../../common/visenze-core';
 import { RootContext } from '../../common/components/shadow-wrapper';
 import { WidgetResultContext } from '../../common/types/contexts';
@@ -26,6 +27,7 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
   const [objectDots, setObjectDots] = useState<ObjectDot[]>([]);
   const [retryCount, setRetryCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const intl = useIntl();
 
   const {
     productResults,
@@ -86,8 +88,8 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
   if (error) {
     return (
       <div className='flex h-60 flex-col items-center justify-center gap-4'>
-        <span className='text-md font-bold'>Sorry, something went wrong</span>
-        <span className='text-sm'>Please refresh to try again</span>
+        <span className='text-md font-bold'>{intl.formatMessage({ id: 'shoppableLookbook.errorMessage.part1' })}</span>
+        <span className='text-sm'>{intl.formatMessage({ id: 'shoppableLookbook.errorMessage.part2' })}</span>
       </div>
     );
   }
@@ -97,7 +99,7 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
         <div className='bg-primary'>
           {/* Widget Title */}
-          <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='sl-widget-title'>You may also like</div>
+          <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='sl-widget-title'>{intl.formatMessage({ id: 'shoppableLookbook.title' })}</div>
 
           {/* Reference Image and Product Card Grid container */}
           <div className='relative flex flex-col gap-y-4 md:flex-row'>
