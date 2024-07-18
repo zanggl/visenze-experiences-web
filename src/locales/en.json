@@ -16,5 +16,9 @@
   "similarSearch.title": "MORE LIKE THIS",
   "similarSearch.searchBarPlaceholder": "Type here to refine your results...",
   "similarSearch.trending": "Trending:",
-  "searchResultsPage.searchBarPlaceholder": "What are you looking for?"
+  "searchResultsPage.searchBarPlaceholder": "What are you looking for?",
+  "recommendMe.title": "Personalize your recommendations",
+  "recommendMe.searchBarButton": "Recommend Me",
+  "recommendMe.searchBarPlaceholder": "a bag to match this top",
+  "recommendMe.resultCarouselTitle": "Results for"
 }
