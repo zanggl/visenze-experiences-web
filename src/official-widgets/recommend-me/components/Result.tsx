@@ -80,7 +80,7 @@ const Result: FC<ResultProps> = ({ index, result }) => {
   return (
     <a className={`${debugMode ? '' : 'cursor-pointer'}`} ref={targetRef} onClick={debugMode ? undefined : onClick} data-pw={`rm-product-result-card-${index + 1}`}>
       <div className='h-52 w-36 md:h-72 md:w-48 lg:h-96 lg:w-64'>
-        <img className='object-fit size-full' src={result.im_url}/>
+        <img className='size-full object-cover' src={result.im_url}/>
       </div>
       <div className='flex w-36 flex-col pt-2 md:w-48 lg:w-64'>
         <span className='product-card-title truncate text-primary'>{getProductName()}</span>

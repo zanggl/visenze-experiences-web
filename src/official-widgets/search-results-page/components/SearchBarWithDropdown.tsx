@@ -3,6 +3,7 @@ import { useRef } from 'react';
 import { Listbox, ListboxSection, ListboxItem } from '@nextui-org/listbox';
 import { Input } from '@nextui-org/input';
 import { cn } from '@nextui-org/theme';
+import { useIntl } from 'react-intl';
 import MagnifyingGlassIcon from '../../../common/icons/MagnifyingGlassIcon';
 import type { ProcessedProduct } from '../../../common/types/product';
 import { QUERY_MAX_CHARACTER_LENGTH } from '../../../common/constants';
@@ -24,6 +25,7 @@ interface SearchBarWithDropdownProps {
 const SearchBarWithDropdown: FC<SearchBarWithDropdownProps> = ({ searchBarValue, setSearchBarValue, showDropdown, setShowDropdown, autocompleteResults,
                                          handleMultisearchWithQuery, handleMultisearchWithProduct }): ReactElement => {
   const searchBarInputRef = useRef<HTMLInputElement>(null);
+  const intl = useIntl();
 
   return (
     <div className='relative flex w-full flex-col items-center'>
@@ -36,14 +38,13 @@ const SearchBarWithDropdown: FC<SearchBarWithDropdownProps> = ({ searchBarValue,
           inputWrapper: 'rounded-md bg-white w-full border border-gray-200',
           input: 'text-mobile-searchBarText md:text-tablet-searchBarText lg:text-desktop-searchBarText font-mobile-searchBarText md:font-tablet-searchBarText '
             + 'lg:font-desktop-searchBarText',
-          clearButton: 'text-[18px]',
         }}
         autoCapitalize='off'
         autoComplete='off'
         size='lg'
         isClearable
         maxLength={QUERY_MAX_CHARACTER_LENGTH}
-        placeholder='What are you looking for?'
+        placeholder={intl.formatMessage({ id: 'searchResultsPage.searchBarPlaceholder' })}
         onClick={() => setShowDropdown(true)}
         onBlur={() => setTimeout(() => setShowDropdown(false), 100)}
         onKeyDown={(e) => {

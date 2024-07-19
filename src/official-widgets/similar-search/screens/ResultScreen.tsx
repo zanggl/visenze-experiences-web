@@ -6,6 +6,7 @@ import { Input } from '@nextui-org/input';
 import { Chip } from '@nextui-org/chip';
 import { Listbox, ListboxItem } from '@nextui-org/listbox';
 import { cn } from '@nextui-org/theme';
+import { useIntl } from 'react-intl';
 import { WidgetDataContext, WidgetResultContext } from '../../../common/types/contexts';
 import type { ProcessedProduct } from '../../../common/types/product';
 import type { SearchImage } from '../../../common/types/image';
@@ -56,6 +57,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
   const [autocompleteSuggestionsHeight, setAutocompleteSuggestionsHeight] = useState(0);
   const resultsRef = useRef<HTMLDivElement>(null);
   const breakpoint = useBreakpoint();
+  const intl = useIntl();
 
   const carouselScrollOffset = 400;
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -257,12 +259,11 @@ const ResultScreen: FC<ResultScreenProps> = ({
           <Input
             classNames={{
               input: '!text-mobile-searchBarText !font-mobile-searchBarText',
-              clearButton: 'text-[18px]',
             }}
             isClearable
             maxLength={QUERY_MAX_CHARACTER_LENGTH}
             type='filters'
-            placeholder='type here to refine your results'
+            placeholder={intl.formatMessage({ id: 'similarSearch.searchBarPlaceholder' })}
             value={search}
             onValueChange={(input): void => {
               setSearch(input);
@@ -380,12 +381,11 @@ const ResultScreen: FC<ResultScreenProps> = ({
                   <Input
                     classNames={{
                       input: 'text-tablet-searchBarText lg:text-desktop-searchBarText font-tablet-searchBarText lg:font-desktop-searchBarText',
-                      clearButton: 'text-[18px]',
                     }}
                     isClearable
                     maxLength={QUERY_MAX_CHARACTER_LENGTH}
                     type='filters'
-                    placeholder='type here to refine your results'
+                    placeholder={intl.formatMessage({ id: 'similarSearch.searchBarPlaceholder' })}
                     value={search}
                     onClick={() => setShowInputSuggest(true)}
                     onBlur={() => setTimeout(() => setShowInputSuggest(false), 100)}
@@ -411,7 +411,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                 <div className='relative z-20 flex min-h-10 items-center bg-primary px-3 pb-1 pt-2'>
                   {
                     trendingKeywords.length > 0
-                    && <p className='calls-to-action-text pr-2'>Trending:</p>
+                    && <p className='calls-to-action-text pr-2'>{intl.formatMessage({ id: 'similarSearch.trending' })}</p>
                   }
                   <div data-pw='ss-autocomplete-chips' className='flex gap-1'>
                     {getAutocompleteChips()}

@@ -1,6 +1,7 @@
 import type { Product, ProductSearchResponseSuccess, ProductType } from 'visearch-javascript-sdk';
 import type { CroppedBox } from './types/box';
 import type { ProcessedProduct } from './types/product';
+import { SortType } from './types/constants';
 
 export const getFlattenProduct = (result: Product): ProcessedProduct => {
   return {
@@ -74,3 +75,15 @@ export const parseToProductTypes = (res: ProductSearchResponseSuccess): ProductT
   return [];
 };
 
+export const getSortTypeIntlId = (sortType: SortType): string => {
+  switch (sortType) {
+    case SortType.RELEVANCE:
+      return 'sortType.relevance';
+    case SortType.PRICE_HTL:
+      return 'sortType.highToLowPrice';
+    case SortType.PRICE_LTH:
+      return 'sortType.lowToHighPrice';
+    default:
+      return '';
+  }
+};

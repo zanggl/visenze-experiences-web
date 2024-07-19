@@ -2,6 +2,7 @@ import { memo, useContext, useEffect, useState } from 'react';
 import { Button } from '@nextui-org/button';
 import { v4 as uuid } from 'uuid';
 import { Input } from '@nextui-org/input';
+import { useIntl } from 'react-intl';
 import type { WidgetClient, WidgetConfig } from '../../common/visenze-core';
 import { RootContext } from '../../common/components/shadow-wrapper';
 import { WidgetResultContext } from '../../common/types/contexts';
@@ -22,6 +23,7 @@ const RecommendMe = memo((props: {
   const [carouselHistory, setCarouselHistory] = useState<any[]>([]);
   const [metadata, setMetadata] = useState<Record<string, any>>({});
   const root = useContext(RootContext);
+  const intl = useIntl();
 
   const {
     productResults,
@@ -65,7 +67,7 @@ const RecommendMe = memo((props: {
   return (
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
-        <div className='widget-title py-4 text-primary' data-pw='rm-widget-title'>Personalize your recommendations</div>
+        <div className='widget-title py-4 text-primary' data-pw='rm-widget-title'>{intl.formatMessage({ id: 'recommendMe.title' })}</div>
 
         {/* Search input bar with Recommend me button */}
         <div className='flex'>
@@ -79,14 +81,13 @@ const RecommendMe = memo((props: {
             }}
             data-pw='rm-recommend-me-button'
           >
-            <span className='text-buttonPrimary'>Recommend me</span>
+            <span className='text-buttonPrimary'>{intl.formatMessage({ id: 'recommendMe.searchBarButton' })}</span>
           </Button>
           <Input
             classNames={{
               inputWrapper: 'border-l-0 rounded-r',
               input: 'text-mobile-searchBarText md:text-tablet-searchBarText lg:text-desktop-searchBarText font-mobile-searchBarText md:font-tablet-searchBarText '
                 + 'lg:font-desktop-searchBarText',
-              clearButton: 'text-[18px]',
             }}
             disabled={isStreaming}
             isClearable
@@ -95,7 +96,7 @@ const RecommendMe = memo((props: {
             variant='bordered'
             radius='none'
             value={searchBarValue}
-            placeholder='a bag to match this top'
+            placeholder={intl.formatMessage({ id: 'recommendMe.searchBarPlaceholder' })}
             onValueChange={(value) => {
               setSearchBarValue(value);
             }}

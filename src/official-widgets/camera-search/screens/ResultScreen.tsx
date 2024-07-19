@@ -1,4 +1,4 @@
-import type { FC, ReactElement, ReactNode } from 'react';
+import type { FC, ReactElement } from 'react';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Button } from '@nextui-org/button';
 import { Chip } from '@nextui-org/chip';
@@ -6,6 +6,7 @@ import { Input } from '@nextui-org/input';
 import { Listbox, ListboxItem } from '@nextui-org/listbox';
 import { useSwipeable } from 'react-swipeable';
 import { cn } from '@nextui-org/theme';
+import { useIntl } from 'react-intl';
 import type { ProcessedProduct } from '../../../common/types/product';
 import { WidgetDataContext, WidgetResultContext } from '../../../common/types/contexts';
 import FileDropzone from '../components/FileDropzone';
@@ -66,6 +67,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
   const [autocompleteSuggestionsHeight, setAutocompleteSuggestionsHeight] = useState(0);
   const resultsRef = useRef<HTMLDivElement>(null);
   const breakpoint = useBreakpoint();
+  const intl = useIntl();
 
   const autocompleteSuggestionsStyle = {
     height: `${showInputSuggest ? autocompleteSuggestionsHeight : 0}px`,
@@ -131,15 +133,6 @@ const ResultScreen: FC<ResultScreenProps> = ({
     setSelectedChip('');
     setSearchHistory([]);
     setScreen(ScreenType.UPLOAD);
-  };
-
-  const fillEmptyGrids = (): ReactNode | null => {
-    const numColumnGrids = 3;
-    const emptyGrids = numColumnGrids - (productResults.length % numColumnGrids);
-    if (emptyGrids === 0) return null;
-
-    const arr = Array.from({ length: emptyGrids }, () => '');
-    return arr.map((_, index) => <div key={index} className='bg-primary'></div>);
   };
 
   const onClickMoreLikeThisHandler = (queryImage: SearchImage): void => {
@@ -242,12 +235,11 @@ const ResultScreen: FC<ResultScreenProps> = ({
           <Input
             classNames={{
               input: '!text-mobile-searchBarText !font-mobile-searchBarText',
-              clearButton: 'text-[18px]',
             }}
             isClearable
             maxLength={QUERY_MAX_CHARACTER_LENGTH}
             type='filters'
-            placeholder='type here to refine your results'
+            placeholder={intl.formatMessage({ id: 'cameraSearch.searchBarPlaceholder' })}
             value={search}
             onValueChange={(input): void => {
               setSearch(input);
@@ -285,29 +277,33 @@ const ResultScreen: FC<ResultScreenProps> = ({
       <div className='absolute bottom-8 left-0 top-16 w-full overflow-hidden bg-primary'>
         <div className='flex h-full flex-row'>
           <div className='relative left-0 row-span-1 h-full w-1/3 border-r-2 border-gray-300 px-8'>
-            <div className='flex h-full flex-col px-2'>
+            <div className='flex h-9/10 flex-col justify-between px-2'>
               <div className='flex w-full flex-col items-center rounded-3xl border border-black pt-2 text-center'>
                 <HotspotContainer className='w-3/5' referenceImage={getReferenceImage()}/>
 
                 <FileDropzone onImageUpload={onImageUpload} name='upload-icon'>
-                  <p className='px-3 py-2 text-medium leading-6'>
-                    <span className='calls-to-action-text text-primary'>drag an image to</span> <br/>
-                    <span className='calls-to-action-text text-primary'>search or </span>
-                    <span className='calls-to-action-text text-primary underline'>click to browse</span>
+                  <p className='calls-to-action-text px-3 py-2 leading-6 text-primary'>
+                    {intl.formatMessage({ id: 'cameraSearch.dragImageToSearch.part1' })}<br/>
+                    {intl.formatMessage({ id: 'cameraSearch.dragImageToSearch.part2' })}
+                    <span className='underline'>
+                      &nbsp;{intl.formatMessage({ id: 'cameraSearch.dragImageToSearch.part3' })}
+                    </span>
                   </p>
                 </FileDropzone>
               </div>
 
-              {searchHistory && searchHistory?.length > 1 && (
-                <div className='pt-4'>
-                  <span className='calls-to-action-text text-primary'>Previous views</span>
+              {searchHistory && searchHistory.length > 1 && (
+                <div>
+                  <span className='calls-to-action-text text-primary'>
+                    {intl.formatMessage({ id: 'cameraSearch.previousViews' })}
+                  </span>
                   <div className='no-scrollbar flex h-full flex-row gap-1 overflow-scroll pt-1' data-pw='cs-previous-views'>
                     {searchHistory
                       ?.slice(1)
                       .map((searchImage, index) => (
                         <img
                           key={`image-history-${index}`}
-                          className='w-1/3 cursor-pointer rounded-lg object-cover object-center'
+                          className='aspect-[4/5] w-1/3 cursor-pointer rounded-lg object-cover object-center'
                           src={getFile(searchImage)}
                           onClick={() => onClickMoreLikeThisHandler(searchImage)}
                           data-pw={`cs-previous-views-image-${index + 1}`}
@@ -321,9 +317,9 @@ const ResultScreen: FC<ResultScreenProps> = ({
 
           <div className='flex w-2/3 flex-col'>
             <div className='h-4/5 overflow-y-auto'>
-              <div className='mx-2 grid grid-cols-3' data-pw='cs-product-result-grid'>
+              <div className='grid grid-cols-3 gap-x-2 gap-y-3 px-2 pb-3' data-pw='cs-product-result-grid'>
                 {productResults.map((result: ProcessedProduct, index: number) => (
-                  <div key={result.product_id} className={cn('pt-3 pb-2 px-2 bg-primary')}>
+                  <div key={result.product_id} className={cn('bg-primary')}>
                     <Result
                       onMoreLikeThis={onMoreLikeThis}
                       clearSearch={clearSearch}
@@ -332,7 +328,6 @@ const ResultScreen: FC<ResultScreenProps> = ({
                     />
                   </div>
                 ))}
-                {fillEmptyGrids()}
               </div>
             </div>
 
@@ -363,12 +358,11 @@ const ResultScreen: FC<ResultScreenProps> = ({
                   <Input
                     classNames={{
                       input: 'text-tablet-searchBarText lg:text-desktop-searchBarText font-tablet-searchBarText lg:font-desktop-searchBarText',
-                      clearButton: 'text-[18px]',
                     }}
                     isClearable
                     maxLength={QUERY_MAX_CHARACTER_LENGTH}
                     type='filters'
-                    placeholder='type here to refine your results'
+                    placeholder={intl.formatMessage({ id: 'cameraSearch.searchBarPlaceholder' })}
                     value={search}
                     onClick={() => setShowInputSuggest(true)}
                     onBlur={() => setTimeout(() => setShowInputSuggest(false), 100)}
@@ -394,7 +388,9 @@ const ResultScreen: FC<ResultScreenProps> = ({
                 <div className='relative z-20 flex min-h-10 items-center bg-primary px-5 pb-3 pt-2'>
                   {
                     trendingKeywords.length > 0
-                    && <p className='calls-to-action-text pr-2 text-primary'>Trending:</p>
+                    && <p className='calls-to-action-text pr-2 text-primary'>
+                         {intl.formatMessage({ id: 'cameraSearch.trending' })}
+                       </p>
                   }
                   <div data-pw='cs-autocomplete-chips' className='flex gap-1'>
                     {getAutocompleteChips()}
