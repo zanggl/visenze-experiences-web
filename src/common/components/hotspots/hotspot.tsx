@@ -9,7 +9,7 @@ interface HotspotProps {
   widthScale: number;
   box: CroppedBox;
   isSelected: boolean;
-  handleInnerDotClick: (i: number) => void;
+  handleHotspotClick: (i: number) => void;
 }
 
 const Hotspot: FC<HotspotProps> = ({
@@ -18,7 +18,7 @@ const Hotspot: FC<HotspotProps> = ({
   heightScale,
   box,
   isSelected,
-  handleInnerDotClick,
+  handleHotspotClick,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const boxStyle = {
@@ -49,13 +49,13 @@ const Hotspot: FC<HotspotProps> = ({
         : 'md:w-3 md:h-3 w-4 h-4 bg-white hover:bg-opacity-100 bg-opacity-50 border-2 border-white rounded-3xl '
         + 'transition-none flex justify-center items-center absolute z-10 cursor-pointer')}
       style={isSelected ? boxStyle : dotStyle}
-      onClick={() => handleInnerDotClick(index)}
+      onClick={() => handleHotspotClick(index)}
       onKeyDown={(event): void => {
         if (!isSelected && event.key === 'Enter') {
-          handleInnerDotClick(index);
+          handleHotspotClick(index);
         }
       }}
-      data-pw='hotspot'
+      data-pw={`hotspot-${index + 1}`}
     ></div>
   );
 };

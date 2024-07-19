@@ -348,7 +348,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
                   }}>
                   {inputSuggestions.map((keyword, index) => (
                     <ListboxItem key={keyword} className={cn(keyword === search ? 'bg-gray' : '', 'pl-8')}>
-                      <span className='text-base' data-pw={`autocomplete-suggestion-${index + 1}`}>{keyword}</span>
+                      <span className='text-base' data-pw={`cs-autocomplete-suggestion-${index + 1}`}>{keyword}</span>
                     </ListboxItem>
                   ))}
                 </Listbox>

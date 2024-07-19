@@ -1,8 +1,7 @@
 import type { ReactElement } from 'react';
 import { useEffect, memo, useCallback, useContext, useState } from 'react';
 import { Actions, Category, Labels } from '../../common/types/tracking-constants';
-import type { CroppingContextValue } from '../../common/types/contexts';
-import { CroppingContext, WidgetResultContext } from '../../common/types/contexts';
+import { WidgetResultContext } from '../../common/types/contexts';
 import type { SearchImage } from '../../common/types/image';
 import type { BoxData } from '../../common/types/product';
 import useBreakpoint from '../../common/components/hooks/use-breakpoint';
@@ -17,6 +16,7 @@ import useImageMultisearch from '../../common/components/hooks/use-image-multise
 import CameraIcon from './icons/CameraIcon';
 import LoadingIcon from './icons/LoadingIcon';
 import { QUERY_MAX_CHARACTER_LENGTH } from '../../common/constants';
+import CroppingProvider from '../../common/components/providers/CroppingProvider';
 
 const CameraSearch = memo((props: {
   configs: WidgetConfig;
@@ -50,13 +50,6 @@ const CameraSearch = memo((props: {
     config: configs,
     productSearch,
   });
-
-  const cropContextValue: CroppingContextValue = {
-    boxData,
-    setBoxData: (data: BoxData) => {
-      setBoxData(data);
-    },
-  };
 
   const resetData = (): void => {
     setSearchHistory([]);
@@ -255,7 +248,7 @@ const CameraSearch = memo((props: {
         image: resizedImage ?? image,
         metadata,
       }}>
-      <CroppingContext.Provider value={cropContextValue}>
+      <CroppingProvider boxData={boxData} setBoxData={setBoxData}>
         {configs.customizations?.icons.cameraButton
           ? <img src={configs.customizations.icons.cameraButton} onClick={onCameraButtonClick} className='size-7 cursor-pointer'></img>
           : <CameraIcon onClickHandler={onCameraButtonClick} />
@@ -263,7 +256,7 @@ const CameraSearch = memo((props: {
         <ViSenzeModal open={dialogVisible} layout={breakpoint} onClose={onModalClose}>
           {getScreen()}
         </ViSenzeModal>
-      </CroppingContext.Provider>
+      </CroppingProvider>
     </WidgetResultContext.Provider>
   );
 });

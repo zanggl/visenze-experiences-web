@@ -27,6 +27,8 @@ export interface WidgetResultContextValue {
 }
 
 export interface CroppingContextValue {
+  selectedHotspot: number;
+  setSelectedHotspot: (selectedHotspot: number) => void;
   boxData?: BoxData;
   setBoxData?: (data: BoxData) => void;
 }
@@ -51,5 +53,8 @@ export const WidgetResultContext = createContext<WidgetResultContextValue>({
   productResults: [],
   metadata: {},
 });
-export const CroppingContext = createContext<CroppingContextValue>({});
+export const CroppingContext = createContext<CroppingContextValue>({
+  selectedHotspot: -1,
+  setSelectedHotspot: () => {},
+});
 export const WidgetFilterContext = createContext<FilterContextValue | undefined>(undefined);

@@ -8,20 +8,25 @@ import Hotspot from './hotspot';
 
 interface HotspotContainerProps {
   referenceImage: string;
+  referenceImageClassName?: string;
   className?: string;
+  noSelectedHotspot?: boolean;
+  handleBoxClick?: () => void;
 }
 
 const HotspotContainer: FC<HotspotContainerProps> = ({
   referenceImage,
+  referenceImageClassName,
   className,
+  noSelectedHotspot,
+  handleBoxClick,
 }) => {
   const { productTypes = [] } = useContext(WidgetResultContext);
-  const croppingContext = useContext(CroppingContext);
+  const { selectedHotspot, setSelectedHotspot, boxData, setBoxData } = useContext(CroppingContext);
   const [imageHeight, setImageHeight] = useState(0);
   const [imageWidth, setImageWidth] = useState(0);
   const [heightScale, setHeightScale] = useState(1);
   const [widthScale, setWidthScale] = useState(1);
-  const [selectedHotspot, setSelectedHotspot] = useState(-1);
   const [croppedBoxes, setCroppedBoxes] = useState<CroppedBox[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const boxRef = useRef<HTMLDivElement>(null);
@@ -38,8 +43,9 @@ const HotspotContainer: FC<HotspotContainerProps> = ({
       };
     });
     setCroppedBoxes(boxes);
+    if (noSelectedHotspot) return;
 
-    const croppedBox = croppingContext.boxData?.box;
+    const croppedBox = boxData?.box;
     if (croppedBox) {
       const index = boxes.findIndex((box) => isSameBox(box, croppedBox));
       if (index !== -1) setSelectedHotspot(index);
@@ -48,14 +54,13 @@ const HotspotContainer: FC<HotspotContainerProps> = ({
     }
   };
 
-  const handleInnerDotClick = (index: number): void => {
+  const handleHotspotClick = (index: number): void => {
     setSelectedHotspot(index);
-    if (croppingContext.setBoxData) {
-      croppingContext.setBoxData({
-        box: croppedBoxes[index],
-        index,
-      });
-    }
+    setBoxData?.({
+      box: croppedBoxes[index],
+      index,
+    });
+    handleBoxClick?.();
   };
 
   const onLoad = (): void => {
@@ -89,7 +94,7 @@ const HotspotContainer: FC<HotspotContainerProps> = ({
         <div className='relative size-full text-center' ref={boxRef}>
           <>
             <img
-              className='object-cover object-center lg:h-full'
+              className={cn('object-cover size-full', referenceImageClassName)}
               ref={imageRef}
               src={referenceImage}
               onLoad={() => setTimeout(() => onLoad(), 250)} // Delay needed to get correct image width and height for calculation in onLoad
@@ -109,7 +114,7 @@ const HotspotContainer: FC<HotspotContainerProps> = ({
                   heightScale={heightScale}
                   widthScale={widthScale}
                   isSelected={selectedHotspot === index}
-                  handleInnerDotClick={handleInnerDotClick}
+                  handleHotspotClick={handleHotspotClick}
                 />
               ))}
             </div>

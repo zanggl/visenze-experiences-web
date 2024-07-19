@@ -1,6 +1,7 @@
 import type { FC, ReactElement } from 'react';
 import { useContext, useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
+import { cn } from '@nextui-org/theme';
 import ShadowWrapper, { RootContext } from '../shadow-wrapper';
 import Portal from '../portal';
 import './modal.scss';
@@ -10,9 +11,10 @@ interface ModalProps {
   onClose: () => void;
   layout: 'desktop' | 'tablet' | 'mobile' | 'nested_mobile';
   children: ReactElement | ReactElement[];
+  className?: string;
 }
 
-const Modal: FC<ModalProps> = ({ open, layout, children, onClose }) => {
+const Modal: FC<ModalProps> = ({ open, layout, children, onClose, className }) => {
   const root = useContext(RootContext);
   let timeout;
   switch (layout) {
@@ -46,7 +48,7 @@ const Modal: FC<ModalProps> = ({ open, layout, children, onClose }) => {
       closeTimeoutMS={timeout}
       parentSelector={(): HTMLElement => root}
       isOpen={open}
-      className={`vi_modal_${layout}`}
+      className={cn(`vi_modal_${layout}`, className)}
       overlayClassName='vi_modal_overlay'
       onRequestClose={onClose}
       appElement={document.body}>
@@ -59,7 +61,8 @@ interface VisenzeModalProps {
   open: boolean;
   onClose: () => void;
   layout: 'desktop' | 'tablet' | 'mobile' | 'nested_mobile';
-  children: JSX.Element | JSX.Element[];
+  children: ReactElement | ReactElement[];
+  className?: string;
 }
 
 const ViSenzeModal: FC<VisenzeModalProps> = (props) => (
