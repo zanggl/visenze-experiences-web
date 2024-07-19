@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import { useEffect, useState, useContext } from 'react';
 import { Button } from '@nextui-org/button';
 import { Spinner } from '@nextui-org/spinner';
+import { useIntl } from 'react-intl';
 import type { WidgetClient, WidgetConfig } from '../../common/visenze-core';
 import { RootContext } from '../../common/components/shadow-wrapper';
 import {
@@ -38,6 +39,7 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [page, setPage] = useState(1);
   const { appSettings } = useContext(WidgetDataContext);
+  const intl = useIntl();
 
   const {
     objects,
@@ -105,8 +107,8 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
   if (error) {
     return (
       <div className='flex h-60 flex-col items-center justify-center gap-4'>
-        <span className='text-md font-bold'>Sorry, something went wrong</span>
-        <span className='text-sm'>Please refresh to try again</span>
+        <span className='text-md font-bold'>{intl.formatMessage({ id: 'shoppableInstagramFeed.errorMessage.part1' })}</span>
+        <span className='text-sm'>{intl.formatMessage({ id: 'shoppableInstagramFeed.errorMessage.part2' })}</span>
       </div>
     );
   }

@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import { memo, useContext, useMemo } from 'react';
 import { Button } from '@nextui-org/button';
 import type { ObjectProductResponse } from 'visearch-javascript-sdk';
+import { useIntl } from 'react-intl';
 import ViSenzeModal from '../../../common/components/modal/visenze-modal';
 import { CroppingContext, WidgetResultContext } from '../../../common/types/contexts';
 import { getFlattenProducts } from '../../../common/utils';
@@ -28,6 +29,7 @@ interface HotspotRecommendationsProps {
 const HotspotRecommendations: FC<HotspotRecommendationsProps> = ({ objects, openDrawer, setOpenDrawer, activeImageUrl }) => {
   const { productTypes } = useContext(WidgetResultContext);
   const { selectedHotspot, setSelectedHotspot } = useContext(CroppingContext) ?? {};
+  const intl = useIntl();
 
   const closeDrawerHandler = (): void => {
     setOpenDrawer(false);
@@ -56,7 +58,7 @@ const HotspotRecommendations: FC<HotspotRecommendationsProps> = ({ objects, open
         </Button>
 
         {/* Image Crop Thumbnails */}
-        <span className='calls-to-action-text text-center font-bold text-primary md:pt-3'>In this photo</span>
+        <span className='calls-to-action-text text-center font-bold text-primary md:pt-3'>{intl.formatMessage({ id: 'shoppableInstagramFeed.hotspotRecommendationsTitle' })}</span>
         <div className='flex justify-center gap-x-3 py-3'>
           {
             productTypes?.map((productType, index) => (
@@ -84,7 +86,7 @@ const HotspotRecommendations: FC<HotspotRecommendationsProps> = ({ objects, open
         {/* No Results Message */}
         {
           results.length === 0
-          && <div className='flex size-full items-center justify-center'>There are no results for this hotspot</div>
+          && <div className='flex size-full items-center justify-center'>{intl.formatMessage({ id: 'shoppableInstagramFeed.noResults' })}</div>
         }
       </div>
     </ViSenzeModal>

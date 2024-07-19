@@ -48,6 +48,10 @@
   "iconTriggeredGrid.minPriceFilterInputError": "Min price must be less than max price",
   "iconTriggeredGrid.maxPriceFilterInputError": "Max price must be more than min price",
   "iconTriggeredGrid.categoryFilterTitle": "Category",
+  "shoppableInstagramFeed.errorMessage.part1": "Sorry, something went wrong",
+  "shoppableInstagramFeed.errorMessage.part2": "Please refresh to try again",
+  "shoppableInstagramFeed.hotspotRecommendationsTitle": "In this photo",
+  "shoppableInstagramFeed.noResults": "There are no results for this hotspot",
   "sortType.relevance": "Relevance",
   "sortType.highToLowPrice": "High to low (Price)",
   "sortType.lowToHighPrice": "Low to high (Price)"
