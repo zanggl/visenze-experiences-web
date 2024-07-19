@@ -5,6 +5,7 @@ import { Input } from '@nextui-org/input';
 import { Accordion, AccordionItem } from '@nextui-org/accordion';
 import { Checkbox } from '@nextui-org/checkbox';
 import { cn } from '@nextui-org/theme';
+import { useIntl } from 'react-intl';
 import type { ScreenType } from '../icon-triggered-grid';
 import type { ProcessedProduct } from '../../../common/types/product';
 import LeftChevronIcon from '../../../common/icons/LeftChevronIcon';
@@ -37,6 +38,7 @@ const FilterOptions: FC<FilterOptionsProps> = ({
   const [selectedCategories, setSelectedCategories] = useState<Set<string>>(categoryFilter);
   const [minPrice, setMinPrice] = useState(priceFilter?.minPrice?.toString());
   const [maxPrice, setMaxPrice] = useState(priceFilter?.maxPrice?.toString());
+  const intl = useIntl();
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setSelectedCategories((prev) => {
@@ -70,7 +72,7 @@ const FilterOptions: FC<FilterOptionsProps> = ({
 
   return (
     <div className={cn('bg-primary', className)}>
-      <div className='primary-text py-3 text-center text-lg lg:py-0 lg:text-start'>Filter</div>
+      <div className='primary-text py-3 text-center text-lg lg:py-0 lg:text-start'>{intl.formatMessage({ id: 'iconTriggeredGrid.filter' })}</div>
       <div className='flex h-full flex-col gap-2 overflow-y-auto border-1'>
         <Accordion className='divide-y-1 px-0'>
           {/* Price Filter */}
@@ -78,7 +80,7 @@ const FilterOptions: FC<FilterOptionsProps> = ({
             className='cursor-pointer px-4'
             classNames={{ content: 'py-0 flex justify-center' }}
             key='price'
-            title='Price'
+            title={intl.formatMessage({ id: 'iconTriggeredGrid.priceFilterTitle' })}
             indicator={<LeftChevronIcon className='size-4'/>}
             data-pw='itg-price-filter'
           >
@@ -86,32 +88,32 @@ const FilterOptions: FC<FilterOptionsProps> = ({
               <Input
                 className='w-1/2'
                 variant='flat'
-                label='Min price'
+                label={intl.formatMessage({ id: 'iconTriggeredGrid.minPriceFilterInputLabel' })}
                 size='md'
-                placeholder='Enter minimum price'
+                placeholder={intl.formatMessage({ id: 'iconTriggeredGrid.minPriceFilterInputPlaceholder' })}
                 onInput={handlePriceInputChange}
                 value={minPrice}
                 min={0}
                 onValueChange={setMinPrice}
                 labelPlacement='outside'
                 isInvalid={isPriceInvalid}
-                errorMessage={'Min price must be less than max price'}
+                errorMessage={intl.formatMessage({ id: 'iconTriggeredGrid.minPriceFilterInputError' })}
                 startContent={<span className='text-small text-default-400'>$</span>}
                 data-pw='itg-min-price-filter'
               />
               <Input
                 className='w-1/2'
                 variant='flat'
-                label='Max price'
+                label={intl.formatMessage({ id: 'iconTriggeredGrid.maxPriceFilterInputLabel' })}
                 size='md'
-                placeholder='Enter maximum price'
+                placeholder={intl.formatMessage({ id: 'iconTriggeredGrid.maxPriceFilterInputPlaceholder' })}
                 onInput={handlePriceInputChange}
                 value={maxPrice}
                 min={0}
                 onValueChange={setMaxPrice}
                 labelPlacement='outside'
                 isInvalid={isPriceInvalid}
-                errorMessage={'Max price must be more than min price'}
+                errorMessage={intl.formatMessage({ id: 'iconTriggeredGrid.maxPriceFilterInputError' })}
                 startContent={<span className='text-small text-default-400'>$</span>}
                 data-pw='itg-max-price-filter'
               />
@@ -123,7 +125,7 @@ const FilterOptions: FC<FilterOptionsProps> = ({
             className='cursor-pointer px-4'
             classNames={{ content: 'py-0' }}
             key='category'
-            title='Category'
+            title={intl.formatMessage({ id: 'iconTriggeredGrid.categoryFilterTitle' })}
             indicator={<LeftChevronIcon className='size-4'/>}
             data-pw='itg-category-filter'
           >
@@ -148,7 +150,7 @@ const FilterOptions: FC<FilterOptionsProps> = ({
       {/* Cancel & Apply buttons */}
       <div className='flex justify-around py-2 lg:ml-auto lg:justify-normal lg:gap-4 lg:py-0'>
         <Button className='rounded border bg-white px-14 text-black' radius='none' onClick={() => setScreen(null)} data-pw='itg-cancel-filter-button'>
-          Cancel
+          {intl.formatMessage({ id: 'iconTriggeredGrid.cancel' })}
         </Button>
         <Button className='rounded border bg-buttonPrimary px-14 text-white' radius='none' data-pw='itg-apply-filter-button' onClick={() => {
           if (!isPriceInvalid) {
@@ -158,7 +160,9 @@ const FilterOptions: FC<FilterOptionsProps> = ({
           setScreen(null);
         }}
         >
-          <span className='text-buttonPrimary'>Apply</span>
+          <span className='text-buttonPrimary'>
+            {intl.formatMessage({ id: 'iconTriggeredGrid.apply' })}
+          </span>
         </Button>
       </div>
     </div>

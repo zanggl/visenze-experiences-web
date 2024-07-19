@@ -57,7 +57,7 @@ const ResultsPage: FC<ResultsPageProps> = ({ results, autocompleteResults, handl
     <div className='flex h-[90vh] w-full flex-col divide-y-1' data-pw='srp-results-page'>
       {
         productHistory.length > 0 ? (
-          <div className='no-scrollbar flex h-40 w-full gap-2 overflow-x-scroll p-4' data-pw='srp-product-history'>
+          <div className='no-scrollbar flex h-40 w-full gap-2 overflow-x-scroll px-3 py-4 md:px-4' data-pw='srp-product-history'>
             {
               productHistory.map((product, index) => (
                 <div
@@ -95,7 +95,7 @@ const ResultsPage: FC<ResultsPageProps> = ({ results, autocompleteResults, handl
           </div>
         )
         : (
-            <div className='no-scrollbar flex gap-2 overflow-y-hidden overflow-x-scroll p-4' data-pw='srp-autocomplete-chips'>
+            <div className='no-scrollbar flex gap-2 overflow-y-hidden overflow-x-scroll px-3 py-4 md:px-4' data-pw='srp-autocomplete-chips'>
               {autocompleteResults.map((result, index) => (
                 <Button
                   disableRipple
@@ -113,7 +113,7 @@ const ResultsPage: FC<ResultsPageProps> = ({ results, autocompleteResults, handl
           )
       }
 
-      <div ref={resultsRef} className='grid h-full grid-cols-2 gap-4 overflow-y-auto px-4 pt-4 md:grid-cols-3 md:gap-y-0'>
+      <div ref={resultsRef} className='grid h-full grid-cols-2 gap-x-2 gap-y-4 overflow-y-auto px-3 py-4 md:grid-cols-3 md:gap-x-4 md:px-4'>
         {results.map((result, index) => (
           <Result key={result.product_id} index={index} result={result} onClickMoreLikeThisHandler={onClickMoreLikeThisHandler}/>
         ))}

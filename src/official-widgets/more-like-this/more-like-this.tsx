@@ -4,6 +4,7 @@ import Slider from 'react-slick';
 import type { Settings } from 'react-slick';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
+import { useIntl } from 'react-intl';
 import type { WidgetClient, WidgetConfig } from '../../common/visenze-core';
 import { RootContext } from '../../common/components/shadow-wrapper';
 import { WidgetResultContext } from '../../common/types/contexts';
@@ -25,6 +26,7 @@ const MoreLikeThis: FC<MoreLikeThisProps> = ({ config, productSearch, productId 
   const root = useContext(RootContext);
   const [retryCount, setRetryCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const intl = useIntl();
 
   const {
     productResults,
@@ -95,8 +97,8 @@ const MoreLikeThis: FC<MoreLikeThisProps> = ({ config, productSearch, productId 
   if (error) {
     return (
       <div className='flex h-60 flex-col items-center justify-center gap-4'>
-        <span className='text-md font-bold'>Sorry, something went wrong</span>
-        <span className='text-sm'>Please refresh to try again</span>
+        <span className='text-md font-bold'>{intl.formatMessage({ id: 'moreLikeThis.errorMessage.part1' })}</span>
+        <span className='text-sm'>{intl.formatMessage({ id: 'moreLikeThis.errorMessage.part2' })}</span>
       </div>
     );
   }
@@ -105,7 +107,7 @@ const MoreLikeThis: FC<MoreLikeThisProps> = ({ config, productSearch, productId 
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
         {/* Widget Title */}
-        <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='mlt-widget-title'>More like this</div>
+        <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='mlt-widget-title'>{intl.formatMessage({ id: 'moreLikeThis.title' })}</div>
 
         {/* Product Result Carousel */}
         <div className='relative pr-1 lg:px-10' data-pw='mlt-product-result-carousel'>
