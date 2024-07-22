@@ -2,6 +2,7 @@ import type { Product, ProductSearchResponseSuccess, ProductType } from 'visearc
 import type { CroppedBox } from './types/box';
 import type { ProcessedProduct } from './types/product';
 import { SortType } from './types/constants';
+import type {SearchImage} from './types/image';
 
 export const getFlattenProduct = (result: Product): ProcessedProduct => {
   return {
@@ -87,3 +88,25 @@ export const getSortTypeIntlId = (sortType: SortType): string => {
       return '';
   }
 };
+
+export const getFile = (img: SearchImage | undefined): string => {
+  if (!img) {
+    return '';
+  }
+  if ('imgUrl' in img) {
+    return img.imgUrl;
+  }
+  return img.file;
+};
+
+export const dataURLtoBlob = (dataURI: string): Promise<Blob> => new Promise((resolve, reject) => {
+  try {
+    const [header, base64] = dataURI.split(',');
+    const mimeString = header.split(':')[1].split(';')[0];
+    const byteString = atob(base64);
+    const ia = new Uint8Array(Array.from(byteString).map((char) => char.charCodeAt(0)));
+    resolve(new Blob([ia], { type: mimeString }));
+  } catch (e) {
+    reject(e);
+  }
+});

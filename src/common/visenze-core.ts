@@ -18,6 +18,8 @@ export enum WidgetType {
   SHOPPABLE_LOOKBOOK = 'shoppable_lookbook',
   SHOPPABLE_INSTAGRAM_FEED = 'shoppable_instagram_feed',
   ICON_TRIGGERED_GRID = 'icon_triggered_grid',
+  SEARCH_BAR = 'search_bar',
+  EMBEDDED_SEARCH_RESULTS = 'embedded_search_results'
 }
 
 interface GenericWidgetClient {
