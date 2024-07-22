@@ -2,14 +2,14 @@ import type { FC, ReactNode } from 'react';
 import { useContext } from 'react';
 import type { FileRejection } from 'react-dropzone';
 import { useDropzone } from 'react-dropzone';
-import type { SearchImage } from '../../../common/types/image';
-import { WidgetDataContext } from '../../../common/types/contexts';
-import { Actions, Category, Labels } from '../../../common/types/tracking-constants';
+import type { SearchImage } from '../types/image';
+import { WidgetDataContext } from '../types/contexts';
+import { Actions, Category, Labels } from '../types/tracking-constants';
 
 interface FileDropzoneProps {
   onImageUpload: (image: SearchImage) => void;
   children: ReactNode;
-  name: string;
+  name?: string;
 }
 
 const FileDropzone: FC<FileDropzoneProps> = ({ onImageUpload, children, name }) => {
@@ -52,8 +52,8 @@ const FileDropzone: FC<FileDropzoneProps> = ({ onImageUpload, children, name }) 
   });
 
   return (
-    <div className='cursor-pointer' {...getRootProps()} data-pw={`cs-${name}-dropzone`}>
-      <input {...getInputProps()} data-pw={`cs-${name}-input`} />
+    <div className='cursor-pointer' {...getRootProps()}>
+      <input {...getInputProps()} data-pw={`${name}-dropzone`} />
       {children}
     </div>
   );
