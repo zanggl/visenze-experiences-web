@@ -1,19 +1,17 @@
-import type { ChangeEvent, ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import { useEffect, useContext, useState } from 'react';
 import type { ProductSearchResponse, Facet } from 'visearch-javascript-sdk';
-import { Checkbox } from '@nextui-org/checkbox';
-import { Slider } from '@nextui-org/slider';
-import { Accordion, AccordionItem } from '@nextui-org/accordion';
 import { Button } from '@nextui-org/button';
 import { useIntl } from 'react-intl';
 import { WidgetDataContext, WidgetResultContext } from '../../common/types/contexts';
 import { RootContext } from '../../common/components/shadow-wrapper';
-import { getFacetNameByKey, getFacets, getFilterQueries, getFlattenProducts, getTitleCase } from '../../common/utils';
+import { getFacets, getFilterQueries, getFlattenProducts } from '../../common/utils';
 import type { ProcessedProduct } from '../../common/types/product';
 import { Category } from '../../common/types/tracking-constants';
 import Result from './components/Result';
-import LeftChevronIcon from '../../common/icons/LeftChevronIcon';
 import type { FacetType } from '../../common/types/constants';
+import FilterOptions from './components/FilterOptions';
+import ViSenzeModal from '../../common/components/modal/visenze-modal';
 
 const EmbeddedSearchResults = (): ReactElement => {
   const { productSearch, searchSettings, displaySettings } = useContext(WidgetDataContext);
@@ -28,9 +26,11 @@ const EmbeddedSearchResults = (): ReactElement => {
     sizes: new Set<string>(),
     colors: new Set<string>(),
   };
-  const [accordionKey, setAccordionKey] = useState(0);
+  const [filterOptionsKey, setFilterOptionsKey] = useState(0);
   const [selectedFilters, setSelectedFilters] = useState<Record<FacetType, any>>(defaultFilters);
+  const [showMobileFilterOptions, setShowMobileFilterOptions] = useState(false);
   const [metadata, setMetadata] = useState<Record<string, any>>({});
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const root = useContext(RootContext);
   const intl = useIntl();
@@ -53,6 +53,7 @@ const EmbeddedSearchResults = (): ReactElement => {
       if (facets.length === 0 && res.facets) {
         setFacets(res.facets);
       }
+      setIsLoading(false);
     }
   };
 
@@ -83,57 +84,8 @@ const EmbeddedSearchResults = (): ReactElement => {
     productSearch.multisearchByImage(params, handleSuccess, handleError);
   };
 
-  const showFacetValues = (facet: Facet): ReactElement | ReactElement[] => {
-    const priceRangeChangeHandler = (value: number | number[]): void => {
-      setSelectedFilters((curFilters) => {
-        if (Array.isArray(value)) {
-          curFilters.price = value;
-        } else {
-          curFilters.price = [value, value];
-        }
-        return curFilters;
-      });
-    };
-
-    if (facet.range) {
-      return <Slider
-        label='Price Range'
-        color='secondary'
-        minValue={facet.range.min}
-        maxValue={facet.range.max}
-        defaultValue={[facet.range.min, facet.range.max]}
-        onChange={priceRangeChangeHandler}
-      />;
-    }
-
-    const updateFiltersHandler = (event: ChangeEvent<HTMLInputElement>): void => {
-      const facetName = getFacetNameByKey(productDetails, facet.key) as FacetType;
-      setSelectedFilters((currentFilters) => {
-        const newSet = new Set(currentFilters[facetName]);
-        if (event.target.checked) {
-          newSet.add(event.target.value);
-        } else {
-          newSet.delete(event.target.value);
-        }
-
-        currentFilters[facetName] = newSet;
-        return currentFilters;
-      });
-    };
-
-    return facet.items.map((item) => (
-      <Checkbox
-        key={item.value}
-        value={item.value}
-        color='secondary'
-        onChange={updateFiltersHandler}
-      >
-        <span className='calls-to-action-text'>{item.value}</span>
-      </Checkbox>
-    ));
-  };
-
   const onApplyHandler = (): void => {
+    setShowMobileFilterOptions(false);
     multisearchWithSearchBarDetails();
   };
 
@@ -142,7 +94,7 @@ const EmbeddedSearchResults = (): ReactElement => {
 
     // Allow search bar to reload search results when search bar query/image is updated
     const handleReloadEvent = async (): Promise<void> => {
-      setAccordionKey((curKey) => curKey + 1);
+      setFilterOptionsKey((curKey) => curKey + 1);
       multisearchWithSearchBarDetails(true);
     };
     document.addEventListener('reload-embedded-search-results', handleReloadEvent);
@@ -152,53 +104,60 @@ const EmbeddedSearchResults = (): ReactElement => {
     };
   }, []);
 
-  if (!root || error) {
+  if (!root || error || isLoading) {
     return <></>;
   }
 
   return (
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
-        <div className='flex size-full gap-x-2 bg-primary'>
-          {/* Filters/Facets */}
+        <div className='flex size-full flex-col gap-2 bg-primary md:flex-row'>
+          {/* Filter Section Tablet & Desktop */}
           {
             facets
-            && <div className='flex w-1/5 flex-col gap-y-4'>
-              <Accordion key={accordionKey} className='divide-y-1' selectionMode='multiple'>
-                {
-                  facets.map((facet) => (
-                    <AccordionItem
-                      key={facet.key}
-                      title={getTitleCase(getFacetNameByKey(productDetails, facet.key))}
-                      indicator={<LeftChevronIcon className='size-4'/>}
-                    >
-                      <div className='flex flex-col gap-y-2 px-4 pb-4'>
-                        {showFacetValues(facet)}
-                      </div>
-                    </AccordionItem>
-                  ))
-                }
-              </Accordion>
-              {/* Apply button */}
-              <Button className='rounded border bg-buttonPrimary px-14 text-white' radius='none' data-pw='esr-apply-filter-button' onClick={onApplyHandler}>
-                <span className='text-buttonPrimary'>
-                  {intl.formatMessage({ id: 'embeddedSearchResults.apply' })}
-                </span>
-              </Button>
+            && <div className='hidden w-1/4 flex-col gap-y-4 md:flex'>
+              <FilterOptions
+                key={filterOptionsKey}
+                facets={facets}
+                setSelectedFilters={setSelectedFilters}
+                onApplyHandler={onApplyHandler}
+              />
             </div>
           }
+          {/* Filter Section Mobile */}
+          <Button className='w-1/5 self-end rounded border bg-buttonPrimary text-white md:hidden'
+                  radius='none' data-pw='esr-filter-button' onClick={() => setShowMobileFilterOptions(true)}>
+            <span className='calls-to-action-text text-buttonPrimary'>
+              {intl.formatMessage({ id: 'embeddedSearchResults.filter' })}
+            </span>
+          </Button>
+          <ViSenzeModal open={showMobileFilterOptions} layout='nested_mobile' onClose={() => setShowMobileFilterOptions(false)}>
+            <FilterOptions
+              key={filterOptionsKey}
+              facets={facets}
+              setSelectedFilters={setSelectedFilters}
+              onApplyHandler={onApplyHandler}
+            />
+          </ViSenzeModal>
           {/* Product Result Grid */}
-          <div className='grid w-4/5 grid-cols-2 gap-x-2 gap-y-4 md:grid-cols-3 lg:grid-cols-4'
-               data-pw='esr-product-result-grid'>
-            {productResults.map((result, index) => (
-              <div key={`${result.product_id}-${index}`} data-pw={`esr-product-result-card-${index + 1}`}>
-                <Result
-                  index={index}
-                  result={result}
-                />
+          {
+            productResults.length > 0
+            ? <div className='grid grid-cols-2 gap-x-2 gap-y-4 md:w-3/4 md:grid-cols-3 lg:grid-cols-4'
+                 data-pw='esr-product-result-grid'>
+              {productResults.map((result, index) => (
+                <div key={`${result.product_id}-${index}`} data-pw={`esr-product-result-card-${index + 1}`}>
+                  <Result
+                    index={index}
+                    result={result}
+                  />
+                </div>
+              ))}
+            </div>
+            : <div className='flex flex-col gap-y-2 py-24 text-center md:w-3/4'>
+                <p className='calls-to-action-text font-semibold'>No Results Found</p>
+                <p className='calls-to-action-text'>We could not find any products matching your search.</p>
               </div>
-            ))}
-          </div>
+          }
         </div>
       </WidgetResultContext.Provider>
     </>

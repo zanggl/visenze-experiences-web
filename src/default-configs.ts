@@ -80,7 +80,7 @@ const DEFAULT_CONFIGS: WidgetConfig = {
   searchBarResultsSettings: {
     enableImageUpload: true,
     enableFindSimilar: true,
-    redirectUrl: '/',
+    redirectUrl: 'http://localhost:8080/',
   },
   hideTrigger: false,
   debugMode: false,
