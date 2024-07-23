@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { memo, useRef } from 'react';
+import { useContext, memo, useRef } from 'react';
 import { Input } from '@nextui-org/input';
 import { useIntl } from 'react-intl';
 import { QUERY_MAX_CHARACTER_LENGTH } from '../../../common/constants';
@@ -7,21 +7,24 @@ import ImageGalleryUpload from './ImageGalleryUpload';
 import type { SearchImage } from '../../../common/types/image';
 import MagnifyingGlassIcon from '../../../common/icons/MagnifyingGlassIcon';
 import CameraUpload from './CameraUpload';
+import { WidgetDataContext } from '../../../common/types/contexts';
 
 interface SearchBarInputProps {
-  searchBarValue: string;
-  setSearchBarValue: (searchBarValue: string) => void;
+  query: string;
+  setQuery: (query: string) => void;
   handleRedirect: () => void;
   setShowDropdown: (showDropdown: boolean) => void;
   setImage: (image: SearchImage) => void;
 }
 
-const SearchBarInput: FC<SearchBarInputProps> = ({ searchBarValue, setSearchBarValue, handleRedirect, setShowDropdown, setImage }) => {
+const SearchBarInput: FC<SearchBarInputProps> = ({ query, setQuery, handleRedirect, setShowDropdown, setImage }) => {
+  const { searchBarResultsSettings } = useContext(WidgetDataContext);
   const searchBarRef = useRef<HTMLInputElement>(null);
   const intl = useIntl();
 
   return (
     <Input
+      data-pw='sb-search-bar-input'
       ref={searchBarRef}
       className='z-30'
       classNames={{
@@ -45,18 +48,22 @@ const SearchBarInput: FC<SearchBarInputProps> = ({ searchBarValue, setSearchBarV
           }
         }
       }}
-      value={searchBarValue}
+      value={query}
       onValueChange={(value) => {
-        setSearchBarValue(value);
+        setQuery(value);
       }}
       startContent={
         <div className='flex items-center gap-2'>
-          <ImageGalleryUpload setImage={setImage} />
-          <CameraUpload onImageUpload={setImage} />
+          {
+            searchBarResultsSettings.enableImageUpload
+            && <>
+              <ImageGalleryUpload setImage={setImage} />
+              <CameraUpload onImageUpload={setImage} />
+            </>
+          }
           <MagnifyingGlassIcon className='size-4'/>
         </div>
       }
-      data-pw='sb-search-bar-input'
     />
   );
 };

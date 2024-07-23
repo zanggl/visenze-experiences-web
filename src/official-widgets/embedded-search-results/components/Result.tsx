@@ -17,7 +17,7 @@ interface ResultProps {
 }
 
 const Result: FC<ResultProps> = ({ index, result }) => {
-  const { productSearch, displaySettings, callbacks, debugMode, customizations } = useContext(WidgetDataContext);
+  const { productSearch, displaySettings, callbacks, debugMode, customizations, searchBarResultsSettings } = useContext(WidgetDataContext);
   const { productDetails } = displaySettings;
   const { metadata } = useContext(WidgetResultContext);
   const { onProductClick } = callbacks;
@@ -103,24 +103,27 @@ const Result: FC<ResultProps> = ({ index, result }) => {
         <div className='aspect-[2/3]'>
           <img className='size-full object-cover' src={result.im_url}/>
         </div>
-        <Button
-          isIconOnly
-          size='sm'
-          radius='full'
-          className='absolute bottom-3 right-3 z-10 bg-white shadow-md'
-          onClick={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            onClickHandler(result);
-          }}
-          data-pw='esr-more-like-this-button'
-        >
-          {
-            customizations?.icons.moreLikeThis
-              ? <img src={customizations.icons.moreLikeThis} className='size-5'></img>
-              : <MoreLikeThisIcon className='size-5'/>
-          }
-        </Button>
+        {
+          searchBarResultsSettings.enableFindSimilar
+          && <Button
+            isIconOnly
+            size='sm'
+            radius='full'
+            className='absolute bottom-3 right-3 z-10 bg-white shadow-md'
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onClickHandler(result);
+            }}
+            data-pw='esr-more-like-this-button'
+          >
+            {
+              customizations?.icons.moreLikeThis
+                ? <img src={customizations.icons.moreLikeThis} className='size-5'></img>
+                : <MoreLikeThisIcon className='size-5'/>
+            }
+          </Button>
+        }
       </div>
       <div className='pt-2'>
         <span className='product-card-title line-clamp-1 text-primary'>{getProductName()}</span>

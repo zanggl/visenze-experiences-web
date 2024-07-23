@@ -88,6 +88,10 @@ const populateProductDetailsAndAttrsToGet = (config: WidgetConfig, fieldMappings
   config.displaySettings.productDetails.price = fieldMappings['price'] || '';
   config.displaySettings.productDetails.originalPrice = fieldMappings['original_price'] || '';
   config.displaySettings.productDetails.category = fieldMappings['category'] || '';
+  config.displaySettings.productDetails.brand = fieldMappings['brand'] || '';
+  config.displaySettings.productDetails.gender = fieldMappings['gender'] || '';
+  config.displaySettings.productDetails.sizes = fieldMappings['sizes'] || '';
+  config.displaySettings.productDetails.colors = fieldMappings['colors'] || '';
   config.searchSettings.attrs_to_get = Object.values(config.displaySettings.productDetails).filter(value => Boolean(value));
 
   return config;

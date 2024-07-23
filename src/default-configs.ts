@@ -35,6 +35,10 @@ const DEFAULT_CONFIGS: WidgetConfig = {
       price: '',
       originalPrice: '',
       category: '',
+      brand: '',
+      gender: '',
+      sizes: '',
+      colors: '',
     },
     breakpoints: {
       mobile: {
@@ -72,6 +76,11 @@ const DEFAULT_CONFIGS: WidgetConfig = {
     // onSearchCallback: (apiResoonse) => {},
     // @param {apiResponse} response from visearch API
     onSearchCallback: undefined,
+  },
+  searchBarResultsSettings: {
+    enableImageUpload: true,
+    enableFindSimilar: true,
+    redirectUrl: '/',
   },
   hideTrigger: false,
   debugMode: false,

@@ -8,46 +8,78 @@ import MagnifyingGlassIcon from '../../common/icons/MagnifyingGlassIcon';
 import SearchBarInput from './components/SearchBarInput';
 import SearchBarTextArea from './components/SearchBarTextArea';
 import useAutocomplete from '../../common/components/hooks/use-autocomplete';
-import { getFile } from '../../common/utils';
+import { WidgetDataContext } from '../../common/types/contexts';
 
 const SearchBar = (): ReactElement => {
-  const [searchBarQuery, setSearchBarQuery] = useState('');
-  const [searchImage, setSearchImage] = useState<SearchImage | undefined>();
+  const { searchBarResultsSettings } = useContext(WidgetDataContext);
+  const [query, setQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState(query);
+  const [image, setImage] = useState<SearchImage | undefined>();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isOnResultsPage, setIsOnResultsPage] = useState(false);
   const root = useContext(RootContext);
 
   const {
+    imageId,
     autocompleteResults,
     error,
   } = useAutocomplete({
-    image: searchImage,
-    query: searchBarQuery,
+    image,
+    query: debouncedQuery,
   });
 
   const handleRedirect = (): void => {
-    if (searchBarQuery) {
-      localStorage.setItem('visenze-search-bar-query', searchBarQuery);
-      if (searchImage) {
-        localStorage.setItem('visenze-search-bar-image', getFile(searchImage));
-      }
+    if (!query && !image) {
+      return;
+    }
 
+    const url = new URL(searchBarResultsSettings.redirectUrl);
+    if (query) {
+      url.searchParams.append('searchBarQuery', query);
+    }
+    if (imageId) {
+      url.searchParams.append('searchBarImageId', imageId);
+    }
+    window.location.href = url.toString();
+
+    if (isOnResultsPage) {
+      // Reload results
       const reloadEmbeddedSearchResultsEvent = new CustomEvent('reload-embedded-search-results');
       document.dispatchEvent(reloadEmbeddedSearchResultsEvent);
-
-      // Redirect to page with embedded search results
-      window.location.href = `${window.location.origin}/search-results`;
     }
   };
 
   document.addEventListener('add-image-to-search-bar', (e) => {
-    console.log('event received');
-    setSearchImage({ imgUrl: (e as any).detail.im_url });
+    setImage({ imgUrl: (e as any).detail.im_url });
   });
 
   useEffect(() => {
-    if (!searchBarQuery) setShowDropdown(false);
+    if (!query) setShowDropdown(false);
     else setShowDropdown(true);
-  }, [searchBarQuery]);
+  }, [query]);
+
+  useEffect(() => {
+    if (imageId) {
+      handleRedirect();
+    }
+  }, [imageId]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 300);
+
+    return (): void => {
+      clearTimeout(handler);
+    };
+  }, [query]);
+
+  useEffect(() => {
+    const redirectUrl = new URL(searchBarResultsSettings.redirectUrl);
+    if (window.location.origin === redirectUrl.origin && window.location.pathname === redirectUrl.pathname) {
+      setIsOnResultsPage(true);
+    }
+  }, []);
 
   if (!root || error) {
     if (error) console.error(error);
@@ -60,22 +92,22 @@ const SearchBar = (): ReactElement => {
         <div className='relative flex w-full flex-col items-center'>
           {/* Search bar */}
           {
-            searchImage
-            ? <SearchBarTextArea image={searchImage} searchBarValue={searchBarQuery} setSearchBarValue={setSearchBarQuery} setImage={setSearchImage}
+            image && isOnResultsPage
+            ? <SearchBarTextArea image={image} query={query} setQuery={setQuery} setImage={setImage}
                                  handleRedirect={handleRedirect} setShowDropdown={setShowDropdown} />
-            : <SearchBarInput searchBarValue={searchBarQuery} setSearchBarValue={setSearchBarQuery} setImage={setSearchImage}
+            : <SearchBarInput query={query} setQuery={setQuery} setImage={setImage}
                               handleRedirect={handleRedirect} setShowDropdown={setShowDropdown} />
           }
 
           {/* Autocomplete dropdown */}
           {
             <Listbox
-              onAction={(key) => { setSearchBarQuery(String(key)); setShowDropdown(false); }}
+              onAction={(key) => { setQuery(String(key)); setShowDropdown(false); }}
               classNames={{
                 base: cn(
-                  'rounded-md max-h-52 w-full overflow-y-auto border-gray-200 bg-white transition-all z-20',
+                  'absolute rounded-md max-h-52 w-full overflow-y-auto border-gray-200 bg-white transition-all z-20',
                   showDropdown && autocompleteResults.length > 0 ? 'border-b-1 border-x-1' : 'border-none hidden',
-                  searchImage ? 'top-[210px]' : 'top-12',
+                  image ? 'top-[210px]' : 'top-12',
                 ),
               }}
               aria-label='Autocomplete Dropdown'

@@ -1,8 +1,9 @@
 import type { Product, ProductSearchResponseSuccess, ProductType } from 'visearch-javascript-sdk';
 import type { CroppedBox } from './types/box';
 import type { ProcessedProduct } from './types/product';
-import { SortType } from './types/constants';
+import {FacetType, SortType} from './types/constants';
 import type {SearchImage} from './types/image';
+import type {WidgetConfig} from './visenze-core';
 
 export const getFlattenProduct = (result: Product): ProcessedProduct => {
   return {
@@ -99,14 +100,53 @@ export const getFile = (img: SearchImage | undefined): string => {
   return img.file;
 };
 
-export const dataURLtoBlob = (dataURI: string): Promise<Blob> => new Promise((resolve, reject) => {
-  try {
-    const [header, base64] = dataURI.split(',');
-    const mimeString = header.split(':')[1].split(';')[0];
-    const byteString = atob(base64);
-    const ia = new Uint8Array(Array.from(byteString).map((char) => char.charCodeAt(0)));
-    resolve(new Blob([ia], { type: mimeString }));
-  } catch (e) {
-    reject(e);
+export const getTitleCase = (text: string): string => {
+  if (!text) return '';
+
+  const textLowerCase = text.toLowerCase();
+  return textLowerCase.charAt(0).toUpperCase() + textLowerCase.slice(1);
+};
+
+export const getFacets = (productDetails: WidgetConfig['displaySettings']['productDetails']): string[] => {
+  const facets: string[] = [];
+  Object.values(FacetType).forEach((facet) => {
+    if (productDetails[facet]) {
+      facets.push(productDetails[facet]);
+    }
+  });
+  return facets;
+};
+
+export const getFacetNameByKey = (productDetails: WidgetConfig['displaySettings']['productDetails'], key: string): string => {
+  let facetName = '';
+  Object.entries(productDetails).find(([name, value]) => {
+    if (value === key) {
+      facetName = name;
+    }
+  });
+
+  return facetName;
+};
+export const getFilterQueries = (productDetails: WidgetConfig['displaySettings']['productDetails'],filters: Record<FacetType, any>): string[] => {
+  const filterQueries: string[] = [];
+  if (filters.price.length > 0) {
+    filterQueries.push(`${productDetails.price}:${filters.price[0]},${filters.price[1]}`);
   }
-});
+  if (filters.category.size > 0) {
+    filterQueries.push(`${productDetails.category}:${Array.from(filters.category).join(' OR ')}`);
+  }
+  if (filters.gender.size > 0) {
+    filterQueries.push(`${productDetails.gender}:${Array.from(filters.gender).join(' OR ')}`);
+  }
+  if (filters.brand.size > 0) {
+    filterQueries.push(`${productDetails.brand}:${Array.from(filters.brand).join(' OR ')}`);
+  }
+  if (filters.colors.size > 0) {
+    filterQueries.push(`${productDetails.colors}:${Array.from(filters.colors).join(' OR ')}`);
+  }
+  if (filters.sizes.size > 0) {
+    filterQueries.push(`${productDetails.sizes}:${Array.from(filters.sizes).join(' OR ')}`);
+  }
+
+  return filterQueries;
+};

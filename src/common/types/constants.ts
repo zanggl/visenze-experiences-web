@@ -4,10 +4,13 @@ export enum SortType {
   PRICE_LTH = 'Low to high (Price)',
 }
 
-export enum FilterType {
-  TEXT = 'text',
-  CURRENCY = 'currency',
-  NUMBER = 'number',
+export enum FacetType {
+  PRICE = 'price',
+  CATEGORY = 'category',
+  BRAND = 'brand',
+  GENDER = 'gender',
+  SIZES = 'sizes',
+  COLORS = 'colors',
 }
 
 export enum ScreenType {

@@ -11,6 +11,7 @@ interface AutocompleteProps {
 }
 
 interface Autocomplete {
+  imageId: string;
   autocompleteResults: string[];
   error: string;
 }
@@ -20,6 +21,7 @@ const useAutocomplete = ({
   image,
 }: AutocompleteProps): Autocomplete => {
   const { searchSettings, productSearch } = useContext(WidgetDataContext);
+  const [imageId, setImageId] = useState('');
   const [autocompleteResults, setAutocompleteResults] = useState<string[]>([]);
   const [error, setError] = useState<string>('');
 
@@ -36,6 +38,10 @@ const useAutocomplete = ({
         cat: Category.RESULT,
         queryId: res.reqid,
       };
+
+      if (res.im_id) {
+        setImageId(res.im_id);
+      }
 
       const newAutocompleteResults = (res.result || []).map((r: any) => r.text);
       setAutocompleteResults(newAutocompleteResults);
@@ -64,12 +70,13 @@ const useAutocomplete = ({
   };
 
   useEffect(() => {
-    if (query) {
+    if (query || image) {
       autocomplete();
     }
   }, [query, image]);
 
   return {
+    imageId,
     autocompleteResults,
     error,
   };

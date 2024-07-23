@@ -36,10 +36,10 @@ const ImageGalleryUpload: FC<ImageGalleryUploadProps> = ({ setImage }) => {
   };
 
   const onGallerySelect = (index: number): void => {
-    setOpenModal(false);
     if (customizations) {
       setImage?.({ imgUrl: customizations?.images[index].url });
     }
+    setOpenModal(false);
   };
 
   const getGalleryCards = (): ReactNode => {

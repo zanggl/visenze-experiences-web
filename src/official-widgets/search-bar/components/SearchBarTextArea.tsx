@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { memo, useRef } from 'react';
+import { useContext, memo, useRef } from 'react';
 import { Textarea } from '@nextui-org/input';
 import { useIntl } from 'react-intl';
 import { QUERY_MAX_CHARACTER_LENGTH } from '../../../common/constants';
@@ -7,22 +7,25 @@ import type { SearchImage } from '../../../common/types/image';
 import ImageGalleryUpload from './ImageGalleryUpload';
 import CameraUpload from './CameraUpload';
 import { getFile } from '../../../common/utils';
+import { WidgetDataContext } from '../../../common/types/contexts';
 
 interface SearchBarTextAreaProps {
   image: SearchImage;
-  searchBarValue: string;
-  setSearchBarValue: (searchBarValue: string) => void;
+  query: string;
+  setQuery: (query: string) => void;
   handleRedirect: () => void;
   setShowDropdown: (showDropdown: boolean) => void;
   setImage: (image: SearchImage) => void;
 }
 
-const SearchBarTextArea: FC<SearchBarTextAreaProps> = ({ image, searchBarValue, setSearchBarValue, handleRedirect, setShowDropdown, setImage }) => {
+const SearchBarTextArea: FC<SearchBarTextAreaProps> = ({ image, query, setQuery, handleRedirect, setShowDropdown, setImage }) => {
+  const { searchBarResultsSettings } = useContext(WidgetDataContext);
   const searchBarRef = useRef<HTMLTextAreaElement>(null);
   const intl = useIntl();
 
   return (
     <Textarea
+      data-pw='sb-search-bar-text-area'
       ref={searchBarRef}
       className='z-30'
       classNames={{
@@ -43,18 +46,18 @@ const SearchBarTextArea: FC<SearchBarTextAreaProps> = ({ image, searchBarValue, 
           handleRedirect();
         }
       }}
-      value={searchBarValue}
+      value={query}
       onValueChange={(value) => {
-        setSearchBarValue(value);
+        setQuery(value);
       }}
       startContent={<img src={getFile(image)} className='aspect-[3/4] w-20 rounded-md object-cover md:w-28 lg:w-36'/>}
       endContent={
-        <div className='absolute bottom-2 right-2'>
+        searchBarResultsSettings.enableImageUpload
+        && <div className='absolute bottom-2 right-2'>
           <ImageGalleryUpload setImage={setImage} />
           <CameraUpload onImageUpload={setImage} />
         </div>
       }
-      data-pw='sb-search-bar-text-area'
     />
   );
 };

@@ -232,6 +232,10 @@ export interface WidgetConfig {
       price: string;
       originalPrice: string;
       category: string;
+      brand: string;
+      gender: string;
+      sizes: string;
+      colors: string;
     };
     fileDropzoneImage: string;
     breakpoints: WidgetBreakpointConfig;
@@ -242,6 +246,11 @@ export interface WidgetConfig {
     locale: string;
     text: Record<string, Record<string, string>>;
   };
+  searchBarResultsSettings: {
+    enableImageUpload: boolean;
+    enableFindSimilar: boolean;
+    redirectUrl: string;
+  }
   callbacks: {
     trackingCallback?: (action: string, params: Record<string, any>) => void;
     onProductClick?: (productDetails: Record<string, any>, trackingMeta: Record<string, any>) => void;
