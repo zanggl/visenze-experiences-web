@@ -86,7 +86,9 @@ const EmbeddedSearchResults = (): ReactElement => {
   };
 
   useEffect(() => {
-    multisearchWithSearchBarDetails();
+    if (!isLoading) {
+      multisearchWithSearchBarDetails();
+    }
   }, [selectedFilters]);
 
   useEffect(() => {
