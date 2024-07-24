@@ -119,6 +119,7 @@ const EmbeddedSearchResults = (): ReactElement => {
               <FilterOptions
                 key={filterOptionsKey}
                 facets={facets}
+                selectedFilters={selectedFilters}
                 setSelectedFilters={setSelectedFilters}
                 onApplyHandler={onApplyHandler}
               />
@@ -135,6 +136,7 @@ const EmbeddedSearchResults = (): ReactElement => {
             <FilterOptions
               key={filterOptionsKey}
               facets={facets}
+              selectedFilters={selectedFilters}
               setSelectedFilters={setSelectedFilters}
               onApplyHandler={onApplyHandler}
             />

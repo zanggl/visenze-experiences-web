@@ -13,11 +13,12 @@ import { getFacetNameByKey, getTitleCase } from '../../../common/utils';
 
 interface FilterOptionsProps {
   facets: Facet[];
+  selectedFilters: Record<FacetType, any>;
   setSelectedFilters: (selectedFilters: any) => void;
   onApplyHandler: () => void;
 }
 
-const FilterOptions:FC<FilterOptionsProps> = ({ facets, setSelectedFilters, onApplyHandler }) => {
+const FilterOptions:FC<FilterOptionsProps> = ({ facets, selectedFilters, setSelectedFilters, onApplyHandler }) => {
   const { displaySettings } = useContext(WidgetDataContext);
   const intl = useIntl();
 
@@ -44,8 +45,8 @@ const FilterOptions:FC<FilterOptionsProps> = ({ facets, setSelectedFilters, onAp
       />;
     }
 
+    const facetName = getFacetNameByKey(displaySettings.productDetails, facet.key) as FacetType;
     const updateFiltersHandler = (event: ChangeEvent<HTMLInputElement>): void => {
-      const facetName = getFacetNameByKey(displaySettings.productDetails, facet.key) as FacetType;
       setSelectedFilters((currentFilters: Record<FacetType, any>) => {
         const newSet = new Set(currentFilters[facetName]);
         if (event.target.checked) {
@@ -54,8 +55,7 @@ const FilterOptions:FC<FilterOptionsProps> = ({ facets, setSelectedFilters, onAp
           newSet.delete(event.target.value);
         }
 
-        currentFilters[facetName] = newSet;
-        return currentFilters;
+        return { ...currentFilters, [facetName]: newSet };
       });
     };
 
@@ -65,6 +65,7 @@ const FilterOptions:FC<FilterOptionsProps> = ({ facets, setSelectedFilters, onAp
           value={item.value}
           color='secondary'
           onChange={updateFiltersHandler}
+          isSelected={selectedFilters[facetName].has(item.value)}
         >
           <span className='calls-to-action-text'>{item.value}</span>
         </Checkbox>
