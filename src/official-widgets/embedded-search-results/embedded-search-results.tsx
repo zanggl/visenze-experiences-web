@@ -12,6 +12,7 @@ import Result from './components/Result';
 import type { FacetType } from '../../common/types/constants';
 import FilterOptions from './components/FilterOptions';
 import ViSenzeModal from '../../common/components/modal/visenze-modal';
+import FilterIcon from '../../common/icons/FilterIcon';
 
 const EmbeddedSearchResults = (): ReactElement => {
   const { productSearch, searchSettings, displaySettings } = useContext(WidgetDataContext);
@@ -110,7 +111,7 @@ const EmbeddedSearchResults = (): ReactElement => {
   return (
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
-        <div className='flex size-full flex-col gap-2 bg-primary md:flex-row'>
+        <div className='flex size-full flex-col gap-1 bg-primary md:flex-row'>
           {/* Filter Section Tablet & Desktop */}
           {
             facets
@@ -124,9 +125,9 @@ const EmbeddedSearchResults = (): ReactElement => {
             </div>
           }
           {/* Filter Section Mobile */}
-          <Button className='w-1/5 self-end rounded border bg-buttonPrimary text-white md:hidden'
-                  radius='none' data-pw='esr-filter-button' onClick={() => setShowMobileFilterOptions(true)}>
-            <span className='calls-to-action-text text-buttonPrimary'>
+          <Button className='self-start bg-transparent px-2 md:hidden' data-pw='esr-filter-button' onClick={() => setShowMobileFilterOptions(true)}>
+            <FilterIcon className='size-5'/>
+            <span className='calls-to-action-text'>
               {intl.formatMessage({ id: 'embeddedSearchResults.filter' })}
             </span>
           </Button>
