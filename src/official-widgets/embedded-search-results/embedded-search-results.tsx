@@ -15,7 +15,7 @@ import ViSenzeModal from '../../common/components/modal/visenze-modal';
 import FilterIcon from '../../common/icons/FilterIcon';
 
 const EmbeddedSearchResults = (): ReactElement => {
-  const { productSearch, searchSettings, displaySettings } = useContext(WidgetDataContext);
+  const { productSearch, searchSettings, displaySettings, debugMode } = useContext(WidgetDataContext);
   const { productDetails } = displaySettings;
   const [productResults, setProductResults] = useState<ProcessedProduct[]>([]);
   const [facets, setFacets] = useState<Facet[]>([]);
@@ -66,6 +66,9 @@ const EmbeddedSearchResults = (): ReactElement => {
       ...searchSettings,
     };
 
+    if (debugMode) {
+      params.q = 'black';
+    }
     if (searchBarQuery) {
       params.q = searchBarQuery;
     }

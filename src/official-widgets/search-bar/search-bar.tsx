@@ -11,7 +11,7 @@ import useAutocomplete from '../../common/components/hooks/use-autocomplete';
 import { WidgetDataContext } from '../../common/types/contexts';
 
 const SearchBar = (): ReactElement => {
-  const { searchBarResultsSettings } = useContext(WidgetDataContext);
+  const { searchBarResultsSettings, debugMode } = useContext(WidgetDataContext);
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState(query);
   const [image, setImage] = useState<SearchImage | undefined>();
@@ -29,7 +29,7 @@ const SearchBar = (): ReactElement => {
   });
 
   const handleRedirect = (): void => {
-    if (!query && !image) {
+    if ((!query && !image) || debugMode) {
       return;
     }
 
