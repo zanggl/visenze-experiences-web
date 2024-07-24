@@ -28,6 +28,15 @@ const SearchBar = (): ReactElement => {
     query: debouncedQuery,
   });
 
+  const redirectWithAutocomplete = (autocomplete: string): void => {
+    const url = new URL(searchBarResultsSettings.redirectUrl);
+    url.searchParams.append('searchBarQuery', autocomplete);
+    if (imageId) {
+      url.searchParams.append('searchBarImageId', imageId);
+    }
+    window.location.href = url.toString();
+  };
+
   const handleRedirect = (): void => {
     if ((!query && !image) || debugMode) {
       return;
@@ -41,17 +50,7 @@ const SearchBar = (): ReactElement => {
       url.searchParams.append('searchBarImageId', imageId);
     }
     window.location.href = url.toString();
-
-    if (isOnResultsPage) {
-      // Reload results
-      const reloadEmbeddedSearchResultsEvent = new CustomEvent('reload-embedded-search-results');
-      document.dispatchEvent(reloadEmbeddedSearchResultsEvent);
-    }
   };
-
-  document.addEventListener('add-image-to-search-bar', (e) => {
-    setImage({ imgUrl: (e as any).detail.im_url });
-  });
 
   useEffect(() => {
     if (!query) setShowDropdown(false);
@@ -75,15 +74,15 @@ const SearchBar = (): ReactElement => {
   }, [query]);
 
   useEffect(() => {
-    const addImageToSearchBarListener = (event: Event): void => {
-      setImage({ imgUrl: (event as CustomEvent).detail.im_url });
-    };
-    document.addEventListener('add-image-to-search-bar', addImageToSearchBarListener);
-
     const redirectUrl = new URL(searchBarResultsSettings.redirectUrl);
     if (window.location.origin === redirectUrl.origin && window.location.pathname === redirectUrl.pathname) {
       setIsOnResultsPage(true);
     }
+
+    const addImageToSearchBarListener = (event: Event): void => {
+      setImage({ imgUrl: (event as CustomEvent).detail.im_url });
+    };
+    document.addEventListener('add-image-to-search-bar', addImageToSearchBarListener);
 
     return (): void => {
       document.removeEventListener('add-image-to-search-bar', addImageToSearchBarListener);
@@ -111,7 +110,7 @@ const SearchBar = (): ReactElement => {
           {/* Autocomplete dropdown */}
           {
             <Listbox
-              onAction={(key) => { setQuery(String(key)); setShowDropdown(false); }}
+              onAction={(key) => { redirectWithAutocomplete(String(key)); }}
               classNames={{
                 base: cn(
                   'absolute rounded-md max-h-52 w-full overflow-y-auto border-gray-200 bg-white transition-all z-20',
