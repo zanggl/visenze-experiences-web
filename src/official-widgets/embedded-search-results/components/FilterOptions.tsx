@@ -1,8 +1,6 @@
 import type { ChangeEvent, FC, ReactElement } from 'react';
 import { useContext } from 'react';
 import { Accordion, AccordionItem } from '@nextui-org/accordion';
-import { Button } from '@nextui-org/button';
-import { useIntl } from 'react-intl';
 import type { Facet } from 'visearch-javascript-sdk';
 import { Slider } from '@nextui-org/slider';
 import { Checkbox } from '@nextui-org/checkbox';
@@ -15,22 +13,21 @@ interface FilterOptionsProps {
   facets: Facet[];
   selectedFilters: Record<FacetType, any>;
   setSelectedFilters: (selectedFilters: any) => void;
-  onApplyHandler: () => void;
 }
 
-const FilterOptions:FC<FilterOptionsProps> = ({ facets, selectedFilters, setSelectedFilters, onApplyHandler }) => {
+const FilterOptions:FC<FilterOptionsProps> = ({ facets, selectedFilters, setSelectedFilters }) => {
   const { displaySettings } = useContext(WidgetDataContext);
-  const intl = useIntl();
 
   const showFacetValues = (facet: Facet): ReactElement | ReactElement[] => {
     const priceRangeChangeHandler = (value: number | number[]): void => {
-      setSelectedFilters((curFilters: Record<FacetType, any>) => {
+      setSelectedFilters((currentFilters: Record<FacetType, any>) => {
+        let newPriceRange: number[] = [];
         if (Array.isArray(value)) {
-          curFilters.price = value;
+          newPriceRange = value;
         } else {
-          curFilters.price = [value, value];
+          newPriceRange = [value, value];
         }
-        return curFilters;
+        return { ...currentFilters, price: newPriceRange };
       });
     };
 
@@ -41,7 +38,7 @@ const FilterOptions:FC<FilterOptionsProps> = ({ facets, selectedFilters, setSele
         minValue={facet.range.min}
         maxValue={facet.range.max}
         defaultValue={[facet.range.min, facet.range.max]}
-        onChange={priceRangeChangeHandler}
+        onChangeEnd={priceRangeChangeHandler}
       />;
     }
 
@@ -91,12 +88,6 @@ const FilterOptions:FC<FilterOptionsProps> = ({ facets, selectedFilters, setSele
           ))
         }
       </Accordion>
-      {/* Apply button */}
-      <Button className='rounded border bg-buttonPrimary text-white' radius='none' data-pw='esr-apply-filter-button' onClick={onApplyHandler}>
-        <span className='text-buttonPrimary'>
-          {intl.formatMessage({ id: 'embeddedSearchResults.apply' })}
-        </span>
-      </Button>
     </div>
   );
 };

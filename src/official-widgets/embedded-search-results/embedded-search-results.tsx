@@ -84,10 +84,9 @@ const EmbeddedSearchResults = (): ReactElement => {
     productSearch.multisearchByImage(params, handleSuccess, handleError);
   };
 
-  const onApplyHandler = (): void => {
-    setShowMobileFilterOptions(false);
+  useEffect(() => {
     multisearchWithSearchBarDetails();
-  };
+  }, [selectedFilters]);
 
   useEffect(() => {
     multisearchWithSearchBarDetails();
@@ -121,7 +120,6 @@ const EmbeddedSearchResults = (): ReactElement => {
                 facets={facets}
                 selectedFilters={selectedFilters}
                 setSelectedFilters={setSelectedFilters}
-                onApplyHandler={onApplyHandler}
               />
             </div>
           }
@@ -138,7 +136,6 @@ const EmbeddedSearchResults = (): ReactElement => {
               facets={facets}
               selectedFilters={selectedFilters}
               setSelectedFilters={setSelectedFilters}
-              onApplyHandler={onApplyHandler}
             />
           </ViSenzeModal>
           {/* Product Result Grid */}
