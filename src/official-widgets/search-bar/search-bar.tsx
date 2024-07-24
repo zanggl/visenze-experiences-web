@@ -75,10 +75,19 @@ const SearchBar = (): ReactElement => {
   }, [query]);
 
   useEffect(() => {
+    const addImageToSearchBarListener = (event: Event): void => {
+      setImage({ imgUrl: (event as CustomEvent).detail.im_url });
+    };
+    document.addEventListener('add-image-to-search-bar', addImageToSearchBarListener);
+
     const redirectUrl = new URL(searchBarResultsSettings.redirectUrl);
     if (window.location.origin === redirectUrl.origin && window.location.pathname === redirectUrl.pathname) {
       setIsOnResultsPage(true);
     }
+
+    return (): void => {
+      document.removeEventListener('add-image-to-search-bar', addImageToSearchBarListener);
+    };
   }, []);
 
   if (!root || error) {
