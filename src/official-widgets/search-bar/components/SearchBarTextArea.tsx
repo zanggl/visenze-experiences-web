@@ -35,7 +35,7 @@ const SearchBarTextArea: FC<SearchBarTextAreaProps> = ({ image, query, setQuery,
       ref={searchBarRef}
       className='z-30'
       classNames={{
-        inputWrapper: 'rounded-md bg-white w-full border border-gray-200',
+        inputWrapper: 'rounded-md bg-white w-full border border-gray-200 p-1 md:p-2',
         input: 'text-mobile-searchBarText md:text-tablet-searchBarText lg:text-desktop-searchBarText font-mobile-searchBarText md:font-tablet-searchBarText '
           + 'lg:font-desktop-searchBarText',
         innerWrapper: 'gap-x-1 md:gap-x-2',

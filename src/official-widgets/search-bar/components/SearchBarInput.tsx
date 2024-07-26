@@ -34,7 +34,7 @@ const SearchBarInput: FC<SearchBarInputProps> = ({ query, setQuery, handleRedire
       ref={searchBarRef}
       className='z-30'
       classNames={{
-        inputWrapper: 'rounded-md bg-white w-full border border-gray-200 px-2',
+        inputWrapper: 'rounded-md bg-white w-full border border-gray-200 px-3',
         input: 'text-mobile-searchBarText md:text-tablet-searchBarText lg:text-desktop-searchBarText font-mobile-searchBarText md:font-tablet-searchBarText '
           + 'lg:font-desktop-searchBarText',
       }}
