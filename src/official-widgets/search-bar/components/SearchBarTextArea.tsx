@@ -14,14 +14,20 @@ interface SearchBarTextAreaProps {
   query: string;
   setQuery: (query: string) => void;
   handleRedirect: () => void;
+  setAllowRedirect: (allowRedirect: boolean) => void;
   setShowDropdown: (showDropdown: boolean) => void;
   setImage: (image: SearchImage) => void;
 }
 
-const SearchBarTextArea: FC<SearchBarTextAreaProps> = ({ image, query, setQuery, handleRedirect, setShowDropdown, setImage }) => {
+const SearchBarTextArea: FC<SearchBarTextAreaProps> = ({ image, query, setQuery, handleRedirect, setShowDropdown, setImage, setAllowRedirect }) => {
   const { searchBarResultsSettings } = useContext(WidgetDataContext);
   const searchBarRef = useRef<HTMLTextAreaElement>(null);
   const intl = useIntl();
+
+  const imageUploadHandler = (img: SearchImage): void => {
+    setImage(img);
+    setAllowRedirect(true);
+  };
 
   return (
     <Textarea
@@ -34,6 +40,7 @@ const SearchBarTextArea: FC<SearchBarTextAreaProps> = ({ image, query, setQuery,
           + 'lg:font-desktop-searchBarText',
         innerWrapper: 'gap-x-1 md:gap-x-2',
       }}
+      disableAutosize={true}
       autoCapitalize='off'
       autoComplete='off'
       size='lg'
@@ -50,12 +57,12 @@ const SearchBarTextArea: FC<SearchBarTextAreaProps> = ({ image, query, setQuery,
       onValueChange={(value) => {
         setQuery(value);
       }}
-      startContent={<img src={getFile(image)} className='aspect-[3/4] w-20 rounded-md object-cover md:w-28 lg:w-36'/>}
+      startContent={<img src={getFile(image)} className='aspect-[3/4] w-10 rounded-md object-cover'/>}
       endContent={
         searchBarResultsSettings.enableImageUpload
-        && <div className='absolute bottom-2 right-2'>
-          <ImageGalleryUpload setImage={setImage} />
-          <CameraUpload onImageUpload={setImage} />
+        && <div className='absolute bottom-4 right-2'>
+          <ImageGalleryUpload imageUploadHandler={imageUploadHandler} />
+          <CameraUpload imageUploadHandler={imageUploadHandler} />
         </div>
       }
     />

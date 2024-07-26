@@ -5,12 +5,12 @@ import FileDropzone from '../../../common/components/FileDropzone';
 import CameraIcon from '../../../common/icons/CameraIcon';
 
 interface CameraUploadProps {
-  onImageUpload: (image: SearchImage) => void;
+  imageUploadHandler: (image: SearchImage) => void;
 }
 
-const CameraUpload:FC<CameraUploadProps> = ({ onImageUpload }) => (
+const CameraUpload:FC<CameraUploadProps> = ({ imageUploadHandler }) => (
     <Button isIconOnly className='rounded-full bg-zinc-50 md:hidden' data-pw='sb-camera-button'>
-      <FileDropzone onImageUpload={onImageUpload} name='sb-camera-upload'>
+      <FileDropzone onImageUpload={imageUploadHandler} name='sb-camera-upload'>
         <CameraIcon className='size-6'/>
       </FileDropzone>
     </Button>

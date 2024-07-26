@@ -62,9 +62,9 @@ const EmbeddedSearchResults = (): ReactElement => {
 
   const multisearchWithSearchBarDetails = (fromReload = false): void => {
     const urlSearchParams = new URLSearchParams(window.location.search);
-    const searchBarQuery = urlSearchParams.get('searchBarQuery');
+    const searchBarQuery = urlSearchParams.get('q');
     setQuery(searchBarQuery || '');
-    const searchBarImageId = urlSearchParams.get('searchBarImageId');
+    const searchBarImageId = urlSearchParams.get('im_id');
     const params: Record<string, any> = {
       ...searchSettings,
     };
@@ -121,11 +121,14 @@ const EmbeddedSearchResults = (): ReactElement => {
     <>
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
         {/* Widget Title */}
-        <div className='flex flex-col gap-y-2 px-2 py-6 text-center md:py-10 lg:py-14' ref={widgetTitleRef}>
+        <div className='flex flex-col gap-y-2 bg-primary px-2 py-6 text-center md:py-10 lg:py-14' ref={widgetTitleRef}>
           <div className='widget-title font-bold'>Search Results</div>
-          <div className='break-words text-lg'>Showing {productResults.length} results for <b>{query}</b></div>
+          {
+            query
+            && <div className='break-words text-lg'>Showing {productResults.length} results for <b>{query}</b></div>
+          }
         </div>
-        <div className='flex size-full flex-col gap-1 bg-primary md:flex-row'>
+        <div className='flex size-full flex-col bg-primary md:flex-row'>
           {/* Filter Section Tablet & Desktop */}
           {
             facets
@@ -140,7 +143,7 @@ const EmbeddedSearchResults = (): ReactElement => {
             </div>
           }
           {/* Filter Section Mobile */}
-          <div className='sticky top-0 z-20 w-full bg-white px-2 py-1 md:hidden'>
+          <div className='sticky top-0 z-20 w-full bg-white px-2 py-1 md:hidden md:px-0'>
             <Button className='self-start bg-transparent px-2' data-pw='esr-filter-button' onClick={() => setShowMobileFilterOptions(true)}>
               <FilterIcon className='size-5'/>
               <span className='calls-to-action-text'>

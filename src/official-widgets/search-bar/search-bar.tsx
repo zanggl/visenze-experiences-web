@@ -4,6 +4,7 @@ import { Listbox, ListboxItem, ListboxSection } from '@nextui-org/listbox';
 import { cn } from '@nextui-org/theme';
 import { RootContext } from '../../common/components/shadow-wrapper';
 import type { SearchImage } from '../../common/types/image';
+import { isImageUrl } from '../../common/types/image';
 import MagnifyingGlassIcon from '../../common/icons/MagnifyingGlassIcon';
 import SearchBarInput from './components/SearchBarInput';
 import SearchBarTextArea from './components/SearchBarTextArea';
@@ -17,6 +18,7 @@ const SearchBar = (): ReactElement => {
   const [image, setImage] = useState<SearchImage | undefined>();
   const [showDropdown, setShowDropdown] = useState(false);
   const [isOnResultsPage, setIsOnResultsPage] = useState(false);
+  const [allowRedirect, setAllowRedirect] = useState(false);
   const root = useContext(RootContext);
 
   const {
@@ -30,9 +32,9 @@ const SearchBar = (): ReactElement => {
 
   const redirectWithAutocomplete = (autocomplete: string): void => {
     const url = new URL(searchBarResultsSettings.redirectUrl);
-    url.searchParams.append('searchBarQuery', autocomplete);
+    url.searchParams.append('q', autocomplete);
     if (imageId) {
-      url.searchParams.append('searchBarImageId', imageId);
+      url.searchParams.append('im_id', imageId);
     }
     window.location.href = url.toString();
   };
@@ -44,10 +46,13 @@ const SearchBar = (): ReactElement => {
 
     const url = new URL(searchBarResultsSettings.redirectUrl);
     if (query) {
-      url.searchParams.append('searchBarQuery', query);
+      url.searchParams.append('q', query);
     }
     if (imageId) {
-      url.searchParams.append('searchBarImageId', imageId);
+      url.searchParams.append('im_id', imageId);
+    }
+    if (image && isImageUrl(image)) {
+      url.searchParams.append('im_url', image.imgUrl);
     }
     window.location.href = url.toString();
   };
@@ -58,7 +63,7 @@ const SearchBar = (): ReactElement => {
   }, [query]);
 
   useEffect(() => {
-    if (imageId) {
+    if (imageId && allowRedirect) {
       handleRedirect();
     }
   }, [imageId]);
@@ -72,6 +77,18 @@ const SearchBar = (): ReactElement => {
       clearTimeout(handler);
     };
   }, [query]);
+
+  useEffect(() => {
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const searchBarQuery = urlSearchParams.get('q');
+    const searchBarImageUrl = urlSearchParams.get('im_url');
+    if (searchBarQuery) {
+      setQuery(searchBarQuery);
+    }
+    if (searchBarImageUrl) {
+      setImage({ imgUrl: searchBarImageUrl });
+    }
+  }, []);
 
   useEffect(() => {
     const redirectUrl = new URL(searchBarResultsSettings.redirectUrl);
@@ -89,8 +106,11 @@ const SearchBar = (): ReactElement => {
     };
   }, []);
 
-  if (!root || error) {
-    if (error) console.error(error);
+  if (error) {
+    console.error(error);
+  }
+
+  if (!root) {
     return <></>;
   }
 
@@ -101,9 +121,9 @@ const SearchBar = (): ReactElement => {
           {/* Search bar */}
           {
             image && isOnResultsPage
-            ? <SearchBarTextArea image={image} query={query} setQuery={setQuery} setImage={setImage}
+            ? <SearchBarTextArea image={image} query={query} setQuery={setQuery} setImage={setImage} setAllowRedirect={setAllowRedirect}
                                  handleRedirect={handleRedirect} setShowDropdown={setShowDropdown} />
-            : <SearchBarInput query={query} setQuery={setQuery} setImage={setImage}
+            : <SearchBarInput query={query} setQuery={setQuery} setImage={setImage} setAllowRedirect={setAllowRedirect}
                               handleRedirect={handleRedirect} setShowDropdown={setShowDropdown} />
           }
 
@@ -113,9 +133,9 @@ const SearchBar = (): ReactElement => {
               onAction={(key) => { redirectWithAutocomplete(String(key)); }}
               classNames={{
                 base: cn(
-                  'absolute rounded-md max-h-52 w-full overflow-y-auto border-gray-200 bg-white transition-all z-20',
+                  'absolute rounded-b-md max-h-52 w-full overflow-y-auto border-gray-200 bg-white transition-all z-20',
                   showDropdown && autocompleteResults.length > 0 ? 'border-b-1 border-x-1' : 'border-none hidden',
-                  image ? 'top-[210px]' : 'top-12',
+                  image ? 'top-[75px]' : 'top-12',
                 ),
               }}
               aria-label='Autocomplete Dropdown'

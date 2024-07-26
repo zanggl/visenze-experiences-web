@@ -13,10 +13,10 @@ import type { SearchImage } from '../../../common/types/image';
 import CloseIcon from '../../../common/icons/CloseIcon';
 
 interface ImageGalleryUploadProps {
-  setImage: (image: SearchImage) => void;
+  imageUploadHandler: (image: SearchImage) => void;
 }
 
-const ImageGalleryUpload: FC<ImageGalleryUploadProps> = ({ setImage }) => {
+const ImageGalleryUpload: FC<ImageGalleryUploadProps> = ({ imageUploadHandler }) => {
   const { customizations } = useContext(WidgetDataContext);
   const [openModal, setOpenModal] = useState(false);
   const breakpoint = useBreakpoint();
@@ -31,13 +31,13 @@ const ImageGalleryUpload: FC<ImageGalleryUploadProps> = ({ setImage }) => {
   };
 
   const onImageUpload = (image: SearchImage): void => {
-    setImage(image);
+    imageUploadHandler(image);
     setOpenModal(false);
   };
 
   const onGallerySelect = (index: number): void => {
     if (customizations) {
-      setImage?.({ imgUrl: customizations?.images[index].url });
+      imageUploadHandler?.({ imgUrl: customizations?.images[index].url });
     }
     setOpenModal(false);
   };

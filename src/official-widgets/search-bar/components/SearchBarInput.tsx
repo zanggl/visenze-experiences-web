@@ -13,14 +13,20 @@ interface SearchBarInputProps {
   query: string;
   setQuery: (query: string) => void;
   handleRedirect: () => void;
+  setAllowRedirect: (allowRedirect: boolean) => void;
   setShowDropdown: (showDropdown: boolean) => void;
   setImage: (image: SearchImage) => void;
 }
 
-const SearchBarInput: FC<SearchBarInputProps> = ({ query, setQuery, handleRedirect, setShowDropdown, setImage }) => {
+const SearchBarInput: FC<SearchBarInputProps> = ({ query, setQuery, handleRedirect, setAllowRedirect, setShowDropdown, setImage }) => {
   const { searchBarResultsSettings } = useContext(WidgetDataContext);
   const searchBarRef = useRef<HTMLInputElement>(null);
   const intl = useIntl();
+
+  const imageUploadHandler = (img: SearchImage): void => {
+    setImage(img);
+    setAllowRedirect(true);
+  };
 
   return (
     <Input
@@ -57,8 +63,8 @@ const SearchBarInput: FC<SearchBarInputProps> = ({ query, setQuery, handleRedire
           {
             searchBarResultsSettings.enableImageUpload
             && <>
-              <ImageGalleryUpload setImage={setImage} />
-              <CameraUpload onImageUpload={setImage} />
+              <ImageGalleryUpload imageUploadHandler={imageUploadHandler} />
+              <CameraUpload imageUploadHandler={imageUploadHandler} />
             </>
           }
           <MagnifyingGlassIcon className='size-4'/>
