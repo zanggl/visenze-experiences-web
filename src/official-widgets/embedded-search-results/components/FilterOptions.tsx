@@ -59,6 +59,7 @@ const FilterOptions:FC<FilterOptionsProps> = ({ facets, selectedFilters, setSele
     return facet.items.map((item) => (
       <div className='flex w-full justify-between' key={item.value}>
         <Checkbox
+          radius='none'
           value={item.value}
           color='secondary'
           onChange={updateFiltersHandler}
@@ -77,6 +78,7 @@ const FilterOptions:FC<FilterOptionsProps> = ({ facets, selectedFilters, setSele
         {
           facets.map((facet) => (
             <AccordionItem
+              classNames={{ title: 'font-bold' }}
               key={facet.key}
               title={getTitleCase(getFacetNameByKey(displaySettings.productDetails, facet.key))}
               indicator={<LeftChevronIcon className='size-4'/>}
