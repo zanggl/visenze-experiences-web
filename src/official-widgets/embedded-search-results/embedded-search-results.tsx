@@ -27,7 +27,6 @@ const EmbeddedSearchResults = (): ReactElement => {
     sizes: new Set<string>(),
     colors: new Set<string>(),
   };
-  const [filterOptionsKey, setFilterOptionsKey] = useState(0);
   const [selectedFilters, setSelectedFilters] = useState<Record<FacetType, any>>(defaultFilters);
   const [showMobileFilterOptions, setShowMobileFilterOptions] = useState(false);
   const [metadata, setMetadata] = useState<Record<string, any>>({});
@@ -60,7 +59,7 @@ const EmbeddedSearchResults = (): ReactElement => {
     }
   };
 
-  const multisearchWithSearchBarDetails = (fromReload = false): void => {
+  const multisearchWithSearchBarDetails = (): void => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     const searchBarQuery = urlSearchParams.get('q');
     setQuery(searchBarQuery || '');
@@ -81,12 +80,7 @@ const EmbeddedSearchResults = (): ReactElement => {
 
     params.facets = getFacets(productDetails);
     params.facets_show_count = true;
-
-    if (fromReload) {
-      setSelectedFilters(defaultFilters);
-    } else {
-      params.filters = getFilterQueries(productDetails, selectedFilters);
-    }
+    params.filters = getFilterQueries(productDetails, selectedFilters);
 
     productSearch.multisearchByImage(params, handleSuccess, handleError);
   };
@@ -97,21 +91,6 @@ const EmbeddedSearchResults = (): ReactElement => {
       multisearchWithSearchBarDetails();
     }
   }, [selectedFilters]);
-
-  useEffect(() => {
-    multisearchWithSearchBarDetails();
-
-    // Allow search bar to reload search results when search bar query/image is updated
-    const handleReloadEvent = async (): Promise<void> => {
-      setFilterOptionsKey((curKey) => curKey + 1);
-      multisearchWithSearchBarDetails(true);
-    };
-    document.addEventListener('reload-embedded-search-results', handleReloadEvent);
-
-    return (): void => {
-      document.removeEventListener('reload-embedded-search-results', handleReloadEvent);
-    };
-  }, []);
 
   if (!root || error || isLoading) {
     return <></>;
@@ -135,7 +114,6 @@ const EmbeddedSearchResults = (): ReactElement => {
             && <div className='sticky top-0 hidden h-full w-1/4 flex-col md:flex'>
               <div className='p-3 text-center text-xl font-bold'>Filters</div>
               <FilterOptions
-                key={filterOptionsKey}
                 facets={facets}
                 selectedFilters={selectedFilters}
                 setSelectedFilters={setSelectedFilters}
@@ -153,7 +131,6 @@ const EmbeddedSearchResults = (): ReactElement => {
           </div>
           <ViSenzeModal className='bottom-0 top-[unset] h-4/5' open={showMobileFilterOptions} layout='mobile' onClose={() => setShowMobileFilterOptions(false)}>
             <FilterOptions
-              key={filterOptionsKey}
               facets={facets}
               selectedFilters={selectedFilters}
               setSelectedFilters={setSelectedFilters}
