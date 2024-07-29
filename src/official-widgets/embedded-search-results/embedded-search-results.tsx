@@ -52,6 +52,7 @@ const EmbeddedSearchResults = (): ReactElement => {
         queryId: res.reqid,
       });
       setProductResults(getFlattenProducts(res.result));
+      // Only set facets once
       if (facets.length === 0 && res.facets) {
         setFacets(res.facets);
       }

@@ -98,6 +98,8 @@ const SearchBar = (): ReactElement => {
       setIsOnResultsPage(true);
     }
 
+    // Listen for the 'add-image-to-search-bar' event, which is triggered by the Embedded Search Results widget when the Find Similar icon is clicked.
+    // Adds the product image to the search bar.
     const addImageToSearchBarListener = (event: Event): void => {
       setImage({ imgUrl: (event as CustomEvent).detail.im_url });
     };
