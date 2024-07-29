@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import { useRef, useEffect, useContext, useState } from 'react';
+import { useEffect, useRef, useContext, useState } from 'react';
 import type { ProductSearchResponse, Facet } from 'visearch-javascript-sdk';
 import { Button } from '@nextui-org/button';
 import { useIntl } from 'react-intl';
@@ -93,6 +93,10 @@ const EmbeddedSearchResults = (): ReactElement => {
     }
   }, [selectedFilters]);
 
+  useEffect(() => {
+    multisearchWithSearchBarDetails();
+  }, []);
+
   if (!root || error || isLoading) {
     return <></>;
   }
@@ -102,10 +106,13 @@ const EmbeddedSearchResults = (): ReactElement => {
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
         {/* Widget Title */}
         <div className='flex flex-col gap-y-2 bg-primary px-2 py-6 text-center md:py-10 lg:py-14' ref={widgetTitleRef}>
-          <div className='widget-title font-bold'>Search Results</div>
+          <div className='widget-title font-bold'>{intl.formatMessage({ id: 'embeddedSearchResults.title' })}</div>
           {
             query
-            && <div className='break-words text-lg'>Showing {productResults.length} results for <b>{query}</b></div>
+            && <div className='break-words text-lg'>
+              {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })}&nbsp;
+              {productResults.length} {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part2' })} <b>{query}</b>
+            </div>
           }
         </div>
         <div className='flex size-full flex-col bg-primary md:flex-row'>
@@ -113,7 +120,7 @@ const EmbeddedSearchResults = (): ReactElement => {
           {
             facets
             && <div className='sticky top-0 hidden h-full w-1/4 flex-col md:flex'>
-              <div className='p-3 text-center text-xl font-bold'>Filters</div>
+              <div className='p-3 text-center text-xl font-bold'>{intl.formatMessage({ id: 'embeddedSearchResults.filter' })}</div>
               <FilterOptions
                 facets={facets}
                 selectedFilters={selectedFilters}
@@ -140,7 +147,7 @@ const EmbeddedSearchResults = (): ReactElement => {
           {/* Product Result Grid */}
           {
             productResults.length > 0
-            ? <div className='grid grid-cols-2 gap-x-2 gap-y-4 px-2 md:w-3/4 md:grid-cols-3' data-pw='esr-product-result-grid'>
+            ? <div className='grid grid-cols-2 gap-x-2 gap-y-4 px-2 md:w-3/4 md:grid-cols-3 md:pl-0 md:pr-2' data-pw='esr-product-result-grid'>
               {productResults.map((result, index) => (
                 <div key={`${result.product_id}-${index}`} data-pw={`esr-product-result-card-${index + 1}`}>
                   <Result
@@ -151,8 +158,8 @@ const EmbeddedSearchResults = (): ReactElement => {
               ))}
             </div>
             : <div className='flex flex-col gap-y-2 py-24 text-center md:w-3/4'>
-                <p className='calls-to-action-text font-semibold'>No Results Found</p>
-                <p className='calls-to-action-text'>We could not find any products matching your search.</p>
+                <p className='calls-to-action-text font-semibold'>{intl.formatMessage({ id: 'embeddedSearchResults.errorMessage.part1' })}</p>
+                <p className='calls-to-action-text'>{intl.formatMessage({ id: 'embeddedSearchResults.errorMessage.part2' })}</p>
               </div>
           }
         </div>

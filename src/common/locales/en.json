@@ -62,7 +62,12 @@
   "searchBar.tapToSearchImage.part2": "search an image",
   "searchBar.tapProductGallery.part1": "or tap our trending",
   "searchBar.tapProductGallery.part2": "product gallery below",
+  "embeddedSearchResults.title": "Search Results",
+  "embeddedSearchResults.subtitle.part1": "Showing",
+  "embeddedSearchResults.subtitle.part2": "results for",
   "embeddedSearchResults.filter": "Filter",
+  "embeddedSearchResults.errorMessage.part1": "No Results Found",
+  "embeddedSearchResults.errorMessage.part2": "We could not find any products matching your search.",
   "sortType.relevance": "Relevance",
   "sortType.highToLowPrice": "High to low (Price)",
   "sortType.lowToHighPrice": "Low to high (Price)"
