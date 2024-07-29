@@ -31,6 +31,8 @@ const SearchBar = (): ReactElement => {
   });
 
   const redirectWithAutocomplete = (autocomplete: string): void => {
+    if (debugMode) return;
+
     const url = new URL(searchBarResultsSettings.redirectUrl);
     url.searchParams.append('q', autocomplete);
     if (imageId) {
