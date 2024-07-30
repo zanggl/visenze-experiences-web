@@ -32,9 +32,6 @@ const SearchBar = (): ReactElement => {
 
     const url = new URL(searchBarResultsSettings.redirectUrl);
     url.searchParams.append('q', autocomplete);
-    if (imageId) {
-      url.searchParams.append('im_id', imageId);
-    }
     window.location.href = url.toString();
   };
 
@@ -44,11 +41,10 @@ const SearchBar = (): ReactElement => {
     }
 
     const url = new URL(searchBarResultsSettings.redirectUrl);
-    if (query) {
-      url.searchParams.append('q', query);
-    }
     if (imageId) {
       url.searchParams.append('im_id', imageId);
+    } else if (query) {
+      url.searchParams.append('q', query);
     }
     window.location.href = url.toString();
   };
@@ -103,9 +99,8 @@ const SearchBar = (): ReactElement => {
               onAction={(key) => { redirectWithAutocomplete(String(key)); }}
               classNames={{
                 base: cn(
-                  'absolute rounded-b-md max-h-52 w-full overflow-y-auto border-gray-200 bg-white transition-all z-20',
+                  'absolute top-12 rounded-b-md max-h-52 w-full overflow-y-auto border-gray-200 bg-white transition-all z-20',
                   showDropdown && autocompleteResults.length > 0 ? 'border-b-1 border-x-1' : 'border-none hidden',
-                  image ? 'top-[75px]' : 'top-12',
                 ),
               }}
               aria-label='Autocomplete Dropdown'
