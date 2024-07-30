@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import { useContext, memo, useRef } from 'react';
 import { Input } from '@nextui-org/input';
 import { useIntl } from 'react-intl';
+import { cn } from '@nextui-org/theme';
 import { QUERY_MAX_CHARACTER_LENGTH } from '../../../common/constants';
 import ImageGalleryUpload from './ImageGalleryUpload';
 import type { SearchImage } from '../../../common/types/image';
@@ -34,7 +35,7 @@ const SearchBarInput: FC<SearchBarInputProps> = ({ query, setQuery, handleRedire
       ref={searchBarRef}
       className='z-30'
       classNames={{
-        inputWrapper: 'rounded-md bg-white w-full border border-gray-200 px-3',
+        inputWrapper: cn('rounded-md bg-white w-full border border-gray-200', searchBarResultsSettings.enableImageUpload ? 'px-1.5' : 'px-3'),
         input: 'text-mobile-searchBarText md:text-tablet-searchBarText lg:text-desktop-searchBarText font-mobile-searchBarText md:font-tablet-searchBarText '
           + 'lg:font-desktop-searchBarText',
       }}

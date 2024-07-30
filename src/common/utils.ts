@@ -127,25 +127,40 @@ export const getFacetNameByKey = (productDetails: WidgetConfig['displaySettings'
 
   return facetName;
 };
-export const getFilterQueries = (productDetails: WidgetConfig['displaySettings']['productDetails'],filters: Record<FacetType, any>): string[] => {
+
+export const getFilterQueries = (productDetails: WidgetConfig['displaySettings']['productDetails'], filters: Record<FacetType, any>): string[] => {
   const filterQueries: string[] = [];
+  const addQuotesToStrings = (inputSet: Set<string>): Set<string> => {
+    const outputSet = new Set<string>();
+
+    inputSet.forEach((str) => {
+      if (str.includes(' ')) {
+        outputSet.add(`"${str}"`);
+      } else {
+        outputSet.add(str);
+      }
+    });
+
+    return outputSet;
+  };
+
   if (filters.price.length > 0) {
     filterQueries.push(`${productDetails.price}:${filters.price[0]},${filters.price[1]}`);
   }
   if (filters.category.size > 0) {
-    filterQueries.push(`${productDetails.category}:${Array.from(filters.category).join(' OR ')}`);
+    filterQueries.push(`${productDetails.category}:${Array.from(addQuotesToStrings(filters.category)).join(' OR ')}`);
   }
   if (filters.gender.size > 0) {
-    filterQueries.push(`${productDetails.gender}:${Array.from(filters.gender).join(' OR ')}`);
+    filterQueries.push(`${productDetails.gender}:${Array.from(addQuotesToStrings(filters.gender)).join(' OR ')}`);
   }
   if (filters.brand.size > 0) {
-    filterQueries.push(`${productDetails.brand}:${Array.from(filters.brand).join(' OR ')}`);
+    filterQueries.push(`${productDetails.brand}:${Array.from(addQuotesToStrings(filters.brand)).join(' OR ')}`);
   }
   if (filters.colors.size > 0) {
-    filterQueries.push(`${productDetails.colors}:${Array.from(filters.colors).join(' OR ')}`);
+    filterQueries.push(`${productDetails.colors}:${Array.from(addQuotesToStrings(filters.colors)).join(' OR ')}`);
   }
   if (filters.sizes.size > 0) {
-    filterQueries.push(`${productDetails.sizes}:${Array.from(filters.sizes).join(' OR ')}`);
+    filterQueries.push(`${productDetails.sizes}:${Array.from(addQuotesToStrings(filters.sizes)).join(' OR ')}`);
   }
 
   return filterQueries;

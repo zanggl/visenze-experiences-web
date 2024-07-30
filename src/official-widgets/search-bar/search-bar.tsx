@@ -4,10 +4,8 @@ import { Listbox, ListboxItem, ListboxSection } from '@nextui-org/listbox';
 import { cn } from '@nextui-org/theme';
 import { RootContext } from '../../common/components/shadow-wrapper';
 import type { SearchImage } from '../../common/types/image';
-import { isImageUrl } from '../../common/types/image';
 import MagnifyingGlassIcon from '../../common/icons/MagnifyingGlassIcon';
 import SearchBarInput from './components/SearchBarInput';
-import SearchBarTextArea from './components/SearchBarTextArea';
 import useAutocomplete from '../../common/components/hooks/use-autocomplete';
 import { WidgetDataContext } from '../../common/types/contexts';
 
@@ -17,7 +15,6 @@ const SearchBar = (): ReactElement => {
   const [debouncedQuery, setDebouncedQuery] = useState(query);
   const [image, setImage] = useState<SearchImage | undefined>();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [isOnResultsPage, setIsOnResultsPage] = useState(false);
   const [allowRedirect, setAllowRedirect] = useState(false);
   const root = useContext(RootContext);
 
@@ -53,9 +50,6 @@ const SearchBar = (): ReactElement => {
     if (imageId) {
       url.searchParams.append('im_id', imageId);
     }
-    if (image && isImageUrl(image)) {
-      url.searchParams.append('im_url', image.imgUrl);
-    }
     window.location.href = url.toString();
   };
 
@@ -83,31 +77,9 @@ const SearchBar = (): ReactElement => {
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     const searchBarQuery = urlSearchParams.get('q');
-    const searchBarImageUrl = urlSearchParams.get('im_url');
     if (searchBarQuery) {
       setQuery(searchBarQuery);
     }
-    if (searchBarImageUrl) {
-      setImage({ imgUrl: searchBarImageUrl });
-    }
-  }, []);
-
-  useEffect(() => {
-    const redirectUrl = new URL(searchBarResultsSettings.redirectUrl);
-    if (window.location.origin === redirectUrl.origin && window.location.pathname === redirectUrl.pathname) {
-      setIsOnResultsPage(true);
-    }
-
-    // Listen for the 'add-image-to-search-bar' event, which is triggered by the Embedded Search Results widget when the Find Similar icon is clicked.
-    // Adds the product image to the search bar.
-    const addImageToSearchBarListener = (event: Event): void => {
-      setImage({ imgUrl: (event as CustomEvent).detail.im_url });
-    };
-    document.addEventListener('add-image-to-search-bar', addImageToSearchBarListener);
-
-    return (): void => {
-      document.removeEventListener('add-image-to-search-bar', addImageToSearchBarListener);
-    };
   }, []);
 
   if (error) {
@@ -123,14 +95,8 @@ const SearchBar = (): ReactElement => {
       <div className='flex size-full flex-col bg-primary'>
         <div className='relative flex w-full flex-col items-center'>
           {/* Search bar */}
-          {
-            image && isOnResultsPage
-            ? <SearchBarTextArea image={image} query={query} setQuery={setQuery} setImage={setImage} setAllowRedirect={setAllowRedirect}
-                                 handleRedirect={handleRedirect} setShowDropdown={setShowDropdown} />
-            : <SearchBarInput query={query} setQuery={setQuery} setImage={setImage} setAllowRedirect={setAllowRedirect}
-                              handleRedirect={handleRedirect} setShowDropdown={setShowDropdown} />
-          }
-
+          <SearchBarInput query={query} setQuery={setQuery} setImage={setImage} setAllowRedirect={setAllowRedirect}
+                          handleRedirect={handleRedirect} setShowDropdown={setShowDropdown} />
           {/* Autocomplete dropdown */}
           {
             <Listbox

@@ -3,6 +3,7 @@ import { useEffect, useRef, useContext, useState } from 'react';
 import type { ProductSearchResponse, Facet } from 'visearch-javascript-sdk';
 import { Button } from '@nextui-org/button';
 import { useIntl } from 'react-intl';
+import { Spinner } from '@nextui-org/spinner';
 import { WidgetDataContext, WidgetResultContext } from '../../common/types/contexts';
 import { RootContext } from '../../common/components/shadow-wrapper';
 import { getFacets, getFilterQueries, getFlattenProducts } from '../../common/utils';
@@ -31,6 +32,7 @@ const EmbeddedSearchResults = (): ReactElement => {
   const [showMobileFilterOptions, setShowMobileFilterOptions] = useState(false);
   const [metadata, setMetadata] = useState<Record<string, any>>({});
   const [isLoading, setIsLoading] = useState(true);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
   const widgetTitleRef = useRef<HTMLDivElement>(null);
@@ -56,15 +58,17 @@ const EmbeddedSearchResults = (): ReactElement => {
       if (facets.length === 0 && res.facets) {
         setFacets(res.facets);
       }
-      setIsLoading(false);
     }
+    setIsFirstLoad(false);
+    setIsLoading(false);
   };
 
-  const multisearchWithSearchBarDetails = (): void => {
+  const multisearchWithSearchBarDetails = (imgUrl?: string): void => {
+    setIsLoading(true);
     const urlSearchParams = new URLSearchParams(window.location.search);
+    const searchBarImageId = urlSearchParams.get('im_id');
     const searchBarQuery = urlSearchParams.get('q');
     setQuery(searchBarQuery || '');
-    const searchBarImageId = urlSearchParams.get('im_id');
     const params: Record<string, any> = {
       ...searchSettings,
     };
@@ -75,7 +79,9 @@ const EmbeddedSearchResults = (): ReactElement => {
     if (searchBarQuery) {
       params.q = searchBarQuery;
     }
-    if (searchBarImageId) {
+    if (imgUrl) {
+      params.im_url = imgUrl;
+    } else if (searchBarImageId) {
       params.im_id = searchBarImageId;
     }
 
@@ -97,7 +103,16 @@ const EmbeddedSearchResults = (): ReactElement => {
     multisearchWithSearchBarDetails();
   }, []);
 
-  if (!root || error || isLoading) {
+  if (isLoading && isFirstLoad) {
+    return (
+      <div className='flex justify-center py-20'>
+        <Spinner color='secondary'/>
+      </div>
+    );
+  }
+
+  if (!root || error) {
+    console.error(error);
     return <></>;
   }
 
@@ -146,21 +161,30 @@ const EmbeddedSearchResults = (): ReactElement => {
           </ViSenzeModal>
           {/* Product Result Grid */}
           {
-            productResults.length > 0
-            ? <div className='grid grid-cols-2 gap-x-2 gap-y-4 px-2 md:w-3/4 md:grid-cols-3 md:pl-0 md:pr-2' data-pw='esr-product-result-grid'>
-              {productResults.map((result, index) => (
-                <div key={`${result.product_id}-${index}`} data-pw={`esr-product-result-card-${index + 1}`}>
-                  <Result
-                    index={index}
-                    result={result}
-                  />
-                </div>
-              ))}
-            </div>
-            : <div className='flex flex-col gap-y-2 py-24 text-center md:w-3/4'>
-                <p className='calls-to-action-text font-semibold'>{intl.formatMessage({ id: 'embeddedSearchResults.errorMessage.part1' })}</p>
-                <p className='calls-to-action-text'>{intl.formatMessage({ id: 'embeddedSearchResults.errorMessage.part2' })}</p>
+            isLoading && !isFirstLoad
+              ? <div className='flex w-3/4 justify-center py-20'>
+                <Spinner color='secondary'/>
               </div>
+              : <>
+                {
+                  productResults.length > 0
+                    ? <div className='grid grid-cols-2 gap-x-2 gap-y-4 px-2 pb-2 md:w-3/4 md:grid-cols-3 md:pl-0 md:pr-2' data-pw='esr-product-result-grid'>
+                      {productResults.map((result, index) => (
+                        <div key={`${result.product_id}-${index}`} data-pw={`esr-product-result-card-${index + 1}`}>
+                          <Result
+                            index={index}
+                            result={result}
+                            findSimilarClickHandler={multisearchWithSearchBarDetails}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    : <div className='flex flex-col gap-y-2 py-24 text-center md:w-3/4'>
+                      <p className='calls-to-action-text font-semibold'>{intl.formatMessage({ id: 'embeddedSearchResults.errorMessage.part1' })}</p>
+                      <p className='calls-to-action-text'>{intl.formatMessage({ id: 'embeddedSearchResults.errorMessage.part2' })}</p>
+                    </div>
+                }
+              </>
           }
         </div>
       </WidgetResultContext.Provider>

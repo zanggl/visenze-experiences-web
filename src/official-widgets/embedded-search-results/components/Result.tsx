@@ -14,9 +14,10 @@ import MoreLikeThisIcon from '../../../common/icons/MoreLikeThisIcon';
 interface ResultProps {
   index: number;
   result: ProcessedProduct;
+  findSimilarClickHandler: (imgUrl: string) => void;
 }
 
-const Result: FC<ResultProps> = ({ index, result }) => {
+const Result: FC<ResultProps> = ({ index, result, findSimilarClickHandler }) => {
   const { productSearch, displaySettings, callbacks, debugMode, customizations, searchBarResultsSettings } = useContext(WidgetDataContext);
   const { productDetails } = displaySettings;
   const { metadata } = useContext(WidgetResultContext);
@@ -52,15 +53,6 @@ const Result: FC<ResultProps> = ({ index, result }) => {
       return Number(result[productDetails.originalPrice].value).toFixed(2);
     }
     return '';
-  };
-
-  const onClickHandler = (product: ProcessedProduct): void => {
-    const addImageToSearchBarEvent = new CustomEvent('add-image-to-search-bar', {
-      detail: {
-        im_url: product.im_url,
-      },
-    });
-    document.dispatchEvent(addImageToSearchBarEvent);
   };
 
   // Send Product View tracking event when the product is in view
@@ -113,7 +105,7 @@ const Result: FC<ResultProps> = ({ index, result }) => {
             onClick={(event) => {
               event.preventDefault();
               event.stopPropagation();
-              onClickHandler(result);
+              findSimilarClickHandler(result.im_url);
             }}
             data-pw='esr-more-like-this-button'
           >
