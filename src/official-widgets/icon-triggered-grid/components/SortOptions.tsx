@@ -38,7 +38,7 @@ const SortOptions: FC<SortOptionsProps> = ({ sortType, setSortType, setScreen, c
       </div>
 
       {/* Back button */}
-      <Button className='mr-3 w-1/4 flex-shrink-0 self-end rounded border bg-buttonPrimary px-14 text-white'
+      <Button className='my-3 mr-3 w-1/4 flex-shrink-0 self-end rounded border bg-buttonPrimary px-14 text-white'
               radius='none' onClick={() => setScreen(null)} data-pw='itg-back-button'>
         <span className='text-buttonPrimary'>
           {intl.formatMessage({ id: 'iconTriggeredGrid.back' })}

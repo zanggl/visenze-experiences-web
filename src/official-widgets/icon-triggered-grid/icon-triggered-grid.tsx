@@ -191,6 +191,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
             {
               screen === ScreenType.FILTER && breakpoint === WidgetBreakpoint.DESKTOP
               && <FilterOptions
+                className='absolute left-0 top-14 hidden h-9/10 w-full flex-col justify-between gap-4 bg-primary px-4 pb-8 pt-4 text-primary lg:flex'
                 facets={facets}
                 selectedFilters={selectedFilters}
                 setSelectedFilters={setSelectedFilters}
@@ -219,6 +220,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
               {
                 screen === ScreenType.FILTER
                 && <FilterOptions
+                  className='flex h-full flex-col justify-between'
                   facets={facets}
                   selectedFilters={selectedFilters}
                   setSelectedFilters={setSelectedFilters}

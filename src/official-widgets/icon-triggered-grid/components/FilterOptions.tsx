@@ -17,13 +17,14 @@ import type { ScreenType } from '../icon-triggered-grid';
  */
 
 interface FilterOptionsProps {
+  className: string;
   facets: Facet[];
   selectedFilters: Record<FacetType, any>;
   setSelectedFilters: (selectedFilters: any) => void;
   setScreen: (screen: ScreenType | null) => void;
 }
 
-const FilterOptions:FC<FilterOptionsProps> = ({ facets, selectedFilters, setSelectedFilters, setScreen }) => {
+const FilterOptions:FC<FilterOptionsProps> = ({ className, facets, selectedFilters, setSelectedFilters, setScreen }) => {
   const { displaySettings } = useContext(WidgetDataContext);
   const intl = useIntl();
 
@@ -82,7 +83,7 @@ const FilterOptions:FC<FilterOptionsProps> = ({ facets, selectedFilters, setSele
   };
 
   return (
-    <div className='absolute left-0 top-14 hidden h-9/10 w-full flex-col justify-between gap-4 bg-primary px-4 pb-8 pt-4 text-primary lg:flex'>
+    <div className={className}>
       <Accordion className='divide-y-1 overflow-y-auto' selectionMode='multiple'>
         {
           facets.map((facet) => (
@@ -101,7 +102,7 @@ const FilterOptions:FC<FilterOptionsProps> = ({ facets, selectedFilters, setSele
       </Accordion>
 
       {/* Back button */}
-      <Button className='mr-3 w-1/4 flex-shrink-0 self-end rounded border bg-buttonPrimary px-14 text-white'
+      <Button className='my-3 mr-3 w-1/4 flex-shrink-0 self-end rounded border bg-buttonPrimary px-14 text-white'
               radius='none' onClick={() => setScreen(null)} data-pw='itg-back-button'>
         <span className='text-buttonPrimary'>
           {intl.formatMessage({ id: 'iconTriggeredGrid.back' })}
