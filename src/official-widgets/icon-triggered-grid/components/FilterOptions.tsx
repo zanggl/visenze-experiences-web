@@ -66,9 +66,10 @@ const FilterOptions:FC<FilterOptionsProps> = ({ className, facets, selectedFilte
       });
     };
 
-    return facet.items.map((item) => (
+    return facet.items.map((item, index) => (
       <div className='flex w-full justify-between' key={item.value}>
         <Checkbox
+          data-pw={`itg-${facet.key}-filter-${index}`}
           radius='none'
           value={item.value}
           color='secondary'
