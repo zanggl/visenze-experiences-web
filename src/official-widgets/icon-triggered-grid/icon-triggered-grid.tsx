@@ -1,12 +1,12 @@
 import type { FC } from 'react';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useEffect, useCallback, useContext, useState } from 'react';
 import { Button } from '@nextui-org/button';
 import { useIntl } from 'react-intl';
 import { Actions, Category, Labels } from '../../common/types/tracking-constants';
 import { WidgetResultContext } from '../../common/types/contexts';
 import useBreakpoint from '../../common/components/hooks/use-breakpoint';
 import type { WidgetClient, WidgetConfig } from '../../common/visenze-core';
-import { SortType, WidgetBreakpoint } from '../../common/types/constants';
+import { type FacetType, SortType, WidgetBreakpoint } from '../../common/types/constants';
 import { RootContext } from '../../common/components/shadow-wrapper';
 import ViSenzeModal from '../../common/components/modal/visenze-modal';
 import useRecommendationSearch from '../../common/components/hooks/use-recommendation-search';
@@ -16,7 +16,6 @@ import Result from './components/Result';
 import CloseIcon from '../../common/icons/CloseIcon';
 import SortOptions from './components/SortOptions';
 import FilterOptions from './components/FilterOptions';
-import type { PriceFilter } from '../../common/types/filter';
 import { getSortTypeIntlId } from '../../common/utils';
 
 export enum ScreenType {
@@ -36,15 +35,22 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
   const [retryCount, setRetryCount] = useState(0);
   const [screen, setScreen] = useState<ScreenType | null>(null);
   const [sortType, setSortType] = useState<SortType>(SortType.RELEVANCE);
-  const [categoryFilter, setCategoryFilter] = useState<Set<string>>(new Set());
-  const [priceFilter, setPriceFilter] = useState<PriceFilter | null>(null);
-  const [categorySet, setCategorySet] = useState<Set<string>>(new Set());
+  const defaultFilters = {
+    price: [],
+    category: new Set<string>(),
+    gender: new Set<string>(),
+    brand: new Set<string>(),
+    sizes: new Set<string>(),
+    colors: new Set<string>(),
+  };
+  const [selectedFilters, setSelectedFilters] = useState<Record<FacetType, any>>(defaultFilters);
   const root = useContext(RootContext);
   const intl = useIntl();
 
   const {
     productInfo,
     productResults,
+    facets,
     metadata,
     error,
   } = useRecommendationSearch({
@@ -53,15 +59,12 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
     productId,
     retryCount,
     sortType,
-    priceFilter,
-    categoryFilter,
+    filters: selectedFilters,
   });
 
   const onModalClose = useCallback((): void => {
     setDialogVisible(false);
     setSortType(SortType.RELEVANCE);
-    setCategoryFilter(new Set());
-    setPriceFilter(null);
     setRetryCount(0);
     if (productResults.length > 0) {
       productSearch.send(Actions.CLOSE, {
@@ -69,19 +72,6 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
         metadata,
       });
     }
-  }, [productResults]);
-
-  // Retrieve categories from product results
-  useEffect(() => {
-    const newCategorySet: Set<string> = new Set();
-    productResults.forEach((result) => {
-      const categoryArr = result[config.displaySettings.productDetails.category];
-      categoryArr.forEach((category: string) => {
-        newCategorySet.add(category);
-      });
-    });
-
-    setCategorySet((prev) => new Set([...prev, ...newCategorySet]));
   }, [productResults]);
 
   const onPopupIconClick = (): void => {
@@ -201,13 +191,10 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
             {
               screen === ScreenType.FILTER && breakpoint === WidgetBreakpoint.DESKTOP
               && <FilterOptions
-                className='absolute left-0 top-14 hidden h-9/10 w-full flex-col justify-between gap-4 px-8 pb-8 pt-4 text-primary lg:flex'
-                categorySet={categorySet}
-                priceFilter={priceFilter}
-                setPriceFilter={setPriceFilter}
-                categoryFilter={categoryFilter}
-                setCategoryFilter={setCategoryFilter}
-                productResults={productResults}
+                className='absolute left-0 top-14 hidden h-9/10 w-full flex-col justify-between gap-4 bg-primary px-4 pb-8 pt-4 text-primary lg:flex'
+                facets={facets}
+                selectedFilters={selectedFilters}
+                setSelectedFilters={setSelectedFilters}
                 setScreen={setScreen}
               />
             }
@@ -234,12 +221,9 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
                 screen === ScreenType.FILTER
                 && <FilterOptions
                   className='flex h-full flex-col justify-between'
-                  categorySet={categorySet}
-                  priceFilter={priceFilter}
-                  setPriceFilter={setPriceFilter}
-                  categoryFilter={categoryFilter}
-                  setCategoryFilter={setCategoryFilter}
-                  productResults={productResults}
+                  facets={facets}
+                  selectedFilters={selectedFilters}
+                  setSelectedFilters={setSelectedFilters}
                   setScreen={setScreen}
                 />
               }

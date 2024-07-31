@@ -1,5 +1,5 @@
 import type { FC, ReactElement } from 'react';
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import { Button } from '@nextui-org/button';
 import { cn } from '@nextui-org/theme';
 import { Radio, RadioGroup } from '@nextui-org/radio';
@@ -20,7 +20,6 @@ interface SortOptionsProps {
 }
 
 const SortOptions: FC<SortOptionsProps> = ({ sortType, setSortType, setScreen, className }): ReactElement => {
-  const [selectedOption, setSelectedOption] = useState<SortType>(sortType);
   const intl = useIntl();
 
   return (
@@ -28,8 +27,8 @@ const SortOptions: FC<SortOptionsProps> = ({ sortType, setSortType, setScreen, c
       <div className='primary-text py-3 text-center text-lg lg:py-0 lg:text-start'>{intl.formatMessage({ id: 'iconTriggeredGrid.sort' })}</div>
       <div className='calls-to-action-text flex h-full flex-col gap-2 border-1 p-4'>
         <RadioGroup
-          value={selectedOption}
-          onChange={(event) => setSelectedOption(event.target.value as SortType)}
+          value={sortType}
+          onChange={(event) => setSortType(event.target.value as SortType)}
           color='secondary'
         >
           <Radio value={SortType.RELEVANCE} data-pw='itg-sort-relevance'>{intl.formatMessage({ id: getSortTypeIntlId(SortType.RELEVANCE) })}</Radio>
@@ -38,25 +37,13 @@ const SortOptions: FC<SortOptionsProps> = ({ sortType, setSortType, setScreen, c
         </RadioGroup>
       </div>
 
-      {/* Cancel & Apply buttons */}
-      <div className='flex justify-around py-4 lg:ml-auto lg:justify-normal lg:gap-4 lg:py-0'>
-        <Button className='rounded border bg-white px-14 text-black' radius='none' onClick={() => setScreen(null)} data-pw='itg-cancel-sort-button'>
-          {intl.formatMessage({ id: 'iconTriggeredGrid.cancel' })}
-        </Button>
-        <Button
-          data-pw='itg-apply-sort-button'
-          className='rounded border bg-buttonPrimary px-14 text-white'
-          radius='none'
-          onClick={() => {
-            setSortType(selectedOption);
-            setScreen(null);
-          }}
-        >
-          <span className='text-buttonPrimary'>
-            {intl.formatMessage({ id: 'iconTriggeredGrid.apply' })}
-          </span>
-        </Button>
-      </div>
+      {/* Back button */}
+      <Button className='my-3 mr-3 w-1/4 flex-shrink-0 self-end rounded border bg-buttonPrimary px-14 text-white'
+              radius='none' onClick={() => setScreen(null)} data-pw='itg-back-button'>
+        <span className='text-buttonPrimary'>
+          {intl.formatMessage({ id: 'iconTriggeredGrid.back' })}
+        </span>
+      </Button>
     </div>
   );
 };

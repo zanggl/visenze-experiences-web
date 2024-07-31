@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import type {
+  Facet,
   ObjectProductResponse,
   ProductSearchResponse,
   ProductSearchResponseSuccess,
   ProductType,
 } from 'visearch-javascript-sdk';
 import type { WidgetClient, WidgetConfig } from '../../visenze-core';
-import { SortType } from '../../types/constants';
+import {type FacetType, SortType} from '../../types/constants';
 import { Actions, Category } from '../../types/tracking-constants';
 import type { ProcessedProduct } from '../../types/product';
-import { getFlattenProduct, getFlattenProducts, parseToProductTypes } from '../../utils';
-import type { PriceFilter } from '../../types/filter';
+import {getFacets, getFilterQueries, getFlattenProduct, getFlattenProducts, parseToProductTypes} from '../../utils';
 
 interface RecommendationSearchProps {
   productSearch: WidgetClient;
@@ -18,8 +18,7 @@ interface RecommendationSearchProps {
   productId: string;
   retryCount: number;
   sortType?: SortType;
-  categoryFilter?: Set<string>;
-  priceFilter?: PriceFilter | null;
+  filters?: Record<FacetType, any>;
 }
 
 export interface RecommendationSearch {
@@ -33,6 +32,7 @@ export interface RecommendationSearch {
   objectIndex: number;
   setObjectIndex: (objectIndex: number) => void;
   objects: ObjectProductResponse[];
+  facets: Facet[];
 }
 
 const useRecommendationSearch = ({
@@ -41,12 +41,12 @@ const useRecommendationSearch = ({
   productId,
   retryCount,
   sortType,
-  priceFilter,
-  categoryFilter,
+  filters,
 }: RecommendationSearchProps): RecommendationSearch => {
   const [response, setResponse] = useState<ProductSearchResponseSuccess | undefined>();
   const [metadata, setMetadata] = useState<Record<string, any>>({});
   const [productResults, setProductResults] = useState<ProcessedProduct[]>([]);
+  const [facets, setFacets] = useState<Facet[]>([]);
   const [referenceImageUrl, setReferenceImageUrl] = useState<string>('');
   const [objects, setObjects] = useState<ObjectProductResponse[]>([]);
   const [productInfo, setProductInfo] = useState<ProcessedProduct | undefined>();
@@ -78,22 +78,13 @@ const useRecommendationSearch = ({
     setProductTypes([]);
   };
 
-  const getFilters = (): string[] => {
-    const filters = [];
-    if (priceFilter) {
-      filters.push(`${productDetails.price}:${priceFilter.minPrice || 0},${priceFilter.maxPrice || Number.MAX_SAFE_INTEGER}`);
-    }
-    if (categoryFilter?.size) {
-      filters.push(`${productDetails.category}:${Array.from(categoryFilter).join(' OR ')}`);
-    }
-    return filters;
-  };
-
   const searchById = (): void => {
     const params = config.searchSettings;
     params['return_product_info'] = true;
     params['show_best_product_images'] = true;
     params['sort_by'] = '';
+    params.facets = getFacets(productDetails);
+    params.facets_show_count = true;
 
     if (sortType === SortType.PRICE_HTL) {
       params['sort_by'] = `${productDetails.price}:desc`;
@@ -101,9 +92,8 @@ const useRecommendationSearch = ({
       params['sort_by'] = `${productDetails.price}:asc`;
     }
 
-    const filters = getFilters();
-    if (filters.length > 0) {
-      params['filters'] = filters;
+    if (filters) {
+      params.filters = getFilterQueries(productDetails, filters);
     }
 
     productSearch.searchById(productId, params, handleSuccess, handleError);
@@ -153,6 +143,11 @@ const useRecommendationSearch = ({
       setMetadata(metadata);
       setObjects(response.objects || []);
 
+      // Set facets only once
+      if (facets.length === 0 && response.facets) {
+        setFacets(response.facets);
+      }
+
       const productTypes = parseToProductTypes(response);
       if (productTypes.length > 0) {
         setProductTypes(productTypes);
@@ -179,7 +174,7 @@ const useRecommendationSearch = ({
     } else {
       resetSearch();
     }
-  }, [productId, sortType, categoryFilter, priceFilter]);
+  }, [productId, sortType, filters]);
 
   // Attempt the API call again up to the maximum allowed retries
   useEffect(() => {
@@ -206,6 +201,7 @@ const useRecommendationSearch = ({
     objectIndex,
     setObjectIndex,
     objects,
+    facets,
   };
 };
 

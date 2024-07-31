@@ -39,7 +39,7 @@
   "iconTriggeredGrid.sort": "Sort",
   "iconTriggeredGrid.filter": "Filter",
   "iconTriggeredGrid.cancel": "Cancel",
-  "iconTriggeredGrid.apply": "Apply",
+  "iconTriggeredGrid.back": "Back",
   "iconTriggeredGrid.priceFilterTitle": "Price",
   "iconTriggeredGrid.minPriceFilterInputLabel": "Min price",
   "iconTriggeredGrid.maxPriceFilterInputLabel": "Max price",
