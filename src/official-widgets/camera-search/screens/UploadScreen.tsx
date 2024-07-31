@@ -2,7 +2,7 @@ import type { FC, ReactNode } from 'react';
 import { useContext, useEffect } from 'react';
 import { Card, CardFooter } from '@nextui-org/card';
 import { useIntl } from 'react-intl';
-import FileDropzone from '../components/FileDropzone';
+import FileDropzone from '../../../common/components/FileDropzone';
 import type { ScreenType } from '../../../common/types/constants';
 import type { SearchImage } from '../../../common/types/image';
 import { WidgetDataContext } from '../../../common/types/contexts';
@@ -89,7 +89,7 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
       <div className='size-full bg-primary'>
         <div className='flex flex-col pb-5 md:flex-row'>
           <div className='px-1/5 md:w-1/3 md:px-10'>
-            <FileDropzone onImageUpload={onImageUpload} name='upload-icon'>
+            <FileDropzone onImageUpload={onImageUpload} name='cs-upload-icon'>
               <div
                 className='flex w-full flex-col items-center rounded-3xl border border-black py-1 text-center text-medium'>
                 {
@@ -157,7 +157,7 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
           </div>
 
           <div className='pb-5'>
-            <FileDropzone onImageUpload={onImageUpload} name='use-camera'>
+            <FileDropzone onImageUpload={onImageUpload} name='cs-use-camera'>
               <div className='mx-16 mt-3 rounded-full bg-buttonPrimary py-2 text-center font-bold text-buttonPrimary md:hidden'>
                 {intl.formatMessage({ id: 'cameraSearch.useCamera' })}
               </div>

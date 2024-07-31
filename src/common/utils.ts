@@ -1,7 +1,9 @@
 import type { Product, ProductSearchResponseSuccess, ProductType } from 'visearch-javascript-sdk';
 import type { CroppedBox } from './types/box';
 import type { ProcessedProduct } from './types/product';
-import { SortType } from './types/constants';
+import {FacetType, SortType} from './types/constants';
+import type {SearchImage} from './types/image';
+import type {WidgetConfig} from './visenze-core';
 
 export const getFlattenProduct = (result: Product): ProcessedProduct => {
   return {
@@ -86,4 +88,80 @@ export const getSortTypeIntlId = (sortType: SortType): string => {
     default:
       return '';
   }
+};
+
+export const getFile = (img: SearchImage | undefined): string => {
+  if (!img) {
+    return '';
+  }
+  if ('imgUrl' in img) {
+    return img.imgUrl;
+  }
+  return img.file;
+};
+
+export const getTitleCase = (text: string): string => {
+  if (!text) return '';
+
+  const textLowerCase = text.toLowerCase();
+  return textLowerCase.charAt(0).toUpperCase() + textLowerCase.slice(1);
+};
+
+export const getFacets = (productDetails: WidgetConfig['displaySettings']['productDetails']): string[] => {
+  const facets: string[] = [];
+  Object.values(FacetType).forEach((facet) => {
+    if (productDetails[facet]) {
+      facets.push(productDetails[facet]);
+    }
+  });
+  return facets;
+};
+
+export const getFacetNameByKey = (productDetails: WidgetConfig['displaySettings']['productDetails'], key: string): string => {
+  let facetName = '';
+  Object.entries(productDetails).find(([name, value]) => {
+    if (value === key) {
+      facetName = name;
+    }
+  });
+
+  return facetName;
+};
+
+export const getFilterQueries = (productDetails: WidgetConfig['displaySettings']['productDetails'], filters: Record<FacetType, any>): string[] => {
+  const filterQueries: string[] = [];
+  const addQuotesToStrings = (inputSet: Set<string>): Set<string> => {
+    const outputSet = new Set<string>();
+
+    inputSet.forEach((str) => {
+      if (str.includes(' ')) {
+        outputSet.add(`"${str}"`);
+      } else {
+        outputSet.add(str);
+      }
+    });
+
+    return outputSet;
+  };
+
+  if (filters.price.length > 0) {
+    filterQueries.push(`${productDetails.price}:${filters.price[0]},${filters.price[1]}`);
+  }
+  if (filters.category.size > 0) {
+    filterQueries.push(`${productDetails.category}:${Array.from(addQuotesToStrings(filters.category)).join(' OR ')}`);
+  }
+  if (filters.gender.size > 0) {
+    filterQueries.push(`${productDetails.gender}:${Array.from(addQuotesToStrings(filters.gender)).join(' OR ')}`);
+  }
+  if (filters.brand.size > 0) {
+    filterQueries.push(`${productDetails.brand}:${Array.from(addQuotesToStrings(filters.brand)).join(' OR ')}`);
+  }
+  if (filters.colors.size > 0) {
+    filterQueries.push(`${productDetails.colors}:${Array.from(addQuotesToStrings(filters.colors)).join(' OR ')}`);
+  }
+  if (filters.sizes.size > 0) {
+    filterQueries.push(`${productDetails.sizes}:${Array.from(addQuotesToStrings(filters.sizes)).join(' OR ')}`);
+  }
+
+  return filterQueries;
 };

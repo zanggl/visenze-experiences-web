@@ -9,7 +9,7 @@ import { cn } from '@nextui-org/theme';
 import { useIntl } from 'react-intl';
 import type { ProcessedProduct } from '../../../common/types/product';
 import { WidgetDataContext, WidgetResultContext } from '../../../common/types/contexts';
-import FileDropzone from '../components/FileDropzone';
+import FileDropzone from '../../../common/components/FileDropzone';
 import { ScreenType } from '../../../common/types/constants';
 import type { SearchImage } from '../../../common/types/image';
 import Result from '../components/Result';
