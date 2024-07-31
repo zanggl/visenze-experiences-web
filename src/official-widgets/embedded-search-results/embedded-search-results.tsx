@@ -98,10 +98,9 @@ const EmbeddedSearchResults = (): ReactElement => {
   };
 
   const findSimilarClickHandler = (imgUrl: string): void => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
     multisearchWithSearchBarDetails(imgUrl);
     const isProductInHistory = findSimilarHistory.some((item) => item === imgUrl);
-
     if (!isProductInHistory) {
       setFindSimilarHistory([...findSimilarHistory, imgUrl]);
     }
