@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC, ReactElement } from 'react';
 import { useEffect, useRef, useContext, useState } from 'react';
 import type { ProductSearchResponse, Facet } from 'visearch-javascript-sdk';
 import { Button } from '@nextui-org/button';
@@ -11,12 +11,17 @@ import type { ProcessedProduct } from '../../common/types/product';
 import { Category } from '../../common/types/tracking-constants';
 import Result from './components/Result';
 import type { FacetType } from '../../common/types/constants';
+import type { WidgetConfig } from '../../common/visenze-core';
 import FilterOptions from './components/FilterOptions';
 import ViSenzeModal from '../../common/components/modal/visenze-modal';
 import FilterIcon from '../../common/icons/FilterIcon';
 import FindSimilarHistory from './components/FindSimilarHistory';
 
-const EmbeddedSearchResults = (): ReactElement => {
+interface EmbeddedSearchResultProps {
+  config: WidgetConfig;
+}
+
+const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): ReactElement => {
   const { productSearch, searchSettings, displaySettings, debugMode } = useContext(WidgetDataContext);
   const { productDetails } = displaySettings;
   const [productResults, setProductResults] = useState<ProcessedProduct[]>([]);
@@ -182,7 +187,8 @@ const EmbeddedSearchResults = (): ReactElement => {
             </span>
             </Button>
           </div>
-          <ViSenzeModal className='bottom-0 top-[unset] h-4/5' open={showMobileFilterOptions} layout='mobile' onClose={() => setShowMobileFilterOptions(false)}>
+          <ViSenzeModal className='bottom-0 top-[unset] h-4/5' open={showMobileFilterOptions} layout='mobile' onClose={() => setShowMobileFilterOptions(false)}
+                        placementId={`${config.appSettings.placementId}`}>
             <FilterOptions
               facets={facets}
               selectedFilters={selectedFilters}

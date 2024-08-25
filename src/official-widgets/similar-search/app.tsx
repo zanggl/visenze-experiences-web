@@ -24,7 +24,7 @@ const App: FC<AppProps> = ({ config, productSearch, element }) => {
     <WidgetDataContext.Provider value={{ ...config, productSearch, widgetType, version }}>
       <ShadowWrapper>
         <IntlProvider messages={messages} locale={locale} defaultLocale='en'>
-          <SimilarSearch configs={config} productSearch={productSearch} element={element} />
+          <SimilarSearch config={config} productSearch={productSearch} element={element} />
         </IntlProvider>
       </ShadowWrapper>
     </WidgetDataContext.Provider>

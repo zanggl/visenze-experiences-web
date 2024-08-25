@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC, ReactElement } from 'react';
 import { useEffect, useContext, useState } from 'react';
 import { Listbox, ListboxItem, ListboxSection } from '@nextui-org/listbox';
 import { cn } from '@nextui-org/theme';
@@ -8,8 +8,13 @@ import MagnifyingGlassIcon from '../../common/icons/MagnifyingGlassIcon';
 import SearchBarInput from './components/SearchBarInput';
 import useAutocomplete from '../../common/components/hooks/use-autocomplete';
 import { WidgetDataContext } from '../../common/types/contexts';
+import type { WidgetConfig } from '../../common/visenze-core';
 
-const SearchBar = (): ReactElement => {
+interface SearchBarResultProps {
+  config: WidgetConfig;
+}
+
+const SearchBar: FC<SearchBarResultProps> = ({ config }): ReactElement => {
   const { searchBarResultsSettings, debugMode } = useContext(WidgetDataContext);
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState(query);
@@ -92,7 +97,8 @@ const SearchBar = (): ReactElement => {
         <div className='relative flex w-full flex-col items-center'>
           {/* Search bar */}
           <SearchBarInput query={query} setQuery={setQuery} setImage={setImage} setAllowRedirect={setAllowRedirect}
-                          handleRedirect={handleRedirect} setShowDropdown={setShowDropdown} />
+                          handleRedirect={handleRedirect} setShowDropdown={setShowDropdown}
+                          placementId={`${config.appSettings.placementId}`} />
           {/* Autocomplete dropdown */}
           {
             <Listbox

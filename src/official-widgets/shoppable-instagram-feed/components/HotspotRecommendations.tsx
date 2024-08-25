@@ -24,9 +24,10 @@ interface HotspotRecommendationsProps {
   openDrawer: boolean;
   setOpenDrawer: (openDrawer: boolean) => void;
   activeImageUrl: string;
+  placementId: string;
 }
 
-const HotspotRecommendations: FC<HotspotRecommendationsProps> = ({ objects, openDrawer, setOpenDrawer, activeImageUrl }) => {
+const HotspotRecommendations: FC<HotspotRecommendationsProps> = ({ objects, openDrawer, setOpenDrawer, activeImageUrl, placementId }) => {
   const { productTypes } = useContext(WidgetResultContext);
   const { selectedHotspot, setSelectedHotspot } = useContext(CroppingContext) ?? {};
   const intl = useIntl();
@@ -45,7 +46,8 @@ const HotspotRecommendations: FC<HotspotRecommendationsProps> = ({ objects, open
   }, [objects, selectedHotspot]);
 
   return (
-    <ViSenzeModal open={openDrawer} onClose={closeDrawerHandler} layout='mobile' className='bottom-0 top-[unset] h-9/10 w-full rounded-t-xl'>
+    <ViSenzeModal open={openDrawer} onClose={closeDrawerHandler} layout='mobile' className='bottom-0 top-[unset] h-9/10 w-full rounded-t-xl'
+                  placementId={placementId} idSuffix='hotspot' >
       <div className='flex size-full flex-col bg-primary' data-pw='sif-hotspot-recommendations'>
         {/* Close Button Tablet/Desktop */}
         <Button isIconOnly className='absolute right-3 top-2 hidden bg-transparent md:flex' onClick={closeDrawerHandler} data-pw='sif-drawer-close-button-desktop'>

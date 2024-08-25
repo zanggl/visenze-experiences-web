@@ -73,10 +73,10 @@ const ChatArea: React.FC<ChatAreaProps> = ({ message, onMessageChange, onOverflo
 };
 
 const ShoppingAssistant = memo((props: {
-  configs: WidgetConfig;
+  config: WidgetConfig;
   productSearch: WidgetClient;
 }) => {
-  const { configs, productSearch } = props;
+  const { config, productSearch } = props;
   const breakpoint = useBreakpoint();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [message, setMessage] = useState('');
@@ -110,7 +110,7 @@ const ShoppingAssistant = memo((props: {
     if (!messageToSend) {
       return;
     }
-    if (!configs.appSettings.appKey || !configs.appSettings.placementId) {
+    if (!config.appSettings.appKey || !config.appSettings.placementId) {
       console.error('App Key or Placement ID not found');
       return;
     }
@@ -148,14 +148,14 @@ const ShoppingAssistant = memo((props: {
     });
     setAllowUserInput(false);
     const params = new URLSearchParams({
-      app_key: configs.appSettings.appKey,
-      placement_id: configs.appSettings.placementId.toString(),
+      app_key: config.appSettings.appKey,
+      placement_id: config.appSettings.placementId.toString(),
       chat_id: chatIdToUse,
       q: messageToSend,
       va_uid: uid,
       va_sid: sid,
     });
-    fetchEventSource(`${configs.appSettings.endpoint}/v1/product/multisearch/chat/shopping-assistant?${params.toString()}`, {
+    fetchEventSource(`${config.appSettings.endpoint}/v1/product/multisearch/chat/shopping-assistant?${params.toString()}`, {
       openWhenHidden: true,
       onmessage: (ev) => {
         if (ev.event === 'chat_id') {
@@ -360,7 +360,7 @@ const ShoppingAssistant = memo((props: {
 
   // Accompanying logic to open the widget via the widget client's openWidget function
   useEffect(() => {
-    const element = document.querySelector(configs.displaySettings.cssSelector) as HTMLElement | null;
+    const element = document.querySelector(config.displaySettings.cssSelector) as HTMLElement | null;
     const callback = (mutationList: MutationRecord[]): void => {
       mutationList.forEach((mutation) => {
         if (mutation.type === 'attributes' && mutation.attributeName === 'data-visenze-dialog-open') {
@@ -397,16 +397,17 @@ const ShoppingAssistant = memo((props: {
 
   return (
       <>
-        {!configs.hideTrigger && (
+        {!config.hideTrigger && (
             <>
-              {configs.customizations?.icons.cameraButton
-                  ? <img src={configs.customizations.icons.cameraButton} onClick={onChatButtonClick}
+              {config.customizations?.icons.cameraButton
+                  ? <img src={config.customizations.icons.cameraButton} onClick={onChatButtonClick}
                          className='size-7 cursor-pointer'></img>
                   : <NewChatIcon onClickHandler={onChatButtonClick}/>
               }
             </>
         )}
-        <ViSenzeModal open={dialogVisible} layout={breakpoint} onClose={onModalClose}>
+        <ViSenzeModal open={dialogVisible} layout={breakpoint} onClose={onModalClose}
+                      placementId={`${config.appSettings.placementId}`}>
           {getScreen()}
         </ViSenzeModal>
       </>

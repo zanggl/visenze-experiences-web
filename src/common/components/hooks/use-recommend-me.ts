@@ -5,7 +5,7 @@ import { getFlattenProduct } from '../../utils';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 
 interface RecommendMeProps {
-  configs: WidgetConfig;
+  config: WidgetConfig;
   productSearch: WidgetClient;
   productId: string;
 }
@@ -19,11 +19,11 @@ export interface RecommendMe {
 }
 
 const useRecommendMe = ({
-  configs,
+  config,
   productSearch,
   productId,
 }: RecommendMeProps): RecommendMe => {
-  const { appKey, placementId, endpoint } = configs.appSettings;
+  const { appKey, placementId, endpoint } = config.appSettings;
   const [productResults, setProductResults] = useState<ProcessedProduct[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [requestId, setRequestId] = useState('');
@@ -52,7 +52,7 @@ const useRecommendMe = ({
       q: query,
       va_uid: visenzeUserId,
       va_sid: visenzeSessionId,
-      attrs_to_get: configs.searchSettings.attrs_to_get.join(','),
+      attrs_to_get: config.searchSettings.attrs_to_get.join(','),
     });
 
     // Listen to the event stream and retrieve relevant data based on the event type

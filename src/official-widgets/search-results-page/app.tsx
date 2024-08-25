@@ -23,7 +23,7 @@ const App: FC<AppProps> = ({ config, fieldMappings, productSearch }) => {
     <WidgetDataContext.Provider value={{ ...config, fieldMappings, productSearch, widgetType, version }}>
       <ShadowWrapper>
         <IntlProvider messages={messages} locale={locale} defaultLocale='en'>
-          <SearchResultsPage configs={config} productSearch={productSearch} />
+          <SearchResultsPage config={config} productSearch={productSearch} />
         </IntlProvider>
       </ShadowWrapper>
     </WidgetDataContext.Provider>

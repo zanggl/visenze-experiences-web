@@ -19,10 +19,10 @@ import { QUERY_MAX_CHARACTER_LENGTH } from '../../common/constants';
 import CroppingProvider from '../../common/components/providers/CroppingProvider';
 
 const CameraSearch = memo((props: {
-  configs: WidgetConfig;
+  config: WidgetConfig;
   productSearch: WidgetClient;
 }) => {
-  const { configs, productSearch } = props;
+  const { config, productSearch } = props;
   const breakpoint = useBreakpoint();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [image, setImage] = useState<SearchImage | undefined>();
@@ -47,7 +47,7 @@ const CameraSearch = memo((props: {
   } = useImageMultisearch({
     image,
     boxData,
-    config: configs,
+    config,
     productSearch,
   });
 
@@ -119,7 +119,7 @@ const CameraSearch = memo((props: {
       q: query,
       im_id: imageId,
       page: 1,
-      limit: configs.searchSettings.limit,
+      limit: config.searchSettings.limit,
       get_all_fl: true,
     };
     const product = boxData?.index ? productTypes[boxData.index] : boxData;
@@ -177,7 +177,7 @@ const CameraSearch = memo((props: {
 
   // Accompanying logic to open the widget via the widget client's openWidget function
   useEffect(() => {
-    const element = document.querySelector(configs.displaySettings.cssSelector) as HTMLElement | null;
+    const element = document.querySelector(config.displaySettings.cssSelector) as HTMLElement | null;
     const callback = (mutationList: MutationRecord[]): void => {
       mutationList.forEach((mutation) => {
         if (mutation.type === 'attributes' && mutation.attributeName === 'data-visenze-dialog-open') {
@@ -203,7 +203,7 @@ const CameraSearch = memo((props: {
   useEffect(() => {
     (async (): Promise<void> => {
       if (image && 'file' in image) {
-        await productSearch.visearch.resizeImage(image.file, configs.appSettings.resizeSettings, (resizedObj) => setResizedImage({ file: resizedObj ?? '', files: image.files }));
+        await productSearch.visearch.resizeImage(image.file, config.appSettings.resizeSettings, (resizedObj) => setResizedImage({ file: resizedObj ?? '', files: image.files }));
       }
     })();
   }, [image]);
@@ -249,11 +249,12 @@ const CameraSearch = memo((props: {
         metadata,
       }}>
       <CroppingProvider boxData={boxData} setBoxData={setBoxData}>
-        {configs.customizations?.icons.cameraButton
-          ? <img src={configs.customizations.icons.cameraButton} onClick={onCameraButtonClick} className='size-7 cursor-pointer'></img>
+        {config.customizations?.icons.cameraButton
+          ? <img src={config.customizations.icons.cameraButton} onClick={onCameraButtonClick} className='size-7 cursor-pointer'></img>
           : <CameraIcon onClickHandler={onCameraButtonClick} />
         }
-        <ViSenzeModal open={dialogVisible} layout={breakpoint} onClose={onModalClose}>
+        <ViSenzeModal open={dialogVisible} layout={breakpoint} onClose={onModalClose}
+                      placementId={`${config.appSettings.placementId}`}>
           {getScreen()}
         </ViSenzeModal>
       </CroppingProvider>

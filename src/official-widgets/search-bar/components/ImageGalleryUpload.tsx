@@ -14,9 +14,10 @@ import CloseIcon from '../../../common/icons/CloseIcon';
 
 interface ImageGalleryUploadProps {
   imageUploadHandler: (image: SearchImage) => void;
+  placementId: string;
 }
 
-const ImageGalleryUpload: FC<ImageGalleryUploadProps> = ({ imageUploadHandler }) => {
+const ImageGalleryUpload: FC<ImageGalleryUploadProps> = ({ imageUploadHandler, placementId }) => {
   const { customizations } = useContext(WidgetDataContext);
   const [openModal, setOpenModal] = useState(false);
   const breakpoint = useBreakpoint();
@@ -81,7 +82,8 @@ const ImageGalleryUpload: FC<ImageGalleryUploadProps> = ({ imageUploadHandler })
         <PhotoIcon className='size-6'/>
       </Button>
 
-      <VisenzeModal open={openModal} onClose={onCloseHandler} layout={breakpoint}>
+      <VisenzeModal open={openModal} onClose={onCloseHandler} layout={breakpoint}
+                    placementId={placementId} idSuffix='image-gallery-upload'>
         <div className='relative flex size-full flex-col bg-primary'>
           {/* Title */}
           <p className='widget-title py-4 text-center text-primary' data-pw='sb-image-upload-title'>

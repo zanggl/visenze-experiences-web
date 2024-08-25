@@ -8,10 +8,10 @@ import type { ProcessedProduct } from '../../common/types/product';
 import SearchBarWithDropdown from './components/SearchBarWithDropdown';
 
 const SearchResultsPage = memo((props: {
-  configs: WidgetConfig;
+  config: WidgetConfig;
   productSearch: WidgetClient;
 }) => {
-  const { configs, productSearch } = props;
+  const { config, productSearch } = props;
   const [searchBarValue, setSearchBarValue] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [activeProduct, setActiveProduct] = useState<ProcessedProduct | null>(null);
@@ -27,7 +27,7 @@ const SearchResultsPage = memo((props: {
   } = useImageMultisearch({
     image: undefined,
     boxData: undefined,
-    config: configs,
+    config,
     productSearch,
   });
 
