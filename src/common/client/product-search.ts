@@ -1,4 +1,3 @@
-import isFunction from 'lodash.isfunction';
 import type { Root } from 'react-dom/client';
 import { v4 as uuid } from 'uuid';
 import ViSearch from 'visearch-javascript-sdk';
@@ -26,7 +25,7 @@ const validateBatchEvents = (
 };
 
 const callIfValidFunction = (fn: any, args: any): void => {
-  if (fn && isFunction(fn)) {
+  if (fn && typeof fn === 'function') {
     fn(args);
   }
 };
@@ -135,7 +134,7 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
     }
 
     const trackingCallback = config?.callbacks.trackingCallback;
-    if (trackingCallback && isFunction(trackingCallback)) {
+    if (trackingCallback && typeof trackingCallback === 'function') {
       trackingCallback(action, params);
     }
 

@@ -1,4 +1,3 @@
-import isFunction from 'lodash.isfunction';
 import type { ProductDetailField, WidgetClient, WidgetConfig } from '../visenze-core';
 import { Actions } from '../types/tracking-constants';
 import type { ResultLogic } from '../types/logic';
@@ -38,7 +37,7 @@ const ResultLogicImpl = ({
     event.stopPropagation();
     event.preventDefault();
     productSearch.send(Actions.PRODUCT_CLICK, productTrackingMeta);
-    if (onProductClick && isFunction(onProductClick)) {
+    if (onProductClick && typeof onProductClick === 'function') {
       onProductClick(result, productTrackingMeta);
     } else {
       const url = getURL(getValue('productUrl'), productTrackingMeta, isRecommendation);
