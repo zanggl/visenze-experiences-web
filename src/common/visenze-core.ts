@@ -159,7 +159,7 @@ export interface WidgetClient extends GenericWidgetClient {
    *
    * For recommendations widget, this will also trigger a search.
    */
-  rerender: (...args: any) => void;
+  rerender: (selector?: string, ...args: any) => void;
   /**
    * Opens the widget popup for search widget.
    */

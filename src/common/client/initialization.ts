@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+import { createRoot, type Root } from 'react-dom/client';
 import type { WidgetType, WidgetClient, WidgetConfig } from '../visenze-core';
 import DEFAULT_CONFIGS from '../../default-configs';
 import getWidgetClient from './product-search';
@@ -118,4 +120,108 @@ export const init = (
     deployTypeId: 0,
   });
   return { widgetClient, fieldMappings, config };
+};
+
+type WidgetInitializer = (initConfig: WidgetConfig, fieldMappings: Record<string, string>, skipRender?: boolean)
+    => WidgetClient | undefined;
+
+interface WidgetRendererParam {
+  config: WidgetConfig;
+  fieldMappings: Record<string, string>;
+  client: WidgetClient;
+  index: number;
+  element: HTMLElement;
+}
+type WidgetRenderer = (param: WidgetRendererParam) => ReactNode;
+
+const getRenderElements = (config: WidgetConfig): NodeListOf<HTMLElement> => {
+  const { cssSelector } = config.displaySettings;
+  return document.body.querySelectorAll(cssSelector || `.ps-widget-${config.appSettings.placementId}`);
+};
+
+const getRenderElement = (config: WidgetConfig): HTMLElement | null => {
+  const { cssSelector } = config.displaySettings;
+  return document.body.querySelector(cssSelector || `.ps-widget-${config.appSettings.placementId}`);
+};
+
+const render = (
+    client: WidgetClient,
+    fieldMappings: Record<string, string>,
+    config: WidgetConfig,
+    renderer: WidgetRenderer,
+    isMultiRender: boolean,
+): void => {
+  const roots: Root[] = [];
+
+  if (isMultiRender) {
+    const elements = getRenderElements(config);
+    elements.forEach((element, index) => {
+      const root = createRoot(element);
+      root.render(renderer({ config, fieldMappings, client, index, element }));
+      roots.push(root);
+    });
+  } else {
+    const element = getRenderElement(config);
+    if (!element) {
+      throw new Error('Element not found');
+    }
+    const root = createRoot(element);
+    root.render(renderer({ config, fieldMappings, client, index: 0, element }));
+    roots.push(root);
+  }
+
+  client.setRenderRoots(roots);
+};
+
+export const initWidgetFactory = (
+    widgetType: WidgetType,
+    renderer: WidgetRenderer,
+    isMultiRender: boolean,
+): WidgetInitializer => {
+  return (initConfig, fieldMappings, skipRender) => {
+    const result = init(initConfig, fieldMappings, widgetType, '/');
+    if (!result) {
+      return undefined;
+    }
+
+    const { widgetClient, config } = result;
+    widgetClient.rerender = (selector?: string): void => {
+      widgetClient.hideWidget();
+      if (selector) {
+        config.displaySettings.cssSelector = selector;
+      }
+      render(widgetClient, fieldMappings, config, renderer, isMultiRender);
+    };
+
+    if (!skipRender) {
+      render(widgetClient, fieldMappings, config, renderer, isMultiRender);
+    }
+
+    return widgetClient;
+  };
+};
+
+export const devInitWidget = async (
+    widgetType: WidgetType,
+    renderer: WidgetRenderer,
+    isMultiRender: boolean,
+    devConfigs: any,
+    fieldMappings: Record<string, string>,
+    window: Window,
+): Promise<void> => {
+  const result = init(devConfigs, fieldMappings, widgetType, '/');
+  if (!result) {
+    return;
+  }
+
+  const { widgetClient, config } = result;
+  render(widgetClient, fieldMappings, config, renderer, isMultiRender);
+  widgetClient.rerender = (selector?: string): void => {
+    widgetClient.hideWidget();
+    if (selector) {
+      config.displaySettings.cssSelector = selector;
+    }
+    render(widgetClient, fieldMappings, config, renderer, isMultiRender);
+  };
+  window.widget = widgetClient;
 };
