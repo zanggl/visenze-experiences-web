@@ -104,6 +104,7 @@ export const init = (
   initConfig: WidgetConfig,
   fieldMappings: Record<string, string>,
   widgetType: WidgetType,
+  widgetVersion: string,
   widgetDirectory: string,
 ): WidgetInitResult | undefined => {
   if (isPlacementSkippable(initConfig.appSettings.placementId)) {
@@ -116,6 +117,7 @@ export const init = (
   const widgetClient = getWidgetClient({
     config,
     widgetType,
+    widgetVersion,
     widgetDirectory,
     deployTypeId: 0,
   });
@@ -175,11 +177,12 @@ const render = (
 
 export const initWidgetFactory = (
     widgetType: WidgetType,
+    widgetVersion: string,
     renderer: WidgetRenderer,
     isMultiRender: boolean,
 ): WidgetInitializer => {
   return (initConfig, fieldMappings, skipRender) => {
-    const result = init(initConfig, fieldMappings, widgetType, '/');
+    const result = init(initConfig, fieldMappings, widgetType, widgetVersion, '/');
     if (!result) {
       return undefined;
     }
@@ -203,13 +206,14 @@ export const initWidgetFactory = (
 
 export const devInitWidget = async (
     widgetType: WidgetType,
+    widgetVersion: string,
     renderer: WidgetRenderer,
     isMultiRender: boolean,
     devConfigs: any,
     fieldMappings: Record<string, string>,
     window: Window,
 ): Promise<void> => {
-  const result = init(devConfigs, fieldMappings, widgetType, '/');
+  const result = init(devConfigs, fieldMappings, widgetType, widgetVersion, '/');
   if (!result) {
     return;
   }

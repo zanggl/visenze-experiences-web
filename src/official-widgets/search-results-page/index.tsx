@@ -11,6 +11,7 @@ import App from './app';
   context.visenzewigmixwidget[widgetType][version] = context.visenzewigmixwidget[widgetType][version] || {
     initWidget: initWidgetFactory(
         WidgetType.SEARCH_RESULTS_PAGE,
+        version,
         ({ config, client, fieldMappings }) => <App productSearch={client} fieldMappings={fieldMappings} config={config}></App>,
         false,
     ),

@@ -11,6 +11,7 @@ import App from './app';
   context.visenzewigmixwidget[widgetType][version] = context.visenzewigmixwidget[widgetType][version] || {
     initWidget: initWidgetFactory(
         WidgetType.SHOP_THE_LOOK,
+        version,
         ({ config, client, fieldMappings, element }) => <App productSearch={client} fieldMappings={fieldMappings} config={config} element={element}></App>,
         false,
     ),

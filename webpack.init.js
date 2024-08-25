@@ -1,12 +1,11 @@
 const path = require('path');
-const pjson = require('./package.json');
 const CompressionPlugin = require('compression-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const getS3Plugin = require('./webpack.s3');
+const version = require('./init/version');
 
 module.exports = () => {
   const mode = process.env.build || 'production';
-  const version = pjson.version;
   const filename = `${mode}.wigmix_widget_init.${version}.js`;
   const isPublish = process.env.publish === 'true';
   const configs = {

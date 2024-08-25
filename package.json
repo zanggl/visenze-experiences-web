@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "description": "A collection of widgets to instantly add ViSenze-powered product search functionality into websites",
   "scripts": {
-    "preinstall": "node -p \"'export const LIB_VERSION = \\'' + require('./package.json').version + '\\';'\" > src/version.ts",
-    "build": "npm run preinstall && npm run build:camera-search && npm run build:similar-search && npm run build:search-results-page && npm run build:recommend-me && npm run build:more-like-this && npm run build:shop-the-look && npm run build:embedded-grid && npm run build:shoppable-lookbook && npm run build:icon-triggered-grid && npm run build:shoppable-instagram-feed && npm run build:search-bar && npm run build:embedded-search-results",
+    "build": "npm run build:camera-search && npm run build:similar-search && npm run build:search-results-page && npm run build:recommend-me && npm run build:more-like-this && npm run build:shop-the-look && npm run build:embedded-grid && npm run build:shoppable-lookbook && npm run build:icon-triggered-grid && npm run build:shoppable-instagram-feed && npm run build:search-bar && npm run build:embedded-search-results",
     "build:staging": "export build=staging && npm run build",
     "build:init": "webpack --config webpack.init.js",
     "build:camera-search": "webpack --env dir=official-widgets/camera-search name=camera-search entry=index.tsx --config webpack.config.js",
@@ -39,7 +38,6 @@
     "lint:fix": "eslint --fix ./src",
     "prettier": "prettier --check './src'",
     "prettier:fix": "prettier --write './src'",
-    "get-version": "node -e \"console.log(require('./package.json').version);\"",
     "type-check": "tsc -p tsconfig.json",
     "prepare": "husky"
   },

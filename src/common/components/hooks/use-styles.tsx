@@ -1,14 +1,12 @@
 import { useContext, useEffect } from 'react';
-import { LIB_VERSION } from '../../../version';
 import { WidgetDataContext } from '../../types/contexts';
 
 /**
  * Copy styles from the temp shadow dom into widget shadow dom
  */
 const useStyles = (root: HTMLElement | null): void => {
-  const { widgetType, displaySettings } = useContext(WidgetDataContext);
-  const tagId = widgetType?.toLowerCase();
-  const styleTag = document.getElementById(`vi__${tagId}__${LIB_VERSION}`);
+  const { widgetType, version, displaySettings } = useContext(WidgetDataContext);
+  const styleTag = document.getElementById(`vi__${widgetType.toLowerCase()}__${version}`);
 
   useEffect(() => {
     if (root) {

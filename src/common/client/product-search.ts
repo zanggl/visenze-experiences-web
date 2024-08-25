@@ -2,7 +2,6 @@ import type { Root } from 'react-dom/client';
 import { v4 as uuid } from 'uuid';
 import ViSearch from 'visearch-javascript-sdk';
 import type { WidgetInitOptions, WidgetClient } from '../visenze-core';
-import { LIB_VERSION } from '../../version';
 import type { ErrorHandler, SuccessHandler } from '../types/function';
 
 const Endpoint = 'https://search.visenze.com';
@@ -47,7 +46,7 @@ const wrapCallbacks = (
 };
 
 export default function getWidgetClient(options: WidgetInitOptions): WidgetClient {
-  const { config, widgetType, widgetDirectory, deployTypeId } = options;
+  const { config, widgetType, widgetVersion, widgetDirectory, deployTypeId } = options;
   const { vttSource, disableAnalytics } = config;
   const lastTrackingMetadata: Record<string, any> = {};
   const { placementId, appKey, strategyId, country, endpoint, gtmTracking, resizeSettings } = config.appSettings;
@@ -141,7 +140,7 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
     const analyticsParams = params;
 
     if (!analyticsParams.widgetVersion) {
-      analyticsParams.widgetVersion = `${widgetType}.${LIB_VERSION}.js`;
+      analyticsParams.widgetVersion = `${widgetType}.${widgetVersion}.js`;
       analyticsParams.widgetDir = widgetDirectory;
     }
     if (vttSource) {

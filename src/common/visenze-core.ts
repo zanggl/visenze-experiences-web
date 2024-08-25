@@ -177,6 +177,7 @@ export interface WidgetClient extends GenericWidgetClient {
 export interface WidgetInitOptions {
   config: WidgetConfig;
   widgetType: WidgetType | undefined;
+  widgetVersion: string;
   widgetDirectory: string;
   deployTypeId: number | undefined;
 }

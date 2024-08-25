@@ -11,6 +11,7 @@ import App from './app';
   context.visenzewigmixwidget[widgetType][version] = context.visenzewigmixwidget[widgetType][version] || {
     initWidget: initWidgetFactory(
         WidgetType.ICON_TRIGGERED_GRID,
+        version,
         ({ config, client, index, element }) => <App config={config} productSearch={client} index={index} element={element}></App>,
         true,
     ),
