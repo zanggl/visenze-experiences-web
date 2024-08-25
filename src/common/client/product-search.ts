@@ -223,10 +223,9 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
   };
 
   const openWidget = (params: object): void => {
-    const { cameraButtonSelector, cssSelector } = config.displaySettings;
+    const { cssSelector } = config.displaySettings;
     const element =
-      document.querySelector(cssSelector || `.ps-widget-${placementId}`) ||
-      document.querySelector(`#${cameraButtonSelector}`);
+      document.querySelector(cssSelector || `.ps-widget-${placementId}`);
     if (element) {
       (element as HTMLElement).dataset.visenzeDialogOpen = 'true';
       if (params) {

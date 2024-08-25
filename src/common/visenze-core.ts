@@ -228,7 +228,6 @@ export interface WidgetConfig {
   };
   displaySettings: {
     cssSelector: string;
-    cameraButtonSelector: string;
     productDetails: {
       mainImageUrl: string;
       productUrl: string;
@@ -241,7 +240,6 @@ export interface WidgetConfig {
       sizes: string;
       colors: string;
     };
-    fileDropzoneImage: string;
     breakpoints: WidgetBreakpointConfig;
     customizeStyle: string;
   };

@@ -25,8 +25,6 @@ const DEFAULT_CONFIGS: WidgetConfig = {
   // ----Visual settings---- //
   displaySettings: {
     cssSelector: '',
-    cameraButtonSelector: '',
-    fileDropzoneImage: 'https://visenze-static.s3.amazonaws.com/demos/ms-adidas/upload-icon.png',
     // Field mapping for Product Card. Fields are based on the schema, you can't give a field which doesn't exist in the schema.
     productDetails: {
       mainImageUrl: '',
