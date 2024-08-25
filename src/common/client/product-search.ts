@@ -207,11 +207,15 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
     visearch.set(key, val);
   };
 
-  const disposeWidget = (): void => {
+  const hideWidget = (): void => {
     // flush react script
     roots.forEach((root) => {
       root.render(null);
     });
+  };
+
+  const disposeWidget = (): void => {
+    hideWidget();
     if (placementId && window.visenzeWidgets?.[placementId]) {
       // eslint-disable-next-line
       delete window.visenzeWidgets[placementId];
@@ -253,6 +257,7 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
     setRenderRoots,
     rerender: (): void => {},
     openWidget,
+    hideWidget,
     disposeWidget,
   };
 }

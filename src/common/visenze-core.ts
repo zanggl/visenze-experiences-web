@@ -165,6 +165,10 @@ export interface WidgetClient extends GenericWidgetClient {
    */
   openWidget: ((params: object) => void) | undefined;
   /**
+   * Hides the widget from view.
+   */
+  hideWidget: () => void;
+  /**
    * Destroys the widget object and reference.
    */
   disposeWidget: () => void;
