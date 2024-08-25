@@ -241,8 +241,6 @@ export interface WidgetConfig {
       sizes: string;
       colors: string;
     };
-    breakpoints: WidgetBreakpointConfig;
-    customizeStyle: string;
   };
   searchSettings: Record<string, any>;
   languageSettings: {
@@ -259,13 +257,15 @@ export interface WidgetConfig {
     onProductClick?: (productDetails: Record<string, any>, trackingMeta: Record<string, any>) => void;
     onSearchCallback?: (apiResponse: ProductSearchResponse) => void;
   };
-  customizations?: {
+  customizations: {
     fonts: FontConfig;
     colours: ColourConfig;
     icons: {
       [I in IconName]: string;
     };
     images: ImageWithLabel[];
+    breakpoints: BreakpointConfig;
+    customCss: string;
   };
   hideTrigger: boolean;
   debugMode: boolean;
@@ -295,7 +295,7 @@ export type ProductDetailField = keyof {
   originalPrice: string;
 };
 
-export interface WidgetBreakpointConfig {
+interface BreakpointConfig {
   mobile: MediaQueryFeatures;
   tablet: MediaQueryFeatures;
   desktop: MediaQueryFeatures;

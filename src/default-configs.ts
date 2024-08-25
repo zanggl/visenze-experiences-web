@@ -38,6 +38,122 @@ const DEFAULT_CONFIGS: WidgetConfig = {
       sizes: '',
       colors: '',
     },
+  },
+  // ----Language settings---- //
+  languageSettings: {
+    locale: '',
+    text: {
+      en: English,
+    },
+  },
+  customizations: {
+    fonts: {
+      mobile: {
+        widgetTitle: {
+          fontSize: 20,
+          fontWeight: 400,
+        },
+        callsToActionText: {
+          fontSize: 14,
+          fontWeight: 400,
+        },
+        productCardTitle: {
+          fontSize: 14,
+          fontWeight: 700,
+        },
+        productCardPrice: {
+          fontSize: 12,
+          fontWeight: 400,
+        },
+        searchBarText: {
+          fontSize: 12,
+          fontWeight: 400,
+        },
+      },
+      tablet: {
+        widgetTitle: {
+          fontSize: 22,
+          fontWeight: 400,
+        },
+        callsToActionText: {
+          fontSize: 14,
+          fontWeight: 400,
+        },
+        productCardTitle: {
+          fontSize: 14,
+          fontWeight: 700,
+        },
+        productCardPrice: {
+          fontSize: 12,
+          fontWeight: 400,
+        },
+        searchBarText: {
+          fontSize: 12,
+          fontWeight: 400,
+        },
+      },
+      desktop: {
+        widgetTitle: {
+          fontSize: 24,
+          fontWeight: 400,
+        },
+        callsToActionText: {
+          fontSize: 16,
+          fontWeight: 400,
+        },
+        productCardTitle: {
+          fontSize: 16,
+          fontWeight: 700,
+        },
+        productCardPrice: {
+          fontSize: 14,
+          fontWeight: 400,
+        },
+        searchBarText: {
+          fontSize: 14,
+          fontWeight: 400,
+        },
+      },
+    },
+    colours: {
+      text: {
+        primary: '#000000',
+        buttonPrimary: '#FFFFFF',
+        buttonSecondary: '#FFFFFF',
+      },
+      background: {
+        primary: '#FFFFFF',
+        buttonPrimary: '#616161',
+        buttonSecondary: '#000000',
+      },
+    },
+    icons: {
+      cameraButton: '',
+      upload: '',
+      moreLikeThis: '',
+    },
+    images: [
+      {
+        url: 'https://cdn.visenze.com/images/widget-1.jpg',
+        label: '',
+      },
+      {
+        url: 'https://cdn.visenze.com/images/widget-2.jpg',
+        label: '',
+      },
+      {
+        url: 'https://cdn.visenze.com/images/widget-3.jpg',
+        label: '',
+      },
+      {
+        url: 'https://cdn.visenze.com/images/widget-4.jpg',
+        label: '',
+      },
+      {
+        url: 'https://cdn.visenze.com/images/widget-5.jpg',
+        label: '',
+      },
+    ],
     breakpoints: {
       mobile: {
         maxWidth: 767,
@@ -49,14 +165,7 @@ const DEFAULT_CONFIGS: WidgetConfig = {
         minWidth: 1024,
       },
     },
-    customizeStyle: '',
-  },
-  // ----Language settings---- //
-  languageSettings: {
-    locale: '',
-    text: {
-      en: English,
-    },
+    customCss: '',
   },
   // ----Callback settings---- //
   callbacks: {
