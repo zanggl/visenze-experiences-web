@@ -245,6 +245,7 @@ export interface WidgetConfig {
   searchSettings: Record<string, any>;
   languageSettings: {
     locale: string;
+    currency: string;
     text: Record<string, Record<string, string>>;
   };
   searchBarResultsSettings: {

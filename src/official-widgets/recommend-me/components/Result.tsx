@@ -4,6 +4,8 @@ import { WidgetDataContext, WidgetResultContext } from '../../../common/types/co
 import ResultLogicImpl from '../../../common/client/result-logic';
 import type { ProcessedProduct } from '../../../common/types/product';
 import { Actions } from '../../../common/types/tracking-constants';
+import { getCurrencyFormatter } from '../../../common/locales/locale';
+import { DEFAULT_CURRENCY, DEFAULT_LOCALE } from '../../../common/default-configs';
 
 /**
  * An individual product result card
@@ -18,6 +20,7 @@ const Result: FC<ResultProps> = ({ index, result }) => {
   const { productSearch, displaySettings, callbacks, debugMode } = useContext(WidgetDataContext);
   const { productDetails } = displaySettings;
   const { metadata } = useContext(WidgetResultContext);
+  const { languageSettings } = useContext(WidgetDataContext);
   const { onProductClick } = callbacks;
   const targetRef = useRef<HTMLAnchorElement>(null);
   const { productTrackingMeta, onClick } = ResultLogicImpl({
@@ -29,6 +32,10 @@ const Result: FC<ResultProps> = ({ index, result }) => {
     onProductClick,
     result,
   });
+  const currencyFormatter = getCurrencyFormatter(
+      languageSettings?.locale || DEFAULT_LOCALE,
+      languageSettings?.currency || DEFAULT_CURRENCY,
+  );
 
   const getProductName = (): string => {
     if (result[productDetails.title]) {
@@ -39,14 +46,16 @@ const Result: FC<ResultProps> = ({ index, result }) => {
 
   const getPrice = (): string => {
     if (result[productDetails.price]) {
-      return Number(result[productDetails.price].value).toFixed(2);
+      const priceNumber = +result[productDetails.price].value;
+      return currencyFormatter.format(priceNumber);
     }
     return '';
   };
 
   const getOriginalPrice = (): string => {
     if (result[productDetails.originalPrice]) {
-      return Number(result[productDetails.originalPrice].value).toFixed(2);
+      const priceNumber = +result[productDetails.originalPrice].value;
+      return currencyFormatter.format(priceNumber);
     }
     return '';
   };
@@ -85,14 +94,14 @@ const Result: FC<ResultProps> = ({ index, result }) => {
       <div className='flex w-36 flex-col pt-2 md:w-48 lg:w-64'>
         <span className='product-card-title truncate text-primary'>{getProductName()}</span>
         {
-          getOriginalPrice()
+          getOriginalPrice() && getOriginalPrice() !== getPrice()
             ? (
               <div className='flex gap-1'>
-                <span className='product-card-price text-red-500'>${getPrice()}</span>
-                <span className='product-card-price text-gray-400 line-through'>${getOriginalPrice()}</span>
+                <span className='product-card-price text-red-500'>{getPrice()}</span>
+                <span className='product-card-price text-gray-400 line-through'>{getOriginalPrice()}</span>
               </div>
             ) : (
-              <span className='product-card-price text-primary'>${getPrice()}</span>
+              <span className='product-card-price text-primary'>{getPrice()}</span>
             )
         }
       </div>

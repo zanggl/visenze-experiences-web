@@ -108,7 +108,7 @@ const Result: FC<ResultProps> = ({ index, result, onClickMoreLikeThisHandler }) 
       <div className='pt-2'>
         <span className='product-card-title line-clamp-1 font-semibold text-primary'>{getProductName()}</span>
         {
-          getOriginalPrice()
+          getOriginalPrice() && getOriginalPrice() !== getPrice()
             ? (
               <div className='flex gap-1'>
                 <span className='product-card-price text-red-500'>${getPrice()}</span>

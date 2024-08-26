@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import type { WidgetType, WidgetClient, WidgetConfig } from '../visenze-core';
-import DEFAULT_CONFIGS from '../../default-configs';
+import { DEFAULT_CONFIGS } from '../default-configs';
 import getWidgetClient from './product-search';
 
 export interface WidgetInitResult {

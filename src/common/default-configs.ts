@@ -1,7 +1,10 @@
-import * as English from './common/locales/en.json';
-import type { WidgetConfig } from './common/visenze-core';
+import * as English from './locales/en.json';
+import type { WidgetConfig } from './visenze-core';
 
-const DEFAULT_CONFIGS: WidgetConfig = {
+export const DEFAULT_LOCALE = 'en';
+export const DEFAULT_CURRENCY = 'USD';
+
+export const DEFAULT_CONFIGS: WidgetConfig = {
   // ----ViSearch SDK and tracking parameters---- //
   appSettings: {
     appKey: '', // APP_KEY - required
@@ -13,7 +16,10 @@ const DEFAULT_CONFIGS: WidgetConfig = {
     // The visearch SDK by default resize image uploaded to 512 x 512
     // To change the max dimension of image, fill this params with {maxWidth: ${width value in px}, maxHeight: ${height value in px}}
     // eg: resizeSettings: {maxWidth: 1024, maxHeight: 1024},
-    resizeSettings: {maxHeight: 100000, maxWidth: 100000},
+    resizeSettings: {
+      maxHeight: 100000,
+      maxWidth: 100000,
+    },
   },
   // ----API additional parameters---- //
   searchSettings: {
@@ -41,7 +47,8 @@ const DEFAULT_CONFIGS: WidgetConfig = {
   },
   // ----Language settings---- //
   languageSettings: {
-    locale: '',
+    locale: DEFAULT_LOCALE,
+    currency: DEFAULT_CURRENCY,
     text: {
       en: English,
     },
@@ -195,5 +202,3 @@ const DEFAULT_CONFIGS: WidgetConfig = {
   maxRetryCount: 1,
   vttSource: '',
 };
-
-export default DEFAULT_CONFIGS;

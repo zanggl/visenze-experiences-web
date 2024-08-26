@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 import type { Facet, ProductType } from 'visearch-javascript-sdk';
 import { WidgetType, type WidgetClient, type WidgetConfig } from '../visenze-core';
-import DEFAULT_CONFIGS from '../../default-configs';
+import { DEFAULT_CONFIGS } from '../default-configs';
 import getWidgetClient from '../client/product-search';
 import type { SearchImage } from './image';
 import type { BoxData, ProcessedProduct } from './product';
