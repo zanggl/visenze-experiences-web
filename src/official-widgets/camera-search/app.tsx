@@ -7,6 +7,8 @@ import { WidgetDataContext } from '../../common/types/contexts';
 import CameraSearch from './camera-search';
 import version from './version';
 import './app.css';
+import { DEFAULT_LOCALE } from '../../common/default-configs';
+import { getLocaleTexts } from '../../common/locales/locale';
 
 interface AppProps {
   config: WidgetConfig;
@@ -15,15 +17,15 @@ interface AppProps {
 }
 
 const App: FC<AppProps> = ({ config, fieldMappings, productSearch }) => {
-  const locale = config.languageSettings.locale || 'en';
-  const messages = config.languageSettings.text[locale];
+  const locale = config.languageSettings.locale || DEFAULT_LOCALE;
+  const messages = getLocaleTexts(config.languageSettings.text, locale);
   const widgetType = WidgetType.CAMERA_SEARCH;
 
   return (
     <WidgetDataContext.Provider value={{ ...config, fieldMappings, productSearch, widgetType, version }}>
       <ShadowWrapper>
         <IntlProvider messages={messages} locale={locale} defaultLocale='en'>
-          <CameraSearch configs={config} productSearch={productSearch} />
+          <CameraSearch config={config} productSearch={productSearch} />
         </IntlProvider>
       </ShadowWrapper>
     </WidgetDataContext.Provider>

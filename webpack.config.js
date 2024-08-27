@@ -6,16 +6,16 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 const versionRegex = new RegExp(/^(\d)+\.(\d){1,3}\.(\d){1,3}$/);
 const { DefinePlugin, IgnorePlugin } = require('webpack');
 const { env } = require('process');
-const { version } = require('./package.json');
 const getWebpackModule = require('./webpack.util');
 const getS3Plugin = require('./webpack.s3');
 
-const getWebpackConfig = (config, version) => {
+const getWebpackConfig = (config) => {
   let customer = config.custom_build;
   let dir = config.dir;
   let entry = config.entry || 'index.ts';
   let isUseShadowDom = config.use_shadow_dom !== 'false';
   let packageName = config.name.replaceAll('-', '_');
+  let version = require(`./src/${dir}/version`);
   let buildEnv = env.build || 'production';
   let isPublish = env.publish === 'true';
   let prefix = 'wigmix';
@@ -64,5 +64,5 @@ const getWebpackConfig = (config, version) => {
 };
 
 module.exports = (config) => {
-  return getWebpackConfig(config, version);
+  return getWebpackConfig(config);
 };

@@ -1,9 +1,7 @@
-import isFunction from 'lodash.isfunction';
 import type { Root } from 'react-dom/client';
 import { v4 as uuid } from 'uuid';
 import ViSearch from 'visearch-javascript-sdk';
 import type { WidgetInitOptions, WidgetClient } from '../visenze-core';
-import { LIB_VERSION } from '../../version';
 import type { ErrorHandler, SuccessHandler } from '../types/function';
 
 const Endpoint = 'https://search.visenze.com';
@@ -26,7 +24,7 @@ const validateBatchEvents = (
 };
 
 const callIfValidFunction = (fn: any, args: any): void => {
-  if (fn && isFunction(fn)) {
+  if (fn && typeof fn === 'function') {
     fn(args);
   }
 };
@@ -48,7 +46,7 @@ const wrapCallbacks = (
 };
 
 export default function getWidgetClient(options: WidgetInitOptions): WidgetClient {
-  const { config, widgetType, widgetDirectory, deployTypeId } = options;
+  const { config, widgetType, widgetVersion, widgetDirectory, deployTypeId } = options;
   const { vttSource, disableAnalytics } = config;
   const lastTrackingMetadata: Record<string, any> = {};
   const { placementId, appKey, strategyId, country, endpoint, gtmTracking, resizeSettings } = config.appSettings;
@@ -135,14 +133,14 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
     }
 
     const trackingCallback = config?.callbacks.trackingCallback;
-    if (trackingCallback && isFunction(trackingCallback)) {
+    if (trackingCallback && typeof trackingCallback === 'function') {
       trackingCallback(action, params);
     }
 
     const analyticsParams = params;
 
     if (!analyticsParams.widgetVersion) {
-      analyticsParams.widgetVersion = `${widgetType}.${LIB_VERSION}.js`;
+      analyticsParams.widgetVersion = `${widgetType}.${widgetVersion}.js`;
       analyticsParams.widgetDir = widgetDirectory;
     }
     if (vttSource) {
@@ -207,11 +205,15 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
     visearch.set(key, val);
   };
 
-  const disposeWidget = (): void => {
+  const hideWidget = (): void => {
     // flush react script
     roots.forEach((root) => {
       root.render(null);
     });
+  };
+
+  const disposeWidget = (): void => {
+    hideWidget();
     if (placementId && window.visenzeWidgets?.[placementId]) {
       // eslint-disable-next-line
       delete window.visenzeWidgets[placementId];
@@ -219,10 +221,9 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
   };
 
   const openWidget = (params: object): void => {
-    const { cameraButtonSelector, cssSelector } = config.displaySettings;
+    const { cssSelector } = config.displaySettings;
     const element =
-      document.querySelector(cssSelector || `.ps-widget-${placementId}`) ||
-      document.querySelector(`#${cameraButtonSelector}`);
+      document.querySelector(cssSelector || `.ps-widget-${placementId}`);
     if (element) {
       (element as HTMLElement).dataset.visenzeDialogOpen = 'true';
       if (params) {
@@ -253,6 +254,7 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
     setRenderRoots,
     rerender: (): void => {},
     openWidget,
+    hideWidget,
     disposeWidget,
   };
 }

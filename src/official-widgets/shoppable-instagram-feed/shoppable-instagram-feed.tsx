@@ -137,6 +137,7 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
         <CroppingProvider boxData={boxData} setBoxData={setBoxData}>
           {/* Modal showing hotspots on selected image */}
           <ViSenzeModal open={openModal} onClose={onCloseHandler} layout={breakpoint}
+                        placementId={`${config.appSettings.placementId}`}
                         className='left-[unset] top-[unset] h-[500px] w-[300px] rounded-xl'>
             <div className='flex size-full flex-col bg-primary pt-1/5' data-pw='sif-image-hotspot-modal'>
               <Button isIconOnly className='absolute right-2 top-2 bg-transparent' onClick={onCloseHandler} data-pw='sif-modal-close-button'>
@@ -155,7 +156,8 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
           </ViSenzeModal>
 
           {/* Drawer which displays product recommendations for the selected hotspot */}
-          <HotspotRecommendations openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} objects={objects} activeImageUrl={activeImageUrl} />
+          <HotspotRecommendations openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} objects={objects} activeImageUrl={activeImageUrl}
+                                  placementId={`${config.appSettings.placementId}`}/>
         </CroppingProvider>
       </WidgetResultContext.Provider>
     </>

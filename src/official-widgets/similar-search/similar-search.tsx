@@ -18,12 +18,12 @@ import SimilarSearchIcon from './icons/SimilarSearchIcon';
 import { QUERY_MAX_CHARACTER_LENGTH } from '../../common/constants';
 
 interface SimilarSearchProps {
-  configs: WidgetConfig;
+  config: WidgetConfig;
   productSearch: WidgetClient;
   element: HTMLElement | null;
 }
 
-const SimilarSearch: FC<SimilarSearchProps> = ({ configs, productSearch, element }) => {
+const SimilarSearch: FC<SimilarSearchProps> = ({ config, productSearch, element }) => {
   const breakpoint = useBreakpoint();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [image, setImage] = useState<SearchImage | undefined>();
@@ -48,7 +48,7 @@ const SimilarSearch: FC<SimilarSearchProps> = ({ configs, productSearch, element
   } = useImageMultisearch({
     image,
     boxData,
-    config: configs,
+    config,
     productSearch,
   });
 
@@ -112,7 +112,7 @@ const SimilarSearch: FC<SimilarSearchProps> = ({ configs, productSearch, element
       q: query,
       im_id: imageId,
       page: 1,
-      limit: configs.searchSettings.limit,
+      limit: config.searchSettings.limit,
       get_all_fl: true,
     };
     const product = boxData?.index ? productTypes[boxData.index] : boxData;
@@ -185,7 +185,7 @@ const SimilarSearch: FC<SimilarSearchProps> = ({ configs, productSearch, element
   useEffect(() => {
     (async (): Promise<void> => {
       if (image && 'file' in image) {
-        await productSearch.visearch.resizeImage(image.file, configs.appSettings.resizeSettings, (resizedObj) => setResizedImage({ file: resizedObj ?? '', files: image.files }));
+        await productSearch.visearch.resizeImage(image.file, config.appSettings.resizeSettings, (resizedObj) => setResizedImage({ file: resizedObj ?? '', files: image.files }));
       }
     })();
   }, [image]);
@@ -234,7 +234,8 @@ const SimilarSearch: FC<SimilarSearchProps> = ({ configs, productSearch, element
         </SimilarSearchIcon>
       </Button>
 
-      <ViSenzeModal open={dialogVisible} layout={breakpoint} onClose={onModalClose}>
+      <ViSenzeModal open={dialogVisible} layout={breakpoint} onClose={onModalClose}
+                    placementId={`${config.appSettings.placementId}`}>
         {getScreen()}
       </ViSenzeModal>
     </WidgetResultContext.Provider>

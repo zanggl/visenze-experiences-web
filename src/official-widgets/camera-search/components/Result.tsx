@@ -6,6 +6,8 @@ import ResultLogicImpl from '../../../common/client/result-logic';
 import type { SearchImage } from '../../../common/types/image';
 import MoreLikeThisIcon from '../../../common/icons/MoreLikeThisIcon';
 import { Actions } from '../../../common/types/tracking-constants';
+import { getCurrencyFormatter } from '../../../common/locales/locale';
+import { DEFAULT_CURRENCY, DEFAULT_LOCALE } from '../../../common/default-configs';
 
 interface ResultProps {
   result: ProcessedProduct;
@@ -23,6 +25,7 @@ const Result = memo(({
   const { callbacks, displaySettings, productSearch, customizations, debugMode } = useContext(WidgetDataContext);
   const { productDetails } = displaySettings;
   const { metadata } = useContext(WidgetResultContext);
+  const { languageSettings } = useContext(WidgetDataContext);
   const { onProductClick } = callbacks;
   const [isLoading, setIsLoading] = useState(true);
   const targetRef = useRef<HTMLAnchorElement>(null);
@@ -35,6 +38,10 @@ const Result = memo(({
     onProductClick,
     result,
   });
+  const currencyFormatter = getCurrencyFormatter(
+      languageSettings?.locale || DEFAULT_LOCALE,
+      languageSettings?.currency || DEFAULT_CURRENCY,
+  );
 
   const getProductName = (): string => {
     if (result[productDetails.title]) {
@@ -45,14 +52,16 @@ const Result = memo(({
 
   const getPrice = (): string => {
     if (result[productDetails.price]) {
-      return Number(result[productDetails.price].value).toFixed(2);
+      const priceNumber = +result[productDetails.price].value;
+      return currencyFormatter.format(priceNumber);
     }
     return '';
   };
 
   const getOriginalPrice = (): string => {
     if (result[productDetails.originalPrice]) {
-      return Number(result[productDetails.originalPrice].value).toFixed(2);
+      const priceNumber = +result[productDetails.originalPrice].value;
+      return currencyFormatter.format(priceNumber);
     }
     return '';
   };
@@ -120,14 +129,14 @@ const Result = memo(({
       <div className='pt-2'>
         <span className='product-card-title line-clamp-1 font-semibold text-primary'>{getProductName()}</span>
         {
-          getOriginalPrice()
+          getOriginalPrice() && getOriginalPrice() !== getPrice()
             ? (
               <div className='flex gap-1'>
-                <span className='product-card-price text-red-500'>${getPrice()}</span>
-                <span className='product-card-price text-gray-400 line-through'>${getOriginalPrice()}</span>
+                <span className='product-card-price text-red-500'>{getPrice()}</span>
+                <span className='product-card-price text-gray-400 line-through'>{getOriginalPrice()}</span>
               </div>
             ) : (
-              <span className='product-card-price text-primary'>${getPrice()}</span>
+              <span className='product-card-price text-primary'>{getPrice()}</span>
             )
         }
       </div>

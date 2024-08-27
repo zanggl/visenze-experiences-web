@@ -159,11 +159,15 @@ export interface WidgetClient extends GenericWidgetClient {
    *
    * For recommendations widget, this will also trigger a search.
    */
-  rerender: (...args: any) => void;
+  rerender: (selector?: string, ...args: any) => void;
   /**
    * Opens the widget popup for search widget.
    */
   openWidget: ((params: object) => void) | undefined;
+  /**
+   * Hides the widget from view.
+   */
+  hideWidget: () => void;
   /**
    * Destroys the widget object and reference.
    */
@@ -173,6 +177,7 @@ export interface WidgetClient extends GenericWidgetClient {
 export interface WidgetInitOptions {
   config: WidgetConfig;
   widgetType: WidgetType | undefined;
+  widgetVersion: string;
   widgetDirectory: string;
   deployTypeId: number | undefined;
 }
@@ -224,7 +229,6 @@ export interface WidgetConfig {
   };
   displaySettings: {
     cssSelector: string;
-    cameraButtonSelector: string;
     productDetails: {
       mainImageUrl: string;
       productUrl: string;
@@ -237,13 +241,11 @@ export interface WidgetConfig {
       sizes: string;
       colors: string;
     };
-    fileDropzoneImage: string;
-    breakpoints: WidgetBreakpointConfig;
-    customizeStyle: string;
   };
   searchSettings: Record<string, any>;
   languageSettings: {
     locale: string;
+    currency: string;
     text: Record<string, Record<string, string>>;
   };
   searchBarResultsSettings: {
@@ -256,13 +258,15 @@ export interface WidgetConfig {
     onProductClick?: (productDetails: Record<string, any>, trackingMeta: Record<string, any>) => void;
     onSearchCallback?: (apiResponse: ProductSearchResponse) => void;
   };
-  customizations?: {
+  customizations: {
     fonts: FontConfig;
     colours: ColourConfig;
     icons: {
       [I in IconName]: string;
     };
     images: ImageWithLabel[];
+    breakpoints: BreakpointConfig;
+    customCss: string;
   };
   hideTrigger: boolean;
   debugMode: boolean;
@@ -292,7 +296,7 @@ export type ProductDetailField = keyof {
   originalPrice: string;
 };
 
-export interface WidgetBreakpointConfig {
+interface BreakpointConfig {
   mobile: MediaQueryFeatures;
   tablet: MediaQueryFeatures;
   desktop: MediaQueryFeatures;

@@ -18,10 +18,10 @@ const getMetadata = (
 const getSearchParams = (
   img: SearchImage,
   imageId: string,
-  configs: WidgetConfig,
+  config: WidgetConfig,
   product: BoxData | ProductType | undefined,
 ): Record<string, any> => {
-  const params = { ...configs.searchSettings };
+  const params = { ...config.searchSettings };
 
   if ('imgUrl' in img) {
     params.im_url = img.imgUrl;

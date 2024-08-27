@@ -4,11 +4,11 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 const { HotModuleReplacementPlugin } = require('webpack');
 const { env } = require('process');
 const getWebpackModule = require('./webpack.util');
-const { version } = require('./package.json');
 
 module.exports = (config) => {
 	let entry = 'index-dev.tsx';
 	let dir = config.dir || env.dir;
+	let version = require(`./src/${dir}/version`);
 	let packageName = dir.split('/').pop().replaceAll('-', '_');
 	let useShadowDom = true;
 	let customBuild = config.customBuild || env.custom_build;

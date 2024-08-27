@@ -6,6 +6,7 @@
     "target": "ESNext",
     "moduleResolution": "node",
     "jsx": "react-jsx",
+    "allowJs": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,

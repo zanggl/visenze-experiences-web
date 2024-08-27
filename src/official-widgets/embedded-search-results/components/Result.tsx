@@ -6,6 +6,8 @@ import ResultLogicImpl from '../../../common/client/result-logic';
 import type { ProcessedProduct } from '../../../common/types/product';
 import { Actions } from '../../../common/types/tracking-constants';
 import MoreLikeThisIcon from '../../../common/icons/MoreLikeThisIcon';
+import { getCurrencyFormatter } from '../../../common/locales/locale';
+import { DEFAULT_CURRENCY, DEFAULT_LOCALE } from '../../../common/default-configs';
 
 /**
  * An individual product result card
@@ -21,6 +23,7 @@ const Result: FC<ResultProps> = ({ index, result, findSimilarClickHandler }) => 
   const { productSearch, displaySettings, callbacks, debugMode, customizations, searchBarResultsSettings } = useContext(WidgetDataContext);
   const { productDetails } = displaySettings;
   const { metadata } = useContext(WidgetResultContext);
+  const { languageSettings } = useContext(WidgetDataContext);
   const { onProductClick } = callbacks;
   const [isLoading, setIsLoading] = useState(true);
   const targetRef = useRef<HTMLAnchorElement>(null);
@@ -33,6 +36,10 @@ const Result: FC<ResultProps> = ({ index, result, findSimilarClickHandler }) => 
     onProductClick,
     result,
   });
+  const currencyFormatter = getCurrencyFormatter(
+      languageSettings?.locale || DEFAULT_LOCALE,
+      languageSettings?.currency || DEFAULT_CURRENCY,
+  );
 
   const getProductName = (): string => {
     if (result[productDetails.title]) {
@@ -43,14 +50,16 @@ const Result: FC<ResultProps> = ({ index, result, findSimilarClickHandler }) => 
 
   const getPrice = (): string => {
     if (result[productDetails.price]) {
-      return Number(result[productDetails.price].value).toFixed(2);
+      const priceNumber = +result[productDetails.price].value;
+      return currencyFormatter.format(priceNumber);
     }
     return '';
   };
 
   const getOriginalPrice = (): string => {
     if (result[productDetails.originalPrice]) {
-      return Number(result[productDetails.originalPrice].value).toFixed(2);
+      const priceNumber = +result[productDetails.originalPrice].value;
+      return currencyFormatter.format(priceNumber);
     }
     return '';
   };
@@ -120,14 +129,14 @@ const Result: FC<ResultProps> = ({ index, result, findSimilarClickHandler }) => 
       <div className='pt-2'>
         <span className='product-card-title line-clamp-1 text-primary'>{getProductName()}</span>
         {
-          getOriginalPrice()
+          getOriginalPrice() && getOriginalPrice() !== getPrice()
           ? (
               <div className='flex gap-1'>
-                <span className='product-card-price text-red-500'>${getPrice()}</span>
-                <span className='product-card-price text-gray-400 line-through'>${getOriginalPrice()}</span>
+                <span className='product-card-price text-red-500'>{getPrice()}</span>
+                <span className='product-card-price text-gray-400 line-through'>{getOriginalPrice()}</span>
               </div>
             ) : (
-              <span className='product-card-price text-primary'>${getPrice()}</span>
+              <span className='product-card-price text-primary'>{getPrice()}</span>
             )
         }
       </div>

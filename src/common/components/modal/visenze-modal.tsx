@@ -63,10 +63,12 @@ interface VisenzeModalProps {
   layout: 'desktop' | 'tablet' | 'mobile' | 'nested_mobile';
   children: ReactElement | ReactElement[];
   className?: string;
+  placementId: string;
+  idSuffix?: string;
 }
 
 const ViSenzeModal: FC<VisenzeModalProps> = (props) => (
-    <Portal idName='visenze-modal-portal'>
+    <Portal idName={`visenze-widget-modal-portal-${props.placementId}${props.idSuffix ? `-${props.idSuffix}` : ''}`}>
       <ShadowWrapper>
         <Modal {...props} />
       </ShadowWrapper>

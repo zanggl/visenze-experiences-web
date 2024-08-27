@@ -17,9 +17,10 @@ interface SearchBarInputProps {
   setAllowRedirect: (allowRedirect: boolean) => void;
   setShowDropdown: (showDropdown: boolean) => void;
   setImage: (image: SearchImage) => void;
+  placementId: string;
 }
 
-const SearchBarInput: FC<SearchBarInputProps> = ({ query, setQuery, handleRedirect, setAllowRedirect, setShowDropdown, setImage }) => {
+const SearchBarInput: FC<SearchBarInputProps> = ({ query, setQuery, handleRedirect, setAllowRedirect, setShowDropdown, setImage, placementId }) => {
   const { searchBarResultsSettings } = useContext(WidgetDataContext);
   const searchBarRef = useRef<HTMLInputElement>(null);
   const intl = useIntl();
@@ -64,7 +65,7 @@ const SearchBarInput: FC<SearchBarInputProps> = ({ query, setQuery, handleRedire
           {
             searchBarResultsSettings.enableImageUpload
             && <>
-              <ImageGalleryUpload imageUploadHandler={imageUploadHandler} />
+              <ImageGalleryUpload imageUploadHandler={imageUploadHandler} placementId={placementId} />
               <CameraUpload imageUploadHandler={imageUploadHandler} />
             </>
           }

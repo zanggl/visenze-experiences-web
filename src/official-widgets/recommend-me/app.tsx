@@ -25,7 +25,7 @@ const App: FC<AppProps> = ({ config, fieldMappings, productSearch, element }) =>
     <WidgetDataContext.Provider value={{ ...config, fieldMappings, productSearch, widgetType, version }}>
       <ShadowWrapper>
         <IntlProvider messages={messages} locale={locale} defaultLocale='en'>
-          <RecommendMe configs={config} productSearch={productSearch} productId={productId}/>
+          <RecommendMe config={config} productSearch={productSearch} productId={productId}/>
         </IntlProvider>
       </ShadowWrapper>
     </WidgetDataContext.Provider>

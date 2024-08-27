@@ -13,11 +13,11 @@ import { Actions, Category } from '../../common/types/tracking-constants';
 import { QUERY_MAX_CHARACTER_LENGTH } from '../../common/constants';
 
 const RecommendMe = memo((props: {
-  configs: WidgetConfig;
+  config: WidgetConfig;
   productSearch: WidgetClient;
   productId: string;
 }) => {
-  const { configs, productSearch, productId } = props;
+  const { config, productSearch, productId } = props;
   const [searchBarValue, setSearchBarValue] = useState('');
   const [query, setQueryValue] = useState('');
   const [carouselHistory, setCarouselHistory] = useState<any[]>([]);
@@ -31,7 +31,7 @@ const RecommendMe = memo((props: {
     isStreaming,
     requestId,
   } = useRecommendMe({
-    configs,
+    config,
     productSearch,
     productId,
   });

@@ -4,11 +4,13 @@ import { WidgetDataContext } from '../../types/contexts';
 import { WidgetBreakpoint } from '../../types/constants';
 
 const useBreakpoint = (): WidgetBreakpoint => {
-  const { displaySettings } = useContext(WidgetDataContext);
-  const { breakpoints } = displaySettings;
+  const { customizations } = useContext(WidgetDataContext);
+  if (!customizations || !customizations.breakpoints) {
+    return WidgetBreakpoint.DESKTOP;
+  }
 
-  const isMobile = useMediaQuery(breakpoints.mobile);
-  const isTablet = useMediaQuery(breakpoints.tablet);
+  const isMobile = useMediaQuery(customizations.breakpoints.mobile);
+  const isTablet = useMediaQuery(customizations.breakpoints.tablet);
 
   if (isMobile) {
     return WidgetBreakpoint.MOBILE;

@@ -102,7 +102,8 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
         <IconTriggeredGridIcon className='size-6'/>
       </Button>
 
-      <ViSenzeModal open={dialogVisible} layout={breakpoint} onClose={onModalClose}>
+      <ViSenzeModal open={dialogVisible} layout={breakpoint} onClose={onModalClose}
+                    placementId={`${config.appSettings.placementId}`}>
         <div className='relative flex size-full flex-col bg-primary lg:flex-row lg:justify-between lg:divide-x-1'>
           {/* Close Button */}
           <Button isIconOnly className='absolute right-3 top-3 z-10 border-none bg-transparent' onClick={onModalClose} data-pw='itg-close-button'>
@@ -204,7 +205,8 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
           {/* Sort/Filter Options Mobile & Tablet */}
           {
             breakpoint === WidgetBreakpoint.MOBILE
-            && <ViSenzeModal open={!!screen} layout='nested_mobile' onClose={() => setScreen(null)}>
+            && <ViSenzeModal open={!!screen} layout='nested_mobile' onClose={() => setScreen(null)}
+                             placementId={`${config.appSettings.placementId}`}>
             <>
               {
                 screen === ScreenType.SORT
