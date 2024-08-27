@@ -45,14 +45,15 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
   });
 
   const resizeObjectDots = (image: HTMLImageElement): void => {
-    const r = image.offsetHeight / image.naturalHeight;
+    const heightScale = image.clientHeight / image.naturalHeight;
+    const widthScale = image.clientWidth / image.naturalWidth;
     if (objects.length > 0) {
       const normalizedObjs = objects.map((object, index) => {
         const { box } = object;
         return {
           index,
-          top: (box[1] + (box[3] - box[1]) / 2) * r,
-          left: (box[0] + (box[2] - box[0]) / 2) * r,
+          top: (box[1] + (box[3] - box[1]) / 2) * heightScale,
+          left: (box[0] + (box[2] - box[0]) / 2) * widthScale,
         };
       });
       setObjectDots(normalizedObjs);
