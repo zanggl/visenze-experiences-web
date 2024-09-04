@@ -4,12 +4,24 @@ import { devConfigs, devFieldMappings } from './dev-configs';
 import App from './app';
 import version from './version';
 
+const customCss = `
+/* Insert the custom CSS here */
+`;
+
+const initConfig = {
+  ...devConfigs,
+  customizations: {
+    ...devConfigs.customizations,
+    customCss,
+  },
+};
+
 devInitWidget(
     WidgetType.SHOP_THE_LOOK,
     version,
     ({ config, client, fieldMappings, element }) => <App productSearch={client} fieldMappings={fieldMappings} config={config} element={element}></App>,
     false,
-    devConfigs,
+    initConfig,
     devFieldMappings,
     window,
 );
