@@ -4,6 +4,7 @@ import type { ProductSearchResponse, Facet } from 'visearch-javascript-sdk';
 import { Button } from '@nextui-org/button';
 import { useIntl } from 'react-intl';
 import { Spinner } from '@nextui-org/spinner';
+import { cn } from '@nextui-org/theme';
 import { WidgetDataContext, WidgetResultContext } from '../../common/types/contexts';
 import { RootContext } from '../../common/components/shadow-wrapper';
 import { getFacets, getFilterQueries, getFlattenProducts } from '../../common/utils';
@@ -16,13 +17,15 @@ import FilterOptions from './components/FilterOptions';
 import ViSenzeModal from '../../common/components/modal/visenze-modal';
 import FilterIcon from '../../common/icons/FilterIcon';
 import FindSimilarHistory from './components/FindSimilarHistory';
+import type { ImageUrl } from '../../common/types/image';
+import CloseIcon from '../../common/icons/CloseIcon';
 
 interface EmbeddedSearchResultProps {
   config: WidgetConfig;
 }
 
 const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): ReactElement => {
-  const { productSearch, searchSettings, displaySettings, debugMode } = useContext(WidgetDataContext);
+  const { productSearch, searchSettings, displaySettings, debugMode, searchBarResultsSettings } = useContext(WidgetDataContext);
   const { productDetails } = displaySettings;
   const [productResults, setProductResults] = useState<ProcessedProduct[]>([]);
   const [facets, setFacets] = useState<Facet[]>([]);
@@ -47,6 +50,11 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
   const widgetTitleRef = useRef<HTMLDivElement>(null);
   const root = useContext(RootContext);
   const intl = useIntl();
+  const isMultiSearch = searchBarResultsSettings.enableMultiSearch;
+  if (!isMultiSearch) {
+    const event = new CustomEvent('wigmix_search_bar_multi_search', { detail: false });
+    document.dispatchEvent(event);
+  }
 
   const handleError = (errorMsg: string): void => {
     setError(errorMsg);
@@ -65,7 +73,12 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
       setProductResults(getFlattenProducts(res.result));
       // Only set facets once
       if (facets.length === 0 && res.facets) {
-        setImageUrl(res.query_tmp_url || '');
+        const image: ImageUrl = {
+          imgUrl: res.query_tmp_url || '',
+        };
+        setImageUrl(image.imgUrl);
+        const event = new CustomEvent('wigmix_search_bar_append_image', { detail: image });
+        document.dispatchEvent(event);
         setFacets(res.facets);
       }
     }
@@ -78,7 +91,9 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
     const urlSearchParams = new URLSearchParams(window.location.search);
     const searchBarImageId = urlSearchParams.get('im_id');
     const searchBarQuery = urlSearchParams.get('q');
-    setQuery(searchBarQuery || '');
+    if (!imgUrl || searchBarResultsSettings.enableMultiSearch) {
+      setQuery(searchBarQuery || '');
+    }
     const params: Record<string, any> = {
       ...searchSettings,
       filters: getFilterQueries(productDetails, selectedFilters),
@@ -90,12 +105,15 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
     if (debugMode) {
       params.q = 'black';
     }
-    if (searchBarQuery) {
-      params.q = searchBarQuery;
+    if (!imgUrl || searchBarResultsSettings.enableMultiSearch) {
+      if (searchBarQuery) {
+        params.q = searchBarQuery;
+      }
     }
     if (imgUrl) {
       params.im_url = imgUrl;
-    } else if (searchBarImageId) {
+    }
+    if (searchBarImageId && !imgUrl && (searchBarResultsSettings.enableMultiSearch || !searchBarQuery)) {
       params.im_id = searchBarImageId;
     }
 
@@ -103,12 +121,21 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
   };
 
   const findSimilarClickHandler = (imgUrl: string): void => {
-    window.scrollTo(0, 0);
-    multisearchWithSearchBarDetails(imgUrl);
-    const isProductInHistory = findSimilarHistory.some((item) => item === imgUrl);
-    if (!isProductInHistory) {
-      setFindSimilarHistory([...findSimilarHistory, imgUrl]);
+    if (searchBarResultsSettings.enableMultiSearch) {
+      const image: ImageUrl = { imgUrl };
+      const event1 = new CustomEvent('wigmix_search_bar_replace_image', { detail: image });
+      document.dispatchEvent(event1);
+      const event2 = new CustomEvent('wigmix_search_bar_append_image', { detail: image });
+      document.dispatchEvent(event2);
+    } else {
+      setQuery('');
     }
+    setImageUrl(imgUrl);
+    multisearchWithSearchBarDetails(imgUrl);
+    // const isProductInHistory = findSimilarHistory.some((item) => item === imgUrl);
+    // if (!isProductInHistory) {
+    //   setFindSimilarHistory([...findSimilarHistory, imgUrl]);
+    // }
 
     setActiveImgUrl(imgUrl);
   };
@@ -149,28 +176,62 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
         {/* Widget Title */}
         <div className='flex flex-col items-center gap-y-2 bg-primary px-2 py-6 md:py-8 lg:py-10' ref={widgetTitleRef}>
           <div className='widget-title font-bold'>{intl.formatMessage({ id: 'embeddedSearchResults.title' })}</div>
-          {
-            query
-            && <div className='break-words text-lg'>
+          {query && !imageUrl && (
+            <div className='break-words text-lg'>
               {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })}&nbsp;
               {productResults.length} {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part2' })} <b>{query}</b>
             </div>
-          }
-          {
-            imageUrl
-            && <div className='mt-2 flex items-center gap-x-3 text-lg'>
-              {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })}&nbsp;
-              {productResults.length} {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part2' })}
-              <img className='object-fit aspect-[4/5] w-20 border-1 border-black' src={imageUrl}></img>
-            </div>
-          }
+          )}
+          {!query && imageUrl && (
+              <div className='mt-2 flex items-center gap-x-3 text-lg'>
+                {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })}&nbsp;
+                {productResults.length} {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part2' })}
+                <div className={cn('relative h-full flex-shrink-0 cursor-pointer border border-gray-500')}>
+                  <img className='object-fit aspect-[4/5] w-20 border-1 border-black' src={imageUrl} />
+                  <button
+                      className='absolute right-1 top-1 z-10 rounded-full bg-white p-1'
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        findSimilarClickHandler('');
+                      }}
+                      data-pw='esr-product-history-delete'
+                  >
+                    <CloseIcon className='size-3'/>
+                  </button>
+                </div>
+              </div>
+          )}
+          {isMultiSearch && query && imageUrl && (
+              <div className='mt-2 flex items-center gap-x-3 text-lg'>
+                {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })}&nbsp;
+                {productResults.length} {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part2' })}
+                <b>{query}</b>
+                {' '}+{' '}
+                <div className={cn('relative h-full flex-shrink-0 cursor-pointer border border-gray-500')}>
+                  <img className='object-fit aspect-[4/5] w-20 border-1 border-black' src={imageUrl} />
+                  <button
+                      className='absolute right-1 top-1 z-10 rounded-full bg-white p-1'
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        findSimilarClickHandler('');
+                      }}
+                      data-pw='esr-product-history-delete'
+                  >
+                    <CloseIcon className='size-3'/>
+                  </button>
+                </div>
+              </div>
+          )}
         </div>
         <div className='flex size-full flex-col bg-primary md:flex-row'>
           {/* Filter Section Tablet & Desktop */}
           {
-            facets
-            && <div className='sticky top-0 hidden h-full w-1/4 flex-col md:flex'>
-              <div className='p-3 text-center text-xl font-bold'>{intl.formatMessage({ id: 'embeddedSearchResults.filter' })}</div>
+              facets
+              && <div className='sticky top-0 hidden h-full w-1/4 flex-col md:flex'>
+              <div
+                className='p-3 text-center text-xl font-bold'>{intl.formatMessage({ id: 'embeddedSearchResults.filter' })}</div>
               <FilterOptions
                 facets={facets}
                 selectedFilters={selectedFilters}

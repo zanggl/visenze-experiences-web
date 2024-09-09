@@ -187,13 +187,14 @@ export const DEFAULT_CONFIGS: WidgetConfig = {
     // @param {trackingData} relevant metadata attached to the action
     onProductClick: undefined,
     // This will fire whenever response from a search API call returned
-    // onSearchCallback: (apiResoonse) => {},
+    // onSearchCallback: (apiResponse) => {},
     // @param {apiResponse} response from visearch API
     onSearchCallback: undefined,
   },
   searchBarResultsSettings: {
     enableImageUpload: true,
     enableFindSimilar: true,
+    enableMultiSearch: true,
     redirectUrl: 'http://localhost:8080/',
   },
   hideTrigger: false,

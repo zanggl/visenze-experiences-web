@@ -251,8 +251,9 @@ export interface WidgetConfig {
   searchBarResultsSettings: {
     enableImageUpload: boolean;
     enableFindSimilar: boolean;
+    enableMultiSearch: boolean;
     redirectUrl: string;
-  }
+  };
   callbacks: {
     trackingCallback?: (action: string, params: Record<string, any>) => void;
     onProductClick?: (productDetails: Record<string, any>, trackingMeta: Record<string, any>) => void;

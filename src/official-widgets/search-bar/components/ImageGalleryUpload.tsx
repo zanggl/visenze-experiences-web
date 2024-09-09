@@ -1,5 +1,5 @@
 import type { FC, ReactNode } from 'react';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Button } from '@nextui-org/button';
 import { Card, CardFooter } from '@nextui-org/card';
 import { useIntl } from 'react-intl';
@@ -9,7 +9,7 @@ import useBreakpoint from '../../../common/components/hooks/use-breakpoint';
 import FileDropzone from '../../../common/components/FileDropzone';
 import UploadIcon from '../../../common/icons/UploadIcon';
 import { WidgetDataContext } from '../../../common/types/contexts';
-import type { SearchImage } from '../../../common/types/image';
+import type { ImageFile, ImageUrl, SearchImage } from '../../../common/types/image';
 import CloseIcon from '../../../common/icons/CloseIcon';
 
 interface ImageGalleryUploadProps {
@@ -20,6 +20,7 @@ interface ImageGalleryUploadProps {
 const ImageGalleryUpload: FC<ImageGalleryUploadProps> = ({ imageUploadHandler, placementId }) => {
   const { customizations } = useContext(WidgetDataContext);
   const [openModal, setOpenModal] = useState(false);
+  const [searchImage, setSearchImage] = useState<SearchImage>();
   const breakpoint = useBreakpoint();
   const intl = useIntl();
 
@@ -31,14 +32,31 @@ const ImageGalleryUpload: FC<ImageGalleryUploadProps> = ({ imageUploadHandler, p
     setOpenModal(false);
   };
 
+  useEffect(() => {
+    const handleImageAppended = (e: any): void => {
+      setSearchImage(e.detail);
+    };
+    document.addEventListener('wigmix_search_bar_append_image', handleImageAppended);
+    return (): void => {
+      document.removeEventListener('wigmix_search_bar_append_image', handleImageAppended);
+    };
+  }, []);
+
+  const createImageEvent = (image: SearchImage): void => {
+    const event = new CustomEvent('wigmix_search_bar_append_image', { detail: image });
+    document.dispatchEvent(event);
+  };
+
   const onImageUpload = (image: SearchImage): void => {
     imageUploadHandler(image);
+    createImageEvent(image);
     setOpenModal(false);
   };
 
   const onGallerySelect = (index: number): void => {
-    if (customizations) {
-      imageUploadHandler?.({ imgUrl: customizations?.images[index].url });
+    if (customizations && customizations.images[index]) {
+      imageUploadHandler?.({ imgUrl: customizations.images[index].url });
+      createImageEvent({ imgUrl: customizations.images[index].url });
     }
     setOpenModal(false);
   };
@@ -77,9 +95,21 @@ const ImageGalleryUpload: FC<ImageGalleryUploadProps> = ({ imageUploadHandler, p
   };
 
   return (
-    <div className='hidden md:block'>
+    <div className='hidden md:flex'>
       <Button isIconOnly className='rounded-full bg-zinc-100' onClick={onIconClickHandler} data-pw='sb-gallery-button'>
-        <PhotoIcon className='size-6'/>
+        {searchImage && (
+            <>
+              {(searchImage as ImageUrl).imgUrl && (
+                  <img src={(searchImage as ImageUrl).imgUrl} />
+              )}
+              {(searchImage as ImageFile).file && (
+                  <img src={(searchImage as ImageFile).file} />
+              )}
+            </>
+        )}
+        {!searchImage && (
+            <PhotoIcon className='size-6'/>
+        )}
       </Button>
 
       <VisenzeModal open={openModal} onClose={onCloseHandler} layout={breakpoint}
