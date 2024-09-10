@@ -7,6 +7,8 @@ import { WidgetDataContext } from '../../common/types/contexts';
 import RecommendMe from './recommend-me';
 import version from './version';
 import './app.css';
+import { DEFAULT_LOCALE } from '../../common/default-configs';
+import { getLocaleTexts } from '../../common/locales/locale';
 
 interface AppProps {
   config: WidgetConfig;
@@ -16,8 +18,8 @@ interface AppProps {
 }
 
 const App: FC<AppProps> = ({ config, fieldMappings, productSearch, element }) => {
-  const locale = config.languageSettings.locale || 'en';
-  const messages = config.languageSettings.text[locale];
+  const locale = config.languageSettings.locale || DEFAULT_LOCALE;
+  const messages = getLocaleTexts(config.languageSettings.text, locale);
   const widgetType = WidgetType.RECOMMEND_ME;
   const productId = element.dataset.pid ?? '';
 
