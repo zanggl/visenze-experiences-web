@@ -7,7 +7,6 @@ import { QUERY_MAX_CHARACTER_LENGTH } from '../../../common/constants';
 import ImageGalleryUpload from './ImageGalleryUpload';
 import type { SearchImage } from '../../../common/types/image';
 import MagnifyingGlassIcon from '../../../common/icons/MagnifyingGlassIcon';
-import CameraUpload from './CameraUpload';
 import { WidgetDataContext } from '../../../common/types/contexts';
 
 interface SearchBarInputProps {
@@ -66,7 +65,6 @@ const SearchBarInput: FC<SearchBarInputProps> = ({ query, setQuery, handleRedire
             searchBarResultsSettings.enableImageUpload
             && <>
               <ImageGalleryUpload imageUploadHandler={imageUploadHandler} placementId={placementId} />
-              <CameraUpload imageUploadHandler={imageUploadHandler} />
             </>
           }
           <MagnifyingGlassIcon className='size-4'/>

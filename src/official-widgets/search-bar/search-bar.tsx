@@ -21,6 +21,7 @@ const SearchBar: FC<SearchBarResultProps> = ({ config }): ReactElement => {
   const [image, setImage] = useState<SearchImage | undefined>();
   const [showDropdown, setShowDropdown] = useState(false);
   const [allowRedirect, setAllowRedirect] = useState(false);
+  const [isMultiSearch, setIsMultiSearch] = useState(true);
   const root = useContext(RootContext);
 
   const {
@@ -33,25 +34,39 @@ const SearchBar: FC<SearchBarResultProps> = ({ config }): ReactElement => {
   });
 
   const redirectWithAutocomplete = (autocomplete: string): void => {
-    if (debugMode) return;
-
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const searchBarImageId = urlSearchParams.get('im_id');
     const url = new URL(searchBarResultsSettings.redirectUrl);
-    url.searchParams.append('q', autocomplete);
-    window.location.href = url.toString();
+    if (isMultiSearch && (imageId || searchBarImageId)) {
+      url.searchParams.append('im_id', imageId || searchBarImageId || '');
+    }
+    url.searchParams.set('q', autocomplete);
+    if (debugMode) {
+      window.history.pushState(null, '', url.toString());
+    } else {
+      window.location.href = url.toString();
+    }
   };
 
   const handleRedirect = (): void => {
-    if ((!query && !image) || debugMode) {
+    if (!query && !image) {
       return;
     }
 
     const url = new URL(searchBarResultsSettings.redirectUrl);
-    if (imageId) {
-      url.searchParams.append('im_id', imageId);
-    } else if (query) {
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const searchBarImageId = urlSearchParams.get('im_id');
+    if (imageId || searchBarImageId) {
+      url.searchParams.append('im_id', imageId || searchBarImageId || '');
+    }
+    if (query && (isMultiSearch || (!imageId && !searchBarImageId))) {
       url.searchParams.append('q', query);
     }
-    window.location.href = url.toString();
+    if (debugMode) {
+      window.history.pushState(null, '', url.toString());
+    } else {
+      window.location.href = url.toString();
+    }
   };
 
   useEffect(() => {
@@ -83,6 +98,22 @@ const SearchBar: FC<SearchBarResultProps> = ({ config }): ReactElement => {
     }
   }, []);
 
+  useEffect(() => {
+    const handleImageAppended = (e: any): void => {
+      setAllowRedirect(false);
+      setImage(e.detail);
+    };
+    const handleMultiSearch = (e: any): void => {
+      setIsMultiSearch(e.detail);
+    };
+    document.addEventListener('wigmix_search_bar_replace_image', handleImageAppended);
+    document.addEventListener('wigmix_search_bar_multi_search', handleMultiSearch);
+    return (): void => {
+      document.removeEventListener('wigmix_search_bar_replace_image', handleImageAppended);
+      document.removeEventListener('wigmix_search_bar_multi_search', handleMultiSearch);
+    };
+  }, []);
+
   if (error) {
     console.error(error);
   }
@@ -97,12 +128,20 @@ const SearchBar: FC<SearchBarResultProps> = ({ config }): ReactElement => {
         <div className='relative flex w-full flex-col items-center'>
           {/* Search bar */}
           <SearchBarInput query={query} setQuery={setQuery} setImage={setImage} setAllowRedirect={setAllowRedirect}
-                          handleRedirect={handleRedirect} setShowDropdown={setShowDropdown}
+                          handleRedirect={() => {
+                            if (query) {
+                              redirectWithAutocomplete(query);
+                            }
+                          }}
+                          setShowDropdown={setShowDropdown}
                           placementId={`${config.appSettings.placementId}`} />
           {/* Autocomplete dropdown */}
           {
             <Listbox
-              onAction={(key) => { redirectWithAutocomplete(String(key)); }}
+              onAction={(key) => {
+                setQuery(String(key));
+                redirectWithAutocomplete(String(key));
+              }}
               classNames={{
                 base: cn(
                   'absolute top-12 rounded-b-md max-h-52 w-full overflow-y-auto border-gray-200 bg-white transition-all z-20',
