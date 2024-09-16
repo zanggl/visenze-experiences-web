@@ -116,6 +116,8 @@ const RecommendMe = memo((props: {
             isStreaming
             && <CarouselLoader results={productResults} searchValue={query} />
           }
+        </div>
+        <div className='flex flex-col'>
           { ...carouselHistory }
         </div>
       </WidgetResultContext.Provider>
