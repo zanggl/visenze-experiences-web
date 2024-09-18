@@ -268,6 +268,10 @@ export interface WidgetConfig {
     images: ImageWithLabel[];
     breakpoints: BreakpointConfig;
     customCss: string;
+    languageSettings: {
+      locale: string;
+      text: Record<string, Record<string, string>>;
+    };
   };
   hideTrigger: boolean;
   debugMode: boolean;
