@@ -8,12 +8,10 @@ const customCss = `
 /* Insert the custom CSS here */
 `;
 
-const initConfig = {
-  ...devConfigs,
-  customizations: {
-    ...devConfigs.customizations,
-    customCss,
-  },
+const shouldUseOnlineWidgetConfig = {
+  widgetConfig: false, // set to true to use widget config configured within the placement itself
+  fieldMappings: true, // set to true to use the fields mappings within the app itself
+  customCss: false, // set to true to use custom CSS configured within the placement itself
 };
 
 devInitWidget(
@@ -21,7 +19,9 @@ devInitWidget(
     version,
     ({ config, client, index, element }) => <App config={config} productSearch={client} index={index} element={element}></App>,
     true,
-    initConfig,
+    devConfigs,
     devFieldMappings,
+    customCss,
+    shouldUseOnlineWidgetConfig,
     window,
 );

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
-import type { WidgetType, WidgetClient, WidgetConfig } from '../visenze-core';
+import type { WidgetType, WidgetClient, WidgetConfig, RecursivePartial } from '../visenze-core';
 import { DEFAULT_CONFIGS } from '../default-configs';
 import getWidgetClient from './product-search';
 
@@ -204,16 +204,47 @@ export const initWidgetFactory = (
   };
 };
 
+const DEFAULT_ENDPOINT = 'https://search.visenze.com';
+
 export const devInitWidget = async (
     widgetType: WidgetType,
     widgetVersion: string,
     renderer: WidgetRenderer,
     isMultiRender: boolean,
-    devConfigs: any,
-    fieldMappings: Record<string, string>,
+    devConfigs: RecursivePartial<WidgetConfig>,
+    fieldMappingsParam: Record<string, string>,
+    customCssParam: string,
+    shouldUseOnlineWidgetConfig: { widgetConfig: boolean, fieldMappings: boolean, customCss: boolean },
     window: Window,
 ): Promise<void> => {
-  const result = init(devConfigs, fieldMappings, widgetType, widgetVersion, '/');
+  let widgetConfig = devConfigs.customizations;
+  let fieldMappings = fieldMappingsParam;
+  let customCss = customCssParam;
+  if (shouldUseOnlineWidgetConfig.widgetConfig || shouldUseOnlineWidgetConfig.fieldMappings
+      || shouldUseOnlineWidgetConfig.customCss) {
+    const widgetConfigResponse = await fetch((devConfigs.appSettings?.endpoint || DEFAULT_ENDPOINT)
+        + `/v2/widget-configs?app_key=${devConfigs.appSettings?.appKey}`
+        + `&placement_id=${devConfigs.appSettings?.placementId}&return_fields_mappings=true`);
+    const widgetConfigObject = await widgetConfigResponse.json();
+    if (shouldUseOnlineWidgetConfig.widgetConfig) {
+      widgetConfig = JSON.parse(widgetConfigObject.result.config);
+    }
+    if (shouldUseOnlineWidgetConfig.fieldMappings) {
+      fieldMappings = widgetConfigObject.fields_mappings;
+    }
+    if (shouldUseOnlineWidgetConfig.customCss && widgetConfig?.customCss) {
+      customCss = widgetConfig.customCss;
+    }
+  }
+  const initConfig: any = {
+    ...devConfigs,
+    customizations: {
+      ...widgetConfig,
+      customCss,
+    },
+  };
+
+  const result = init(initConfig, fieldMappings, widgetType, widgetVersion, '/');
   if (!result) {
     return;
   }
