@@ -18,9 +18,8 @@ interface AppProps {
 }
 
 const App: FC<AppProps> = ({ config, fieldMappings, productSearch, element }) => {
-  const locale = config.customizations.languageSettings.locale || config.languageSettings.locale || DEFAULT_LOCALE;
-  const messages = getLocaleTexts(config.customizations.languageSettings.text, locale)
-    || getLocaleTexts(config.languageSettings.text, locale);
+  const locale = config.customizations.languageSettings?.locale || config.languageSettings.locale || DEFAULT_LOCALE;
+  const messages = getLocaleTexts(locale, config.languageSettings.text, config.customizations.languageSettings?.text);
   const widgetType = WidgetType.SHOP_THE_LOOK;
   const productId = element.dataset.pid ?? '';
 

@@ -1,20 +1,33 @@
 import { DEFAULT_LOCALE } from '../default-configs';
 
-export const getLocaleTexts = (texts: Record<string, Record<string, string>>, localeParam: string): Record<string, string> => {
+export const getLocaleTexts = (localeParam: string,
+                               presetTexts: Record<string, Record<string, string>>,
+                               customTexts: Record<string, Record<string, string>> = {}): Record<string, string> => {
   const locale = localeParam || DEFAULT_LOCALE;
   const lang = locale.indexOf('-') >= 0 ? locale.split('-')[0] : '';
-  if (!lang) {
-    // If locale code is just language, return directly
-    return texts[locale] || texts[DEFAULT_LOCALE];
-  }
-  const textsWithRegionVariants = texts[lang] || {};
-  Object.keys(texts[locale] || {}).forEach((key) => {
-    if (texts[locale][key]) {
-      // Replace all available keys with regional variant
-      textsWithRegionVariants[key] = texts[locale][key];
+  const finalTexts = ((): Record<string, string> => {
+    if (!lang) {
+      // If locale code is just language, return directly
+      return presetTexts[locale] || presetTexts[DEFAULT_LOCALE];
     }
-  });
-  return textsWithRegionVariants;
+    const textsWithRegionVariants = presetTexts[lang] || {};
+    Object.keys(presetTexts[locale] || {}).forEach((key) => {
+      if (presetTexts[locale][key]) {
+        // Replace all available keys with regional variant
+        textsWithRegionVariants[key] = presetTexts[locale][key];
+      }
+    });
+    return textsWithRegionVariants;
+  })();
+  if (customTexts[locale]) {
+    Object.keys(customTexts[locale] || {}).forEach((key) => {
+      if (customTexts[locale][key]) {
+        // Replace all available keys with regional variant
+        finalTexts[key] = customTexts[locale][key];
+      }
+    });
+  }
+  return finalTexts;
 };
 
 export const getCurrencyFormatter = (locale: string, currency: string): Intl.NumberFormat => {

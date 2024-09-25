@@ -268,7 +268,7 @@ export interface WidgetConfig {
     images: ImageWithLabel[];
     breakpoints: BreakpointConfig;
     customCss: string;
-    languageSettings: {
+    languageSettings?: {
       locale: string;
       text: Record<string, Record<string, string>>;
     };

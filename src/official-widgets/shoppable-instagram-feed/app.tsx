@@ -17,9 +17,8 @@ interface AppProps {
 }
 
 const App: FC<AppProps> = ({ config, fieldMappings, productSearch }) => {
-  const locale = config.customizations.languageSettings.locale || config.languageSettings.locale || DEFAULT_LOCALE;
-  const messages = getLocaleTexts(config.customizations.languageSettings.text, locale)
-    || getLocaleTexts(config.languageSettings.text, locale);
+  const locale = config.customizations.languageSettings?.locale || config.languageSettings.locale || DEFAULT_LOCALE;
+  const messages = getLocaleTexts(locale, config.languageSettings.text, config.customizations.languageSettings?.text);
   const widgetType = WidgetType.SHOPPABLE_INSTAGRAM_FEED;
 
   return (
