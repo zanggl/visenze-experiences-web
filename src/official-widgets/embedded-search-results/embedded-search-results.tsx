@@ -3,6 +3,7 @@ import { useEffect, useRef, useContext, useState } from 'react';
 import type { ProductSearchResponse, Facet } from 'visearch-javascript-sdk';
 import { Button } from '@nextui-org/button';
 import { useIntl } from 'react-intl';
+import { Pagination } from '@nextui-org/pagination';
 import { Spinner } from '@nextui-org/spinner';
 import { cn } from '@nextui-org/theme';
 import { WidgetDataContext, WidgetResultContext } from '../../common/types/contexts';
@@ -16,7 +17,6 @@ import type { WidgetConfig } from '../../common/visenze-core';
 import FilterOptions from './components/FilterOptions';
 import ViSenzeModal from '../../common/components/modal/visenze-modal';
 import FilterIcon from '../../common/icons/FilterIcon';
-import FindSimilarHistory from './components/FindSimilarHistory';
 import type { ImageUrl } from '../../common/types/image';
 import CloseIcon from '../../common/icons/CloseIcon';
 
@@ -45,8 +45,9 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [activeImgUrl, setActiveImgUrl] = useState<string | null>('');
-  const [findSimilarHistory, setFindSimilarHistory] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+  const [totalResults, setTotalResults] = useState(0);
   const widgetTitleRef = useRef<HTMLDivElement>(null);
   const root = useContext(RootContext);
   const intl = useIntl();
@@ -65,28 +66,34 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
     if (res.status === 'fail') {
       handleError(res.error.message);
     } else {
+      if (res.total) {
+        setTotalResults(res.total);
+        if (res.limit) {
+          setTotalPage(Math.ceil(res.total / res.limit));
+        }
+      }
       setError('');
       setMetadata({
         cat: Category.RESULT,
         queryId: res.reqid,
       });
       setProductResults(getFlattenProducts(res.result));
-      // Only set facets once
-      if (facets.length === 0 && res.facets) {
-        const image: ImageUrl = {
-          imgUrl: res.query_tmp_url || '',
-        };
-        setImageUrl(image.imgUrl);
-        const event = new CustomEvent('wigmix_search_bar_append_image', { detail: image });
-        document.dispatchEvent(event);
+      if (res.facets) {
         setFacets(res.facets);
       }
+      const image: ImageUrl = {
+        imgUrl: res.query_tmp_url || '',
+      };
+      setImageUrl(image.imgUrl);
+      const event = new CustomEvent('wigmix_search_bar_append_image', { detail: image });
+      document.dispatchEvent(event);
     }
     setIsFirstLoad(false);
     setIsLoading(false);
   };
 
-  const multisearchWithSearchBarDetails = (imgUrl?: string): void => {
+  const multisearchWithSearchBarDetails = (pageParam: number, imgUrl?: string): void => {
+    setPage(pageParam);
     setIsLoading(true);
     const urlSearchParams = new URLSearchParams(window.location.search);
     const searchBarImageId = urlSearchParams.get('im_id');
@@ -100,6 +107,7 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
       facets: getFacets(productDetails),
       facets_show_count: true,
       return_query_temp_url: true,
+      page: pageParam,
     };
 
     if (debugMode) {
@@ -131,30 +139,18 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
       setQuery('');
     }
     setImageUrl(imgUrl);
-    multisearchWithSearchBarDetails(imgUrl);
-    // const isProductInHistory = findSimilarHistory.some((item) => item === imgUrl);
-    // if (!isProductInHistory) {
-    //   setFindSimilarHistory([...findSimilarHistory, imgUrl]);
-    // }
-
-    setActiveImgUrl(imgUrl);
+    multisearchWithSearchBarDetails(1, imgUrl);
   };
-
-  useEffect(() => {
-    if (activeImgUrl === null) {
-      multisearchWithSearchBarDetails();
-    }
-  }, [activeImgUrl]);
 
   useEffect(() => {
     if (!isLoading) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      multisearchWithSearchBarDetails();
+      multisearchWithSearchBarDetails(1, imageUrl);
     }
   }, [selectedFilters]);
 
   useEffect(() => {
-    multisearchWithSearchBarDetails();
+    multisearchWithSearchBarDetails(1, imageUrl);
   }, []);
 
   if (isLoading && isFirstLoad) {
@@ -178,14 +174,13 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
           <div className='widget-title font-bold'>{intl.formatMessage({ id: 'embeddedSearchResults.title' })}</div>
           {query && !imageUrl && (
             <div className='break-words text-lg'>
-              {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })}&nbsp;
-              {productResults.length} {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part2' })} <b>{query}</b>
+              {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })} &quot;{query}&quot;
+              [{totalResults}]
             </div>
           )}
           {!query && imageUrl && (
               <div className='mt-2 flex items-center gap-x-3 text-lg'>
-                {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })}&nbsp;
-                {productResults.length} {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part2' })}
+                {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })}
                 <div className={cn('relative h-full flex-shrink-0 cursor-pointer border border-gray-500')}>
                   <img className='object-fit aspect-[4/5] w-20 border-1 border-black' src={imageUrl} />
                   <button
@@ -200,13 +195,12 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
                     <CloseIcon className='size-3'/>
                   </button>
                 </div>
+                [{totalResults}]
               </div>
           )}
           {isMultiSearch && query && imageUrl && (
               <div className='mt-2 flex items-center gap-x-3 text-lg'>
-                {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })}&nbsp;
-                {productResults.length} {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part2' })}
-                <b>{query}</b>
+                {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })} &quot;{query}&quot;
                 {' '}+{' '}
                 <div className={cn('relative h-full flex-shrink-0 cursor-pointer border border-gray-500')}>
                   <img className='object-fit aspect-[4/5] w-20 border-1 border-black' src={imageUrl} />
@@ -222,6 +216,7 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
                     <CloseIcon className='size-3'/>
                   </button>
                 </div>
+                [{totalResults}]
               </div>
           )}
         </div>
@@ -257,14 +252,6 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
             />
           </ViSenzeModal>
           <div className='flex flex-col md:w-3/4'>
-            {/* Find Similar Image History */}
-            <FindSimilarHistory
-              activeImgUrl={activeImgUrl}
-              setActiveImgUrl={setActiveImgUrl}
-              findSimilarHistory={findSimilarHistory}
-              setFindSimilarHistory={setFindSimilarHistory}
-              multisearchWithSearchBarDetails={multisearchWithSearchBarDetails}
-            />
             {/* Product Result Grid */}
             {
               isLoading && !isFirstLoad
@@ -292,6 +279,12 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
                   }
                 </>
             }
+            <div className='flex flex-wrap justify-center gap-4'>
+              <Pagination total={totalPage} page={page} initialPage={1} color='secondary'
+                          onChange={(p) => {
+                            multisearchWithSearchBarDetails(p, imageUrl);
+                          }} />
+            </div>
           </div>
         </div>
       </WidgetResultContext.Provider>

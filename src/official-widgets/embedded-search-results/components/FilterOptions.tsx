@@ -1,5 +1,4 @@
-import type { ChangeEvent, FC, ReactElement } from 'react';
-import { useContext } from 'react';
+import React, { useContext, type ChangeEvent, type FC, type ReactElement } from 'react';
 import { Accordion, AccordionItem } from '@nextui-org/accordion';
 import type { Facet } from 'visearch-javascript-sdk';
 import { Slider } from '@nextui-org/slider';
@@ -12,10 +11,10 @@ import { getFacetNameByKey, getTitleCase } from '../../../common/utils';
 interface FilterOptionsProps {
   facets: Facet[];
   selectedFilters: Record<FacetType, any>;
-  setSelectedFilters: (selectedFilters: any) => void;
+  setSelectedFilters: React.Dispatch<React.SetStateAction<Record<FacetType, any>>>;
 }
 
-const FilterOptions:FC<FilterOptionsProps> = ({ facets, selectedFilters, setSelectedFilters }) => {
+const FilterOptions: FC<FilterOptionsProps> = ({ facets, selectedFilters, setSelectedFilters }) => {
   const { displaySettings } = useContext(WidgetDataContext);
 
   const showFacetValues = (facet: Facet): ReactElement | ReactElement[] => {
