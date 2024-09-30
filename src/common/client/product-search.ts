@@ -1,5 +1,4 @@
 import type { Root } from 'react-dom/client';
-import { v4 as uuid } from 'uuid';
 import ViSearch from 'visearch-javascript-sdk';
 import type { WidgetInitOptions, WidgetClient } from '../visenze-core';
 import type { ErrorHandler, SuccessHandler } from '../types/function';
@@ -49,7 +48,7 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
   const { config, widgetType, widgetVersion, widgetDirectory, deployTypeId } = options;
   const { vttSource, disableAnalytics } = config;
   const lastTrackingMetadata: Record<string, any> = {};
-  const { placementId, appKey, strategyId, country, endpoint, gtmTracking, resizeSettings } = config.appSettings;
+  const { placementId, appKey, strategyId, country, endpoint, gtmTracking, resizeSettings, uid } = config.appSettings;
   const { onSearchCallback } = config?.callbacks;
   let roots: Root[] = [];
 
@@ -62,9 +61,10 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
     endpoint: endpoint || Endpoint,
     gtm_tracking: gtmTracking,
     resize_settings: resizeSettings || {},
-    uid: uuid(),
-    sid: uuid(),
   });
+  if (uid) {
+    visearch.set('uid', uid);
+  }
 
   const searchById = (
     pid: string,

@@ -134,7 +134,7 @@ export const getFilterQueries = (productDetails: WidgetConfig['displaySettings']
     const outputSet = new Set<string>();
 
     inputSet.forEach((str) => {
-      if (str.includes(' ')) {
+      if (str.includes(' ') || str.includes('-')) {
         outputSet.add(`"${str}"`);
       } else {
         outputSet.add(str);

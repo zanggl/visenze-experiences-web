@@ -18,6 +18,8 @@ export interface RecommendMe {
   error: string;
 }
 
+const DEFAULT_ENDPOINT = 'https://search.visenze.com';
+
 const useRecommendMe = ({
   config,
   productSearch,
@@ -56,7 +58,7 @@ const useRecommendMe = ({
     });
 
     // Listen to the event stream and retrieve relevant data based on the event type
-    fetchEventSource(`${endpoint}/v1/product/multisearch/chat/recommend-me?${params.toString()}`, {
+    fetchEventSource(`${endpoint || DEFAULT_ENDPOINT}/v1/product/multisearch/chat/recommend-me?${params.toString()}`, {
       async onopen() {
         setIsStreaming(true);
       },

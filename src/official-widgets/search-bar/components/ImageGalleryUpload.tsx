@@ -34,7 +34,11 @@ const ImageGalleryUpload: FC<ImageGalleryUploadProps> = ({ imageUploadHandler, p
 
   useEffect(() => {
     const handleImageAppended = (e: any): void => {
-      setSearchImage(e.detail);
+      if (e.detail && (e.detail.imgUrl || e.detail.file)) {
+        setSearchImage(e.detail);
+      } else {
+        setSearchImage(undefined);
+      }
     };
     document.addEventListener('wigmix_search_bar_append_image', handleImageAppended);
     return (): void => {
@@ -95,7 +99,7 @@ const ImageGalleryUpload: FC<ImageGalleryUploadProps> = ({ imageUploadHandler, p
   };
 
   return (
-    <div className='hidden md:flex'>
+    <div className='md:flex'>
       <Button isIconOnly className='rounded-full bg-zinc-100' onClick={onIconClickHandler} data-pw='sb-gallery-button'>
         {searchImage && (
             <>
