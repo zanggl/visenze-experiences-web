@@ -241,6 +241,26 @@ export interface WidgetConfig {
       sizes: string;
       colors: string;
     };
+    productSlider: {
+      tablet: {
+        slideToShow: number;
+        slideToScroll: number;
+        marginVertical: number;
+        marginHorizontal: number;
+      };
+      desktop: {
+        slideToShow: number;
+        slideToScroll: number;
+        marginVertical: number;
+        marginHorizontal: number;
+      };
+      mobile: {
+        slideToShow: number;
+        slideToScroll: number;
+        marginVertical: number;
+        marginHorizontal: number;
+      };
+    }
   };
   searchSettings: Record<string, any>;
   languageSettings: {
@@ -268,6 +288,26 @@ export interface WidgetConfig {
     images: ImageWithLabel[];
     breakpoints: BreakpointConfig;
     customCss: string;
+    productSlider: {
+      mobile: {
+        slideToShow: number;
+        slideToScroll: number;
+        marginVertical: number;
+        marginHorizontal: number;
+      };
+      desktop: {
+        slideToShow: number;
+        slideToScroll: number;
+        marginVertical: number;
+        marginHorizontal: number;
+      };
+      tablet: {
+        slideToShow: number;
+        slideToScroll: number;
+        marginVertical: number;
+        marginHorizontal: number;
+      };
+    }
   };
   hideTrigger: boolean;
   debugMode: boolean;
