@@ -31,6 +31,15 @@ const EmbeddedGrid: FC<EmbeddedGridProps> = ({ config, productSearch, productId 
     retryCount,
   });
 
+  const getProductGridStyles = (): string => {
+    if (config.customizations.productSlider) {
+      return `grid-cols-${config.customizations.productSlider.mobile.slideToShow} 
+      md:grid-cols-${config.customizations.productSlider.tablet.slideToShow} 
+      xl:grid-cols-${config.customizations.productSlider.desktop.slideToShow}`;
+    }
+    return '';
+  };
+
   useEffect(() => {
     if (error) {
       setRetryCount(retryCount + 1);
@@ -64,7 +73,7 @@ const EmbeddedGrid: FC<EmbeddedGridProps> = ({ config, productSearch, productId 
           <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='eg-widget-title'>{intl.formatMessage({ id: 'embeddedGrid.title' })}</div>
 
           {/* Product result grid */}
-          <div className='grid grid-cols-2 gap-x-2 gap-y-4 md:grid-cols-5' data-pw='eg-product-result-grid'>
+          <div className={`grid gap-x-2 gap-y-4 ${getProductGridStyles() !== '' ? getProductGridStyles : 'grid-cols-2 md:grid-cols-5'}`} data-pw='eg-product-result-grid'>
             {productResults.map((result, index) => (
               <div key={`${result.product_id}-${index}`} data-pw={`eg-product-result-card-${index + 1}`}>
                 <Result

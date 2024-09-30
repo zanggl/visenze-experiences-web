@@ -241,26 +241,6 @@ export interface WidgetConfig {
       sizes: string;
       colors: string;
     };
-    productSlider: {
-      tablet: {
-        slideToShow: number;
-        slideToScroll: number;
-        marginVertical: number;
-        marginHorizontal: number;
-      };
-      desktop: {
-        slideToShow: number;
-        slideToScroll: number;
-        marginVertical: number;
-        marginHorizontal: number;
-      };
-      mobile: {
-        slideToShow: number;
-        slideToScroll: number;
-        marginVertical: number;
-        marginHorizontal: number;
-      };
-    }
   };
   searchSettings: Record<string, any>;
   languageSettings: {
@@ -292,24 +272,18 @@ export interface WidgetConfig {
       locale: string;
       text: Record<string, Record<string, string>>;
     };
-    productSlider: {
+    productSlider?: {
       mobile: {
         slideToShow: number;
-        slideToScroll: number;
-        marginVertical: number;
-        marginHorizontal: number;
+        slideToScroll?: number;
       };
       desktop: {
         slideToShow: number;
-        slideToScroll: number;
-        marginVertical: number;
-        marginHorizontal: number;
+        slideToScroll?: number;
       };
       tablet: {
         slideToShow: number;
-        slideToScroll: number;
-        marginVertical: number;
-        marginHorizontal: number;
+        slideToScroll?: number;
       };
     }
   };
