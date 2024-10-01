@@ -19,6 +19,7 @@ const SearchBar: FC<SearchBarResultProps> = ({ config }): ReactElement => {
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState(query);
   const [image, setImage] = useState<SearchImage | undefined>();
+  const [shouldClearImId, setShouldClearImId] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [allowRedirect, setAllowRedirect] = useState(false);
   const [isMultiSearch, setIsMultiSearch] = useState(true);
@@ -33,11 +34,23 @@ const SearchBar: FC<SearchBarResultProps> = ({ config }): ReactElement => {
     query: debouncedQuery,
   });
 
+  useEffect(() => {
+    const handleImageAppended = (e: any): void => {
+      if (!(e.detail && (e.detail.imgUrl || e.detail.file))) {
+        setShouldClearImId(true);
+      }
+    };
+    document.addEventListener('wigmix_search_bar_append_image', handleImageAppended);
+    return (): void => {
+      document.removeEventListener('wigmix_search_bar_append_image', handleImageAppended);
+    };
+  }, []);
+
   const redirectWithAutocomplete = (autocomplete: string): void => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     const searchBarImageId = urlSearchParams.get('im_id');
     const url = new URL(searchBarResultsSettings.redirectUrl);
-    if (isMultiSearch && (imageId || searchBarImageId)) {
+    if (isMultiSearch && (imageId || (searchBarImageId && !shouldClearImId))) {
       url.searchParams.append('im_id', imageId || searchBarImageId || '');
     }
     url.searchParams.set('q', autocomplete);
@@ -48,18 +61,14 @@ const SearchBar: FC<SearchBarResultProps> = ({ config }): ReactElement => {
     }
   };
 
-  const handleRedirect = (): void => {
+  const handleRedirect = (imId: string): void => {
     if (!query && !image) {
       return;
     }
 
     const url = new URL(searchBarResultsSettings.redirectUrl);
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const searchBarImageId = urlSearchParams.get('im_id');
-    if (imageId || searchBarImageId) {
-      url.searchParams.append('im_id', imageId || searchBarImageId || '');
-    }
-    if (query && (isMultiSearch || (!imageId && !searchBarImageId))) {
+    url.searchParams.append('im_id', imId);
+    if (query && isMultiSearch) {
       url.searchParams.append('q', query);
     }
     if (debugMode) {
@@ -76,7 +85,7 @@ const SearchBar: FC<SearchBarResultProps> = ({ config }): ReactElement => {
 
   useEffect(() => {
     if (imageId && allowRedirect) {
-      handleRedirect();
+      handleRedirect(imageId);
     }
   }, [imageId]);
 
