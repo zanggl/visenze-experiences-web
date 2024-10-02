@@ -29,20 +29,12 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
   const [isLoading, setIsLoading] = useState(true);
   const intl = useIntl();
 
-  const {
-    productResults,
-    metadata,
-    referenceImageUrl,
-    error,
-    objectIndex,
-    setObjectIndex,
-    objects,
-  } = useRecommendationSearch({
-    productSearch,
-    config,
-    productId,
-    retryCount,
-  });
+  const { productResults, metadata, referenceImageUrl, error, objectIndex, setObjectIndex, objects } = useRecommendationSearch({
+      productSearch,
+      config,
+      productId,
+      retryCount,
+    });
 
   const resizeObjectDots = (image: HTMLImageElement): void => {
     const heightScale = image.clientHeight / image.naturalHeight;
@@ -68,6 +60,17 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
         resizeObjectDots(imageRef.current);
       }
     });
+  };
+
+  const getProductGridStyles = (): string => {
+    if (config.customizations.productSlider) {
+      return (
+        `grid-cols-${config.customizations.productSlider.mobile.slideToShow} `
+        + `md:grid-cols-${config.customizations.productSlider.tablet.slideToShow} `
+        + `lg:grid-cols-${config.customizations.productSlider.desktop.slideToShow}`
+      );
+    }
+    return '';
   };
 
   useEffect(() => {
@@ -100,7 +103,9 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
         <div className='bg-primary'>
           {/* Widget Title */}
-          <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='sl-widget-title'>{intl.formatMessage({ id: 'shoppableLookbook.title' })}</div>
+          <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='sl-widget-title'>
+            {intl.formatMessage({ id: 'shoppableLookbook.title' })}
+          </div>
 
           {/* Reference Image and Product Card Grid container */}
           <div className='relative flex flex-col gap-y-4 md:flex-row'>
@@ -109,11 +114,9 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
               {objectDots.map((obj, index) => (
                 <button
                   data-pw='sl-hotspot-dot'
-                  className={
-                    `group absolute z-10 flex items-center justify-center rounded-full bg-[#515151] transition-all
+                  className={`group absolute z-10 flex items-center justify-center rounded-full bg-[#515151] transition-all
                     duration-300 hover:size-6 hover:-translate-x-3 hover:-translate-y-3 hover:ring-1 hover:ring-white
-                    ${objectIndex === index ? 'size-6 -translate-x-3 -translate-y-3 ring-1 ring-white' : 'size-4 -translate-x-2 -translate-y-2'}`
-                  }
+                    ${objectIndex === index ? 'size-6 -translate-x-3 -translate-y-3 ring-1 ring-white' : 'size-4 -translate-x-2 -translate-y-2'}`}
                   style={{ top: obj.top, left: obj.left }}
                   key={obj.index}
                   onClick={(): void => setObjectIndex(index)}>
@@ -133,21 +136,20 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
             </div>
 
             {/* Product card grid */}
-            <div className='grid grid-cols-2 gap-x-2 gap-y-4 md:absolute md:right-0 md:top-0 md:h-full md:w-[59%] md:grid-cols-3 md:overflow-y-scroll'
-                 data-pw='sl-product-result-grid'>
+            <div
+              className={`grid ${getProductGridStyles() !== '' ? getProductGridStyles() : 'grid-cols-2 md:grid-cols-3'} 
+              gap-x-2 gap-y-4 md:absolute md:right-0 md:top-0 md:h-full md:w-[59%] md:overflow-y-scroll`}
+              data-pw='sl-product-result-grid'>
               {productResults.map((result, index) => (
                 <div key={`${result.product_id}-${index}`} data-pw={`sl-product-result-card-${index + 1}`}>
-                  <Result
-                    index={index}
-                    result={result}
-                  />
+                  <Result index={index} result={result} />
                 </div>
               ))}
             </div>
           </div>
 
           {/* ViSenze Footer */}
-          <Footer className='bg-transparent py-4 md:py-8' dataPw='sl-visenze-footer'/>
+          <Footer className='bg-transparent py-4 md:py-8' dataPw='sl-visenze-footer' />
         </div>
       </WidgetResultContext.Provider>
     </>

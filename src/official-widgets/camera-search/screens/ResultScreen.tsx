@@ -21,6 +21,7 @@ import useBreakpoint from '../../../common/components/hooks/use-breakpoint';
 import HotspotContainer from '../../../common/components/hotspots/hotspot-container';
 import { Actions, Category, Labels } from '../../../common/types/tracking-constants';
 import { QUERY_MAX_CHARACTER_LENGTH } from '../../../common/constants';
+import type { ProductDisplayConfig } from '../../../common/visenze-core';
 
 const swipeConfig = {
   delta: 10, // min distance(px) before a swipe starts. *See Notes*
@@ -43,6 +44,7 @@ interface ResultScreenProps {
   selectedChip: string;
   setSelectedChip: (chip: string) => void;
   trendingKeywords: string[];
+  productCustomizations: ProductDisplayConfig;
 }
 
 const ResultScreen: FC<ResultScreenProps> = ({
@@ -57,6 +59,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
   selectedChip,
   setSelectedChip,
   trendingKeywords,
+  productCustomizations,
 }) => {
   const { productSearch } = useContext(WidgetDataContext);
   const { productResults, autocompleteResults } = useContext(WidgetResultContext);
@@ -153,29 +156,37 @@ const ResultScreen: FC<ResultScreenProps> = ({
             onKeywordSearch(search, keyword === selectedChip ? '' : keyword);
             scrollToResultsTop();
           }}>
-          <span className='calls-to-action-text leading-6 text-primary' data-pw={`cs-autocomplete-chip-${index + 1}`}>{keyword}</span>
+          <span className='calls-to-action-text leading-6 text-primary' data-pw={`cs-autocomplete-chip-${index + 1}`}>
+            {keyword}
+          </span>
         </Chip>
       ));
     }
 
     return null;
   };
-
+  const getProductGridStyles = (): string => {
+    let styleString = '';
+    if (productCustomizations.tablet) {
+      styleString += `grid-cols-${productCustomizations.tablet.slideToShow}`;
+    }
+    if (productCustomizations.desktop) {
+      styleString += `lg:grid-cols-${productCustomizations.desktop.slideToShow}`;
+    }
+    return styleString;
+  };
   const getMobileView = (): ReactElement => (
     <div className='flex h-full flex-col gap-8 bg-primary md:hidden'>
-      <Header onCloseHandler={onModalClose} onBackHandler={onBackHandler} isResultScreen={true}/>
+      <Header onCloseHandler={onModalClose} onBackHandler={onBackHandler} isResultScreen={true} />
       <div className='relative h-screen grow overflow-hidden'>
-        <div
-          {...minimizedDrawerHandler}
-          {...mobileInputFocusHandler}>
+        <div {...minimizedDrawerHandler} {...mobileInputFocusHandler}>
           <div className={cn('transition-all duration-500', showFullResults ? 'opacity-0' : 'w-full opacity-100')}>
-            <HotspotContainer referenceImage={getReferenceImage()}/>
+            <HotspotContainer referenceImage={getReferenceImage()} />
           </div>
 
           <div
             className={`no-scrollbar fixed left-3/20 top-14 m-auto flex w-2/3 gap-1 overflow-scroll ${showFullResults ? 'block' : 'hidden'}`}
-            data-pw='cs-previous-views'
-          >
+            data-pw='cs-previous-views'>
             {searchHistory?.map((searchImage, index) => (
               <img
                 key={`image-history-${index}`}
@@ -200,24 +211,18 @@ const ResultScreen: FC<ResultScreenProps> = ({
               radius='full'
               className='absolute inset-x-0 -top-3 m-auto bg-buttonSecondary'
               onClick={(): void => toggleFullResults()}
-              data-pw='cs-arrow-button'
-            >
-              {showFullResults ? <ArrowDownIcon className='size-6'/> : <ArrowUpIcon className='size-6'/>}
+              data-pw='cs-arrow-button'>
+              {showFullResults ? <ArrowDownIcon className='size-6' /> : <ArrowUpIcon className='size-6' />}
             </Button>
           </div>
 
           <div ref={resultsRef} className='no-scrollbar flex size-full justify-center overflow-y-auto md:hidden'>
-            <div className='mx-2 grid h-full grid-cols-2 pb-20' data-pw='cs-product-result-grid'>
+            <div
+              className={`mx-2 grid h-full pb-20 ${productCustomizations.mobile ? `grid-cols-${productCustomizations.mobile.slideToShow}` : 'grid-cols-2'}`}
+              data-pw='cs-product-result-grid'>
               {productResults.map((result: ProcessedProduct, index: number) => (
-                <div
-                  key={result.product_id}
-                  className='border-gray-300 px-2 pt-2'>
-                  <Result
-                    onMoreLikeThis={onMoreLikeThis}
-                    clearSearch={clearSearch}
-                    index={index}
-                    result={result}
-                  />
+                <div key={result.product_id} className='border-gray-300 px-2 pt-2'>
+                  <Result onMoreLikeThis={onMoreLikeThis} clearSearch={clearSearch} index={index} result={result} />
                 </div>
               ))}
             </div>
@@ -273,17 +278,18 @@ const ResultScreen: FC<ResultScreenProps> = ({
 
   const getTabletAndDesktopView = (): ReactElement => (
     <div className='hidden md:block md:overflow-hidden lg:rounded-t-3xl'>
-      <Header onCloseHandler={onModalClose} onBackHandler={onBackHandler} isResultScreen={true}/>
+      <Header onCloseHandler={onModalClose} onBackHandler={onBackHandler} isResultScreen={true} />
       <div className='absolute bottom-8 left-0 top-16 w-full overflow-hidden bg-primary'>
         <div className='flex h-full flex-row'>
           <div className='relative left-0 row-span-1 h-full w-1/3 border-r-2 border-gray-300 px-8'>
             <div className='flex h-9/10 flex-col justify-between px-2'>
               <div className='flex w-full flex-col items-center rounded-3xl border border-black pt-2 text-center'>
-                <HotspotContainer className='w-3/5' referenceImage={getReferenceImage()}/>
+                <HotspotContainer className='w-3/5' referenceImage={getReferenceImage()} />
 
                 <FileDropzone onImageUpload={onImageUpload} name='upload-icon'>
                   <p className='calls-to-action-text px-3 py-2 leading-6 text-primary'>
-                    {intl.formatMessage({ id: 'cameraSearch.dragImageToSearch.part1' })}<br/>
+                    {intl.formatMessage({ id: 'cameraSearch.dragImageToSearch.part1' })}
+                    <br />
                     {intl.formatMessage({ id: 'cameraSearch.dragImageToSearch.part2' })}
                     <span className='underline'>
                       &nbsp;{intl.formatMessage({ id: 'cameraSearch.dragImageToSearch.part3' })}
@@ -297,7 +303,9 @@ const ResultScreen: FC<ResultScreenProps> = ({
                   <span className='calls-to-action-text text-primary'>
                     {intl.formatMessage({ id: 'cameraSearch.previousViews' })}
                   </span>
-                  <div className='no-scrollbar flex h-full flex-row gap-1 overflow-scroll pt-1' data-pw='cs-previous-views'>
+                  <div
+                    className='no-scrollbar flex h-full flex-row gap-1 overflow-scroll pt-1'
+                    data-pw='cs-previous-views'>
                     {searchHistory
                       ?.slice(1)
                       .map((searchImage, index) => (
@@ -317,15 +325,12 @@ const ResultScreen: FC<ResultScreenProps> = ({
 
           <div className='flex w-2/3 flex-col'>
             <div className='h-4/5 overflow-y-auto'>
-              <div className='grid grid-cols-3 gap-x-2 gap-y-3 px-2 pb-3' data-pw='cs-product-result-grid'>
+              <div
+                className={`grid grid-cols-3 gap-x-2 gap-y-3 px-2 pb-3 ${getProductGridStyles() !== '' ? getProductGridStyles() : 'grid-cols-3'}`}
+                data-pw='cs-product-result-grid'>
                 {productResults.map((result: ProcessedProduct, index: number) => (
                   <div key={result.product_id} className={cn('bg-primary')}>
-                    <Result
-                      onMoreLikeThis={onMoreLikeThis}
-                      clearSearch={clearSearch}
-                      index={index}
-                      result={result}
-                    />
+                    <Result onMoreLikeThis={onMoreLikeThis} clearSearch={clearSearch} index={index} result={result} />
                   </div>
                 ))}
               </div>
@@ -336,7 +341,9 @@ const ResultScreen: FC<ResultScreenProps> = ({
                 {/* Autocomplete Suggestions */}
                 <Listbox
                   style={autocompleteSuggestionsStyle}
-                  classNames={{ base: 'absolute w-full overflow-y-auto border-t-1 border-gray-200 bg-white transition-all' }}
+                  classNames={{
+                    base: 'absolute w-full overflow-y-auto border-t-1 border-gray-200 bg-white transition-all',
+                  }}
                   aria-label='Actions'
                   onAction={(key): void => {
                     const newSearch = String(key);
@@ -348,7 +355,9 @@ const ResultScreen: FC<ResultScreenProps> = ({
                   }}>
                   {inputSuggestions.map((keyword, index) => (
                     <ListboxItem key={keyword} className={cn(keyword === search ? 'bg-gray' : '', 'pl-8')}>
-                      <span className='text-base' data-pw={`cs-autocomplete-suggestion-${index + 1}`}>{keyword}</span>
+                      <span className='text-base' data-pw={`cs-autocomplete-suggestion-${index + 1}`}>
+                        {keyword}
+                      </span>
                     </ListboxItem>
                   ))}
                 </Listbox>
@@ -357,7 +366,8 @@ const ResultScreen: FC<ResultScreenProps> = ({
                 <div className='relative z-20 border-t-1 border-gray-200 bg-primary px-5 pt-2'>
                   <Input
                     classNames={{
-                      input: 'text-tablet-searchBarText lg:text-desktop-searchBarText font-tablet-searchBarText lg:font-desktop-searchBarText',
+                      input:
+                        'text-tablet-searchBarText lg:text-desktop-searchBarText font-tablet-searchBarText lg:font-desktop-searchBarText',
                     }}
                     isClearable
                     maxLength={QUERY_MAX_CHARACTER_LENGTH}
@@ -386,19 +396,17 @@ const ResultScreen: FC<ResultScreenProps> = ({
 
                 {/* Autocomplete Chips */}
                 <div className='relative z-20 flex min-h-10 items-center bg-primary px-5 pb-3 pt-2'>
-                  {
-                    trendingKeywords.length > 0
-                    && <p className='calls-to-action-text pr-2 text-primary'>
-                         {intl.formatMessage({ id: 'cameraSearch.trending' })}
-                       </p>
-                  }
+                  {trendingKeywords.length > 0 && (
+                    <p className='calls-to-action-text pr-2 text-primary'>
+                      {intl.formatMessage({ id: 'cameraSearch.trending' })}
+                    </p>
+                  )}
                   <div data-pw='cs-autocomplete-chips' className='flex gap-1'>
                     {getAutocompleteChips()}
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -446,7 +454,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
     <>
       {breakpoint === 'mobile' && getMobileView()}
       {(breakpoint === 'tablet' || breakpoint === 'desktop') && getTabletAndDesktopView()}
-      <Footer className='fixed bottom-0 bg-white py-2 md:absolute md:justify-start md:pl-20 lg:rounded-b-3xl'/>
+      <Footer className='fixed bottom-0 bg-white py-2 md:absolute md:justify-start md:pl-20 lg:rounded-b-3xl' />
     </>
   );
 };

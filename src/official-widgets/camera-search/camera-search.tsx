@@ -9,7 +9,7 @@ import { parseBox } from '../../common/utils';
 import UploadScreen from './screens/UploadScreen';
 import ResultScreen from './screens/ResultScreen';
 import { ScreenType } from '../../common/types/constants';
-import type { WidgetClient, WidgetConfig } from '../../common/visenze-core';
+import type { ProductDisplayConfig, WidgetClient, WidgetConfig } from '../../common/visenze-core';
 import { RootContext } from '../../common/components/shadow-wrapper';
 import ViSenzeModal from '../../common/components/modal/visenze-modal';
 import useImageMultisearch from '../../common/components/hooks/use-image-multisearch';
@@ -18,10 +18,7 @@ import LoadingIcon from './icons/LoadingIcon';
 import { QUERY_MAX_CHARACTER_LENGTH } from '../../common/constants';
 import CroppingProvider from '../../common/components/providers/CroppingProvider';
 
-const CameraSearch = memo((props: {
-  config: WidgetConfig;
-  productSearch: WidgetClient;
-}) => {
+const CameraSearch = memo((props: { config: WidgetConfig; productSearch: WidgetClient }) => {
   const { config, productSearch } = props;
   const breakpoint = useBreakpoint();
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -162,6 +159,7 @@ const CameraSearch = memo((props: {
             selectedChip={selectedChip}
             setSelectedChip={setSelectedChip}
             trendingKeywords={trendingKeywords}
+            productCustomizations={config.customizations.productSlider || ({} as ProductDisplayConfig)}
           />
         );
       case ScreenType.LOADING:
@@ -249,12 +247,19 @@ const CameraSearch = memo((props: {
         metadata,
       }}>
       <CroppingProvider boxData={boxData} setBoxData={setBoxData}>
-        {config.customizations?.icons.cameraButton
-          ? <img src={config.customizations.icons.cameraButton} onClick={onCameraButtonClick} className='size-7 cursor-pointer'></img>
-          : <CameraIcon onClickHandler={onCameraButtonClick} />
-        }
-        <ViSenzeModal open={dialogVisible} layout={breakpoint} onClose={onModalClose}
-                      placementId={`${config.appSettings.placementId}`}>
+        {config.customizations?.icons.cameraButton ? (
+          <img
+            src={config.customizations.icons.cameraButton}
+            onClick={onCameraButtonClick}
+            className='size-7 cursor-pointer'></img>
+        ) : (
+          <CameraIcon onClickHandler={onCameraButtonClick} />
+        )}
+        <ViSenzeModal
+          open={dialogVisible}
+          layout={breakpoint}
+          onClose={onModalClose}
+          placementId={`${config.appSettings.placementId}`}>
           {getScreen()}
         </ViSenzeModal>
       </CroppingProvider>

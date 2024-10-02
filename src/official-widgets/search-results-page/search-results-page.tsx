@@ -1,5 +1,5 @@
 import { memo, useContext, useEffect, useState } from 'react';
-import type { WidgetClient, WidgetConfig } from '../../common/visenze-core';
+import type { ProductDisplayConfig, WidgetClient, WidgetConfig } from '../../common/visenze-core';
 import { RootContext } from '../../common/components/shadow-wrapper';
 import ResultsPage from './components/ResultsPage';
 import useImageMultisearch from '../../common/components/hooks/use-image-multisearch';
@@ -7,29 +7,19 @@ import { WidgetResultContext } from '../../common/types/contexts';
 import type { ProcessedProduct } from '../../common/types/product';
 import SearchBarWithDropdown from './components/SearchBarWithDropdown';
 
-const SearchResultsPage = memo((props: {
-  config: WidgetConfig;
-  productSearch: WidgetClient;
-}) => {
+const SearchResultsPage = memo((props: { config: WidgetConfig; productSearch: WidgetClient }) => {
   const { config, productSearch } = props;
   const [searchBarValue, setSearchBarValue] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [activeProduct, setActiveProduct] = useState<ProcessedProduct | null>(null);
   const root = useContext(RootContext);
 
-  const {
-    productResults,
-    autocompleteWithQuery,
-    multisearchWithParams,
-    autocompleteResults,
-    metadata,
-    error,
-  } = useImageMultisearch({
-    image: undefined,
-    boxData: undefined,
-    config,
-    productSearch,
-  });
+  const { productResults, autocompleteWithQuery, multisearchWithParams, autocompleteResults, metadata, error } = useImageMultisearch({
+      image: undefined,
+      boxData: undefined,
+      config,
+      productSearch,
+    });
 
   const handleMultisearchWithQuery = (query: string): void => {
     setSearchBarValue(query);
@@ -71,17 +61,17 @@ const SearchResultsPage = memo((props: {
             handleMultisearchWithProduct={handleMultisearchWithProduct}
           />
           {/* Results page */}
-          {
-            productResults.length > 0
-            && <ResultsPage
+          {productResults.length > 0 && (
+            <ResultsPage
               autocompleteResults={autocompleteResults}
               results={productResults}
               handleMultisearchWithQuery={handleMultisearchWithQuery}
               handleMultisearchWithProduct={handleMultisearchWithProduct}
               activeProduct={activeProduct}
               setActiveProduct={setActiveProduct}
+              productCustomization={config.customizations.productSlider || ({} as ProductDisplayConfig)}
             />
-          }
+          )}
         </div>
       </WidgetResultContext.Provider>
     </>
