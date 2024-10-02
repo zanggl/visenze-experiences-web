@@ -1,4 +1,4 @@
-import * as English from './locales/en.json';
+import English from './locales/en.json';
 import type { WidgetConfig } from './visenze-core';
 
 export const DEFAULT_LOCALE = 'en';
