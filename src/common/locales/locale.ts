@@ -1,4 +1,5 @@
 import { DEFAULT_LOCALE } from '../default-configs';
+import { deepMerge } from '../client/initialization';
 
 export const getLocaleTexts = (localeParam: string,
                                presetTexts: Record<string, Record<string, string>>,
@@ -20,12 +21,7 @@ export const getLocaleTexts = (localeParam: string,
     return textsWithRegionVariants;
   })();
   if (customTexts[locale]) {
-    Object.keys(customTexts[locale] || {}).forEach((key) => {
-      if (customTexts[locale][key]) {
-        // Replace all available keys with regional variant
-        finalTexts[key] = customTexts[locale][key];
-      }
-    });
+    return deepMerge(customTexts[locale], finalTexts);
   }
   return finalTexts;
 };

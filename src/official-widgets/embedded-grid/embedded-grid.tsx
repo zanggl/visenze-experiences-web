@@ -20,16 +20,23 @@ const EmbeddedGrid: FC<EmbeddedGridProps> = ({ config, productSearch, productId 
   const [isLoading, setIsLoading] = useState(true);
   const intl = useIntl();
 
-  const {
-    productResults,
-    metadata,
-    error,
-  } = useRecommendationSearch({
+  const { productResults, metadata, error } = useRecommendationSearch({
     productSearch,
     config,
     productId,
     retryCount,
   });
+
+  const getProductGridStyles = (): string => {
+    if (config.customizations.productSlider) {
+      return (
+        `grid-cols-${config.customizations.productSlider.mobile.slideToShow} `
+        + `md:grid-cols-${config.customizations.productSlider.tablet.slideToShow} `
+        + `lg:grid-cols-${config.customizations.productSlider.desktop.slideToShow}`
+      );
+    }
+    return '';
+  };
 
   useEffect(() => {
     if (error) {
@@ -40,6 +47,7 @@ const EmbeddedGrid: FC<EmbeddedGridProps> = ({ config, productSearch, productId 
   }, [error]);
 
   useEffect(() => {
+    console.log(config);
     setIsLoading(false);
   }, []);
 
@@ -61,22 +69,23 @@ const EmbeddedGrid: FC<EmbeddedGridProps> = ({ config, productSearch, productId 
       <WidgetResultContext.Provider value={{ metadata, productResults }}>
         <div className='bg-primary'>
           {/* Widget Title */}
-          <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='eg-widget-title'>{intl.formatMessage({ id: 'embeddedGrid.title' })}</div>
+          <div className='widget-title py-2 text-center text-primary md:py-4' data-pw='eg-widget-title'>
+            {intl.formatMessage({ id: 'embeddedGrid.title' })}
+          </div>
 
           {/* Product result grid */}
-          <div className='grid grid-cols-2 gap-x-2 gap-y-4 md:grid-cols-5' data-pw='eg-product-result-grid'>
+          <div
+            className={`grid gap-x-2 gap-y-4 ${getProductGridStyles() !== '' ? getProductGridStyles() : 'grid-cols-2 md:grid-cols-5'}`}
+            data-pw='eg-product-result-grid'>
             {productResults.map((result, index) => (
               <div key={`${result.product_id}-${index}`} data-pw={`eg-product-result-card-${index + 1}`}>
-                <Result
-                  index={index}
-                  result={result}
-                />
+                <Result index={index} result={result} />
               </div>
             ))}
           </div>
 
           {/* ViSenze Footer */}
-          <Footer className='bg-transparent py-4 md:py-8' dataPw='eg-visenze-footer'/>
+          <Footer className='bg-transparent py-4 md:py-8' dataPw='eg-visenze-footer' />
         </div>
       </WidgetResultContext.Provider>
     </>

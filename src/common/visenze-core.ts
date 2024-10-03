@@ -19,7 +19,7 @@ export enum WidgetType {
   SHOPPABLE_INSTAGRAM_FEED = 'shoppable_instagram_feed',
   ICON_TRIGGERED_GRID = 'icon_triggered_grid',
   SEARCH_BAR = 'search_bar',
-  EMBEDDED_SEARCH_RESULTS = 'embedded_search_results'
+  EMBEDDED_SEARCH_RESULTS = 'embedded_search_results',
 }
 
 interface GenericWidgetClient {
@@ -135,7 +135,12 @@ export interface WidgetClient extends GenericWidgetClient {
    * @param handleSuccess - callback to be executed upon search success
    * @param handleError - callback to be executed upon search failure
    */
-  searchById: (pid: string, params: Record<string, any>, handleSuccess: SuccessHandler, handleError: ErrorHandler) => void;
+  searchById: (
+    pid: string,
+    params: Record<string, any>,
+    handleSuccess: SuccessHandler,
+    handleError: ErrorHandler,
+  ) => void;
   /**
    * Multisearch by product image.
    * @param params - search query parameters
@@ -188,7 +193,12 @@ export interface WidgetFont {
 }
 
 export type DeviceType = 'mobile' | 'tablet' | 'desktop';
-export type TargetElement = 'widgetTitle' | 'callsToActionText' | 'productCardTitle' | 'productCardPrice' | 'searchBarText';
+export type TargetElement =
+  | 'widgetTitle'
+  | 'callsToActionText'
+  | 'productCardTitle'
+  | 'productCardPrice'
+  | 'searchBarText';
 
 type FontConfig = {
   [D in DeviceType]: {
@@ -272,6 +282,7 @@ export interface WidgetConfig {
       locale: string;
       text: Record<string, Record<string, string>>;
     };
+    productSlider?: ProductDisplayConfig;
   };
   hideTrigger: boolean;
   debugMode: boolean;
@@ -305,4 +316,14 @@ interface BreakpointConfig {
   mobile: MediaQueryFeatures;
   tablet: MediaQueryFeatures;
   desktop: MediaQueryFeatures;
+}
+
+export interface ProductDisplayConfig {
+  mobile: ProductDisplayFeatures;
+  tablet: ProductDisplayFeatures;
+  desktop: ProductDisplayFeatures;
+}
+interface ProductDisplayFeatures {
+  slideToShow: number;
+  slideToScroll?: number;
 }

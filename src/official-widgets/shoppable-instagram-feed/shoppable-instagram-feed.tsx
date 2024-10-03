@@ -5,10 +5,7 @@ import { Spinner } from '@nextui-org/spinner';
 import { useIntl } from 'react-intl';
 import type { WidgetClient, WidgetConfig } from '../../common/visenze-core';
 import { RootContext } from '../../common/components/shadow-wrapper';
-import {
-  WidgetResultContext,
-  WidgetDataContext,
-} from '../../common/types/contexts';
+import { WidgetResultContext, WidgetDataContext } from '../../common/types/contexts';
 import InstagramImage from './components/InstagramImage';
 import Footer from '../../common/components/Footer';
 import useRecommendationSearch from '../../common/components/hooks/use-recommendation-search';
@@ -41,13 +38,7 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
   const { appSettings } = useContext(WidgetDataContext);
   const intl = useIntl();
 
-  const {
-    objects,
-    productResults,
-    productTypes,
-    metadata,
-    error,
-  } = useRecommendationSearch({
+  const { objects, productResults, productTypes, metadata, error } = useRecommendationSearch({
     productSearch,
     config,
     retryCount,
@@ -65,6 +56,17 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
     setActiveProductId('');
   };
 
+  const getProductGridStyles = (): string => {
+    if (config.customizations.productSlider) {
+      return (
+        `grid-cols-${config.customizations.productSlider.mobile.slideToShow} `
+        + `md:grid-cols-${config.customizations.productSlider.tablet.slideToShow} `
+        + `lg:grid-cols-${config.customizations.productSlider.desktop.slideToShow}`
+      );
+    }
+    return '';
+  };
+
   useEffect(() => {
     if (error) {
       setRetryCount(retryCount + 1);
@@ -76,7 +78,9 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
   // Retrieve gallery products
   useEffect(() => {
     const fetchGalleryProducts = async (): Promise<void> => {
-      const response = await fetch(`${appSettings.endpoint}/v1/product/linked/gallery/browse?placement_id=${appSettings.placementId}&app_key=${appSettings.appKey}&limit=100`);
+      const response = await fetch(
+        `${appSettings.endpoint}/v1/product/linked/gallery/browse?placement_id=${appSettings.placementId}&app_key=${appSettings.appKey}&limit=100`,
+      );
       const data = await response.json();
       setGalleryProducts(getFlattenProducts(data.result));
       setIsLoading(false);
@@ -99,7 +103,7 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
   if (!root || isLoading) {
     return (
       <div className='flex justify-center py-20'>
-        <Spinner color='secondary'/>
+        <Spinner color='secondary' />
       </div>
     );
   }
@@ -107,7 +111,9 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
   if (error) {
     return (
       <div className='flex h-60 flex-col items-center justify-center gap-4'>
-        <span className='text-md font-bold'>{intl.formatMessage({ id: 'shoppableInstagramFeed.errorMessage.part1' })}</span>
+        <span className='text-md font-bold'>
+          {intl.formatMessage({ id: 'shoppableInstagramFeed.errorMessage.part1' })}
+        </span>
         <span className='text-sm'>{intl.formatMessage({ id: 'shoppableInstagramFeed.errorMessage.part2' })}</span>
       </div>
     );
@@ -118,46 +124,55 @@ const ShoppableInstagramFeed: FC<ShoppableInstagramFeedProps> = ({ config, produ
       <WidgetResultContext.Provider value={{ metadata, productResults, productTypes }}>
         <div>
           {/* Gallery Products Grid */}
-          <div className='grid grid-cols-3 gap-0.5' data-pw='sif-gallery-products-grid'>
+          <div
+            className={`grid ${getProductGridStyles() !== '' ? getProductGridStyles() : 'grid-cols-3'} gap-0.5`}
+            data-pw='sif-gallery-products-grid'>
             {galleryProducts.slice(0, page * 20).map((result, index) => (
               <div key={`${result.im_url}-${index}`} data-pw={`sif-gallery-product-${index + 1}`}>
-                <InstagramImage
-                  index={index}
-                  result={result}
-                  onClickHandler={instagramImageClickHandler}
-                />
+                <InstagramImage index={index} result={result} onClickHandler={instagramImageClickHandler} />
               </div>
             ))}
           </div>
 
           {/* ViSenze Footer */}
-          <Footer className='bg-transparent py-4 md:py-8' dataPw='sif-visenze-footer'/>
+          <Footer className='bg-transparent py-4 md:py-8' dataPw='sif-visenze-footer' />
         </div>
 
         <CroppingProvider boxData={boxData} setBoxData={setBoxData}>
           {/* Modal showing hotspots on selected image */}
-          <ViSenzeModal open={openModal} onClose={onCloseHandler} layout={breakpoint}
-                        placementId={`${config.appSettings.placementId}`}
-                        className='left-[unset] top-[unset] h-[500px] w-[300px] rounded-xl'>
+          <ViSenzeModal
+            open={openModal}
+            onClose={onCloseHandler}
+            layout={breakpoint}
+            placementId={`${config.appSettings.placementId}`}
+            className='left-[unset] top-[unset] h-[500px] w-[300px] rounded-xl'>
             <div className='flex size-full flex-col bg-primary pt-1/5' data-pw='sif-image-hotspot-modal'>
-              <Button isIconOnly className='absolute right-2 top-2 bg-transparent' onClick={onCloseHandler} data-pw='sif-modal-close-button'>
-                <CloseIcon className='size-6'/>
+              <Button
+                isIconOnly
+                className='absolute right-2 top-2 bg-transparent'
+                onClick={onCloseHandler}
+                data-pw='sif-modal-close-button'>
+                <CloseIcon className='size-6' />
               </Button>
-                {
-                  productTypes.length > 0
-                  && <HotspotContainer
-                    referenceImage={activeImageUrl}
-                    referenceImageClassName='aspect-[3/4]'
-                    noSelectedHotspot={true}
-                    handleBoxClick={() => setOpenDrawer(true)}
-                  />
-                }
+              {productTypes.length > 0 && (
+                <HotspotContainer
+                  referenceImage={activeImageUrl}
+                  referenceImageClassName='aspect-[3/4]'
+                  noSelectedHotspot={true}
+                  handleBoxClick={() => setOpenDrawer(true)}
+                />
+              )}
             </div>
           </ViSenzeModal>
 
           {/* Drawer which displays product recommendations for the selected hotspot */}
-          <HotspotRecommendations openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} objects={objects} activeImageUrl={activeImageUrl}
-                                  placementId={`${config.appSettings.placementId}`}/>
+          <HotspotRecommendations
+            openDrawer={openDrawer}
+            setOpenDrawer={setOpenDrawer}
+            objects={objects}
+            activeImageUrl={activeImageUrl}
+            placementId={`${config.appSettings.placementId}`}
+          />
         </CroppingProvider>
       </WidgetResultContext.Provider>
     </>

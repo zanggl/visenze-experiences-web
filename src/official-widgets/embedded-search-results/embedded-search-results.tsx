@@ -92,6 +92,17 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
     setIsLoading(false);
   };
 
+  const getProductGridStyles = (): string => {
+    if (config.customizations.productSlider) {
+      return (
+        `grid-cols-${config.customizations.productSlider.mobile.slideToShow} `
+        + `md:grid-cols-${config.customizations.productSlider.tablet.slideToShow} `
+        + `lg:grid-cols-${config.customizations.productSlider.desktop.slideToShow}`
+      );
+    }
+    return '';
+  };
+
   const multisearchWithSearchBarDetails = (pageParam: number, imgUrl?: string): void => {
     setPage(pageParam);
     setIsLoading(true);
@@ -156,7 +167,7 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
   if (isLoading && isFirstLoad) {
     return (
       <div className='flex justify-center py-20'>
-        <Spinner color='secondary'/>
+        <Spinner color='secondary' />
       </div>
     );
   }
@@ -174,116 +185,120 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
           <div className='widget-title font-bold'>{intl.formatMessage({ id: 'embeddedSearchResults.title' })}</div>
           {query && !imageUrl && (
             <div className='break-words text-lg'>
-              {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })} &quot;{query}&quot;
-              [{totalResults}]
+              {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })} &quot;{query}&quot; [{totalResults}]
             </div>
           )}
           {!query && imageUrl && (
-              <div className='mt-2 flex items-center gap-x-3 text-lg'>
-                {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })}
-                <div className={cn('relative h-full flex-shrink-0 cursor-pointer border border-gray-500')}>
-                  <img className='object-fit aspect-[4/5] w-20 border-1 border-black' src={imageUrl} />
-                  <button
-                      className='absolute right-1 top-1 z-10 rounded-full bg-white p-1'
-                      onClick={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        findSimilarClickHandler('');
-                      }}
-                      data-pw='esr-product-history-delete'
-                  >
-                    <CloseIcon className='size-3'/>
-                  </button>
-                </div>
-                [{totalResults}]
+            <div className='mt-2 flex items-center gap-x-3 text-lg'>
+              {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })}
+              <div className={cn('relative h-full flex-shrink-0 cursor-pointer border border-gray-500')}>
+                <img className='object-fit aspect-[4/5] w-20 border-1 border-black' src={imageUrl} />
+                <button
+                  className='absolute right-1 top-1 z-10 rounded-full bg-white p-1'
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    findSimilarClickHandler('');
+                  }}
+                  data-pw='esr-product-history-delete'>
+                  <CloseIcon className='size-3' />
+                </button>
               </div>
+              [{totalResults}]
+            </div>
           )}
           {isMultiSearch && query && imageUrl && (
-              <div className='mt-2 flex items-center gap-x-3 text-lg'>
-                {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })} &quot;{query}&quot;
-                {' '}+{' '}
-                <div className={cn('relative h-full flex-shrink-0 cursor-pointer border border-gray-500')}>
-                  <img className='object-fit aspect-[4/5] w-20 border-1 border-black' src={imageUrl} />
-                  <button
-                      className='absolute right-1 top-1 z-10 rounded-full bg-white p-1'
-                      onClick={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        findSimilarClickHandler('');
-                      }}
-                      data-pw='esr-product-history-delete'
-                  >
-                    <CloseIcon className='size-3'/>
-                  </button>
-                </div>
-                [{totalResults}]
+            <div className='mt-2 flex items-center gap-x-3 text-lg'>
+              {intl.formatMessage({ id: 'embeddedSearchResults.subtitle.part1' })} &quot;{query}&quot; +{' '}
+              <div className={cn('relative h-full flex-shrink-0 cursor-pointer border border-gray-500')}>
+                <img className='object-fit aspect-[4/5] w-20 border-1 border-black' src={imageUrl} />
+                <button
+                  className='absolute right-1 top-1 z-10 rounded-full bg-white p-1'
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    findSimilarClickHandler('');
+                  }}
+                  data-pw='esr-product-history-delete'>
+                  <CloseIcon className='size-3' />
+                </button>
               </div>
+              [{totalResults}]
+            </div>
           )}
         </div>
         <div className='flex size-full flex-col bg-primary md:flex-row'>
           {/* Filter Section Tablet & Desktop */}
-          {
-              facets
-              && <div className='sticky top-0 hidden h-full w-1/4 flex-col md:flex'>
-              <div
-                className='p-3 text-center text-xl font-bold'>{intl.formatMessage({ id: 'embeddedSearchResults.filter' })}</div>
+          {facets && (
+            <div className='sticky top-0 hidden h-full w-1/4 flex-col md:flex'>
+              <div className='p-3 text-center text-xl font-bold'>
+                {intl.formatMessage({ id: 'embeddedSearchResults.filter' })}
+              </div>
               <FilterOptions
                 facets={facets}
                 selectedFilters={selectedFilters}
                 setSelectedFilters={setSelectedFilters}
               />
             </div>
-          }
+          )}
           {/* Filter Section Mobile */}
           <div className='sticky top-0 z-20 w-full bg-white px-2 py-1 md:hidden md:px-0'>
-            <Button className='self-start bg-transparent px-2' data-pw='esr-filter-button' onClick={() => setShowMobileFilterOptions(true)}>
-              <FilterIcon className='size-5'/>
-              <span className='calls-to-action-text'>
-              {intl.formatMessage({ id: 'embeddedSearchResults.filter' })}
-            </span>
+            <Button
+              className='self-start bg-transparent px-2'
+              data-pw='esr-filter-button'
+              onClick={() => setShowMobileFilterOptions(true)}>
+              <FilterIcon className='size-5' />
+              <span className='calls-to-action-text'>{intl.formatMessage({ id: 'embeddedSearchResults.filter' })}</span>
             </Button>
           </div>
-          <ViSenzeModal className='bottom-0 top-[unset] h-4/5' open={showMobileFilterOptions} layout='mobile' onClose={() => setShowMobileFilterOptions(false)}
-                        placementId={`${config.appSettings.placementId}`}>
-            <FilterOptions
-              facets={facets}
-              selectedFilters={selectedFilters}
-              setSelectedFilters={setSelectedFilters}
-            />
+          <ViSenzeModal
+            className='bottom-0 top-[unset] h-4/5'
+            open={showMobileFilterOptions}
+            layout='mobile'
+            onClose={() => setShowMobileFilterOptions(false)}
+            placementId={`${config.appSettings.placementId}`}>
+            <FilterOptions facets={facets} selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
           </ViSenzeModal>
           <div className='flex flex-col md:w-3/4'>
             {/* Product Result Grid */}
-            {
-              isLoading && !isFirstLoad
-                ? <div className='flex w-full justify-center py-32'>
-                  <Spinner color='secondary'/>
-                </div>
-                : <>
-                  {
-                    productResults.length > 0
-                      ? <div className='grid w-full grid-cols-2 gap-x-2 gap-y-4 px-2 pb-2 md:grid-cols-3 md:pl-0 md:pr-2' data-pw='esr-product-result-grid'>
-                        {productResults.map((result, index) => (
-                          <div key={`${result.product_id}-${index}`} data-pw={`esr-product-result-card-${index + 1}`}>
-                            <Result
-                              index={index}
-                              result={result}
-                              findSimilarClickHandler={findSimilarClickHandler}
-                            />
-                          </div>
-                        ))}
+            {isLoading && !isFirstLoad ? (
+              <div className='flex w-full justify-center py-32'>
+                <Spinner color='secondary' />
+              </div>
+            ) : (
+              <>
+                {productResults.length > 0 ? (
+                  <div
+                    className={`grid w-full ${getProductGridStyles() !== '' ? getProductGridStyles() : 'grid-cols-2 md:grid-cols-3'} gap-x-2 gap-y-4 px-2 pb-2 md:pl-0 md:pr-2`}
+                    data-pw='esr-product-result-grid'>
+                    {productResults.map((result, index) => (
+                      <div key={`${result.product_id}-${index}`} data-pw={`esr-product-result-card-${index + 1}`}>
+                        <Result index={index} result={result} findSimilarClickHandler={findSimilarClickHandler} />
                       </div>
-                      : <div className='flex flex-col gap-y-2 py-24 text-center md:w-3/4'>
-                        <p className='calls-to-action-text font-semibold'>{intl.formatMessage({ id: 'embeddedSearchResults.errorMessage.part1' })}</p>
-                        <p className='calls-to-action-text'>{intl.formatMessage({ id: 'embeddedSearchResults.errorMessage.part2' })}</p>
-                      </div>
-                  }
-                </>
-            }
+                    ))}
+                  </div>
+                ) : (
+                  <div className='flex flex-col gap-y-2 py-24 text-center md:w-3/4'>
+                    <p className='calls-to-action-text font-semibold'>
+                      {intl.formatMessage({ id: 'embeddedSearchResults.errorMessage.part1' })}
+                    </p>
+                    <p className='calls-to-action-text'>
+                      {intl.formatMessage({ id: 'embeddedSearchResults.errorMessage.part2' })}
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
             <div className='flex flex-wrap justify-center gap-4'>
-              <Pagination total={totalPage} page={page} initialPage={1} color='secondary'
-                          onChange={(p) => {
-                            multisearchWithSearchBarDetails(p, imageUrl);
-                          }} />
+              <Pagination
+                total={totalPage}
+                page={page}
+                initialPage={1}
+                color='secondary'
+                onChange={(p) => {
+                  multisearchWithSearchBarDetails(p, imageUrl);
+                }}
+              />
             </div>
           </div>
         </div>
