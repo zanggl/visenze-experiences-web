@@ -79,9 +79,9 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
   const getProductGridStyles = (): string => {
     if (config.customizations.productSlider) {
       return (
-        `grid-cols-${config.customizations.productSlider.mobile.slideToShow} `
-        + `md:grid-cols-${config.customizations.productSlider.tablet.slideToShow} `
-        + `lg:grid-cols-${config.customizations.productSlider.desktop.slideToShow}`
+        `grid-cols-${config.customizations.productSlider.display.mobile.slideToShow} `
+        + `md:grid-cols-${config.customizations.productSlider.display.tablet.slideToShow} `
+        + `lg:grid-cols-${config.customizations.productSlider.display.desktop.slideToShow}`
       );
     }
     return '';

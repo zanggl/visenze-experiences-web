@@ -57,9 +57,9 @@ const ResultsPage: FC<ResultsPageProps> = ({
   const getProductGridStyles = (): string => {
     if (Object.keys(productCustomization).length > 0) {
       return (
-        `grid-cols-${productCustomization.mobile.slideToShow} `
-        + `md:grid-cols-${productCustomization.tablet.slideToShow} `
-        + `lg:grid-cols-${productCustomization.desktop.slideToShow}`
+        `grid-cols-${productCustomization.display.mobile.slideToShow} `
+        + `md:grid-cols-${productCustomization.display.tablet.slideToShow} `
+        + `lg:grid-cols-${productCustomization.display.desktop.slideToShow}`
       );
     }
     return '';
