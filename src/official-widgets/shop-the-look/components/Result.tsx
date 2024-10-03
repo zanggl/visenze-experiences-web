@@ -20,10 +20,11 @@ const Result: FC<ResultProps> = ({ index, result }) => {
   const { productSearch, displaySettings, callbacks, debugMode } = useContext(WidgetDataContext);
   const { productDetails } = displaySettings;
   const { metadata } = useContext(WidgetResultContext);
-  const { languageSettings } = useContext(WidgetDataContext);
+  const { languageSettings, customizations } = useContext(WidgetDataContext);
   const { onProductClick } = callbacks;
   const [isLoading, setIsLoading] = useState(true);
   const targetRef = useRef<HTMLAnchorElement>(null);
+  const isOpenInNewTab = customizations.productSlider?.isOpenInNewTab || false;
   const { productTrackingMeta, onClick } = ResultLogicImpl({
     displaySettings,
     productSearch,
@@ -32,6 +33,7 @@ const Result: FC<ResultProps> = ({ index, result }) => {
     index,
     onProductClick,
     result,
+    isOpenInNewTab,
   });
   const currencyFormatter = getCurrencyFormatter(
       languageSettings?.locale || DEFAULT_LOCALE,
