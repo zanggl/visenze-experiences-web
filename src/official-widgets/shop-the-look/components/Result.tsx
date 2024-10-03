@@ -17,10 +17,10 @@ interface ResultProps {
 }
 
 const Result: FC<ResultProps> = ({ index, result }) => {
-  const { productSearch, displaySettings, callbacks, debugMode } = useContext(WidgetDataContext);
+  const { productSearch, displaySettings, customizations, callbacks, debugMode } = useContext(WidgetDataContext);
   const { productDetails } = displaySettings;
   const { metadata } = useContext(WidgetResultContext);
-  const { languageSettings, customizations } = useContext(WidgetDataContext);
+  const { languageSettings } = useContext(WidgetDataContext);
   const { onProductClick } = callbacks;
   const [isLoading, setIsLoading] = useState(true);
   const targetRef = useRef<HTMLAnchorElement>(null);
