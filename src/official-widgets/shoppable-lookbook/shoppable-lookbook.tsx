@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { CSSProperties, FC } from 'react';
 import { useEffect, useState, useContext, useRef } from 'react';
 import { Skeleton } from '@nextui-org/skeleton';
 import { useIntl } from 'react-intl';
@@ -25,6 +25,7 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
   const root = useContext(RootContext);
   const imageRef = useRef<HTMLImageElement>(null);
   const [objectDots, setObjectDots] = useState<ObjectDot[]>([]);
+  const [cardBorderRadius, setCardBorderRadius] = useState('');
   const [retryCount, setRetryCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const intl = useIntl();
@@ -50,6 +51,29 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
       });
       setObjectDots(normalizedObjs);
     }
+  };
+
+  const getProductCardCssConfig = (): CSSProperties => {
+    const cssConfig = {} as CSSProperties;
+    if (config.customizations.productSlider?.borderRadius
+      && config.customizations.productSlider?.borderRadius !== 0) {
+      cssConfig.borderRadius = `${config.customizations.productSlider?.borderRadius}px`;
+    }
+    if (config.customizations.productSlider?.contentPadding
+      && config.customizations.productSlider?.contentPadding !== 0) {
+      cssConfig.padding = `${config.customizations.productSlider?.contentPadding}px`;
+    }
+    if (config.customizations.productSlider?.marginVertical
+      && config.customizations.productSlider?.marginVertical !== 0) {
+      cssConfig.marginTop = `${config.customizations.productSlider?.marginVertical}px`;
+      cssConfig.marginBottom = `${config.customizations.productSlider?.marginVertical}px`;
+    }
+    if (config.customizations.productSlider?.marginHorizontal
+      && config.customizations.productSlider?.marginHorizontal !== 0) {
+      cssConfig.marginLeft = `${config.customizations.productSlider?.marginHorizontal}px`;
+      cssConfig.marginRight = `${config.customizations.productSlider?.marginHorizontal}px`;
+    }
+    return cssConfig;
   };
 
   const onImageLoad = (e: any): void => {
@@ -82,6 +106,10 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
   }, [error]);
 
   useEffect(() => {
+    if (config.customizations.productSlider?.borderRadius
+      && config.customizations.productSlider?.borderRadius !== 0 && isLoading) {
+      setCardBorderRadius(`${config.customizations.productSlider?.borderRadius}px`);
+    }
     setIsLoading(false);
   }, []);
 
@@ -141,7 +169,12 @@ const ShoppableLookbook: FC<ShoppableLookbookProps> = ({ config, productSearch, 
               gap-x-2 gap-y-4 md:absolute md:right-0 md:top-0 md:h-full md:w-[59%] md:overflow-y-scroll`}
               data-pw='sl-product-result-grid'>
               {productResults.map((result, index) => (
-                <div key={`${result.product_id}-${index}`} data-pw={`sl-product-result-card-${index + 1}`}>
+                <div
+                  className={`${cardBorderRadius !== '' ? 'border-2' : ''}`}
+                  key={`${result.product_id}-${index}`}
+                  data-pw={`sl-product-result-card-${index + 1}`}
+                  style={getProductCardCssConfig()}
+                >
                   <Result index={index} result={result} />
                 </div>
               ))}
