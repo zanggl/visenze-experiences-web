@@ -12,6 +12,7 @@ interface ResultLogicProps {
   index: number;
   onProductClick?: (result: ProcessedProduct, productTrackingMeta: Record<string, any>) => void;
   result: ProcessedProduct;
+  isOpenInNewTab: boolean;
 }
 
 const ResultLogicImpl = ({
@@ -22,6 +23,7 @@ const ResultLogicImpl = ({
   index,
   onProductClick,
   result,
+  isOpenInNewTab,
 }: ResultLogicProps): ResultLogic => {
   const getValue = (key: ProductDetailField): any => {
     return result[displaySettings.productDetails[key]];
@@ -41,7 +43,11 @@ const ResultLogicImpl = ({
       onProductClick(result, productTrackingMeta);
     } else {
       const url = getURL(getValue('productUrl'), productTrackingMeta, isRecommendation);
-      window.open(url?.href, '_self');
+      if (isOpenInNewTab) {
+        window.open(url?.href, '_blank');
+      } else {
+        window.open(url?.href, '_self');
+      }
     }
   };
 

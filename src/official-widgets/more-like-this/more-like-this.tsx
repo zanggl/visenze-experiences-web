@@ -43,15 +43,15 @@ const MoreLikeThis: FC<MoreLikeThisProps> = ({ config, productSearch, productId 
     const breakpoint = useBreakpoint();
     const isDesktop = breakpoint === WidgetBreakpoint.DESKTOP;
     const isTablet = breakpoint === WidgetBreakpoint.TABLET;
-    let slidesToShow = config.customizations.productSlider?.mobile.slideToShow || 2.5;
-    let slidesToScroll = config.customizations.productSlider?.mobile.slideToShow || 2;
+    let slidesToShow = config.customizations.productSlider?.display.mobile.slideToShow || 2.5;
+    let slidesToScroll = config.customizations.productSlider?.display.mobile.slideToShow || 2;
 
     if (isDesktop) {
-      slidesToShow = config.customizations.productSlider?.desktop.slideToShow || 4;
-      slidesToScroll = config.customizations.productSlider?.desktop.slideToScroll || 4;
+      slidesToShow = config.customizations.productSlider?.display.desktop.slideToShow || 4;
+      slidesToScroll = config.customizations.productSlider?.display.desktop.slideToScroll || 4;
     } else if (isTablet) {
-      slidesToShow = config.customizations.productSlider?.tablet.slideToShow || 3.5;
-      slidesToScroll = config.customizations.productSlider?.tablet.slideToScroll || 3;
+      slidesToShow = config.customizations.productSlider?.display.tablet.slideToShow || 3.5;
+      slidesToScroll = config.customizations.productSlider?.display.tablet.slideToScroll || 3;
     }
 
     // Manually center slick track if there are not enough products to show

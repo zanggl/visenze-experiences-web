@@ -30,6 +30,7 @@ const Result = memo(({
   const { languageSettings } = useContext(WidgetDataContext);
   const { onProductClick } = callbacks;
   const [isLoading, setIsLoading] = useState(true);
+  const isOpenInNewTab = customizations.productSlider?.isOpenInNewTab || false;
   const targetRef = useRef<HTMLAnchorElement>(null);
   const { productTrackingMeta, onClick } = ResultLogicImpl({
     displaySettings,
@@ -39,6 +40,7 @@ const Result = memo(({
     index,
     onProductClick,
     result,
+    isOpenInNewTab,
   });
   const currencyFormatter = getCurrencyFormatter(
       languageSettings?.locale || DEFAULT_LOCALE,

@@ -23,6 +23,7 @@ const Result: FC<ResultProps> = ({ index, result, onClickMoreLikeThisHandler }) 
   const { metadata } = useContext(WidgetResultContext);
   const { onProductClick } = callbacks;
   const targetRef = useRef<HTMLAnchorElement>(null);
+  const isOpenInNewTab = customizations.productSlider?.isOpenInNewTab || false;
   const { productTrackingMeta, onClick } = ResultLogicImpl({
     displaySettings,
     productSearch,
@@ -31,6 +32,7 @@ const Result: FC<ResultProps> = ({ index, result, onClickMoreLikeThisHandler }) 
     index,
     onProductClick,
     result,
+    isOpenInNewTab,
   });
 
   const getProductName = (): string => {

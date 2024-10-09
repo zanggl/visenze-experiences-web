@@ -319,9 +319,16 @@ interface BreakpointConfig {
 }
 
 export interface ProductDisplayConfig {
-  mobile: ProductDisplayFeatures;
-  tablet: ProductDisplayFeatures;
-  desktop: ProductDisplayFeatures;
+  display: {
+    mobile: ProductDisplayFeatures;
+    tablet: ProductDisplayFeatures;
+    desktop: ProductDisplayFeatures;
+  };
+  isOpenInNewTab: boolean;
+  borderRadius: number;
+  contentPadding: number;
+  marginVertical: number;
+  marginHorizontal: number;
 }
 interface ProductDisplayFeatures {
   slideToShow: number;
