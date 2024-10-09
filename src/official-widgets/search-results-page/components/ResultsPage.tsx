@@ -1,5 +1,5 @@
-import type { FC, ReactElement } from 'react';
-import { useRef, useState } from 'react';
+import type { CSSProperties, FC, ReactElement } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Button } from '@nextui-org/button';
 import { Image } from '@nextui-org/image';
 import { cn } from '@nextui-org/theme';
@@ -32,6 +32,7 @@ const ResultsPage: FC<ResultsPageProps> = ({
   productCustomization,
 }): ReactElement => {
   const [productHistory, setProductHistory] = useState<ProcessedProduct[]>([]);
+  const [cardBorderRadius, setCardBorderRadius] = useState('');
   const resultsRef = useRef<HTMLDivElement>(null);
 
   const scrollToResultsTop = (): void => {
@@ -40,6 +41,29 @@ const ResultsPage: FC<ResultsPageProps> = ({
       left: 0,
       behavior: 'smooth',
     });
+  };
+
+  const getProductCardCssConfig = (): CSSProperties => {
+    const cssConfig = {} as CSSProperties;
+    if (productCustomization.borderRadius
+      && productCustomization.borderRadius !== 0) {
+      cssConfig.borderRadius = `${productCustomization.borderRadius}px`;
+    }
+    if (productCustomization.contentPadding
+      && productCustomization.contentPadding !== 0) {
+      cssConfig.padding = `${productCustomization.contentPadding}px`;
+    }
+    if (productCustomization.marginVertical
+      && productCustomization.marginVertical !== 0) {
+      cssConfig.marginTop = `${productCustomization.marginVertical}px`;
+      cssConfig.marginBottom = `${productCustomization.marginVertical}px`;
+    }
+    if (productCustomization.marginHorizontal
+      && productCustomization.marginHorizontal !== 0) {
+      cssConfig.marginLeft = `${productCustomization.marginHorizontal}px`;
+      cssConfig.marginRight = `${productCustomization.marginHorizontal}px`;
+    }
+    return cssConfig;
   };
 
   const onClickMoreLikeThisHandler = (product: ProcessedProduct): void => {
@@ -72,6 +96,12 @@ const ResultsPage: FC<ResultsPageProps> = ({
     }
     setProductHistory(newProductHistory);
   };
+
+  useEffect(() => {
+    if (results.length > 0) {
+      setCardBorderRadius(`${productCustomization.borderRadius}px`);
+    }
+  }, []);
 
   return (
     <div className='flex h-[90vh] w-full flex-col divide-y-1' data-pw='srp-results-page'>
@@ -138,12 +168,19 @@ const ResultsPage: FC<ResultsPageProps> = ({
         className={`grid h-full ${getProductGridStyles() !== '' ? getProductGridStyles() : 'grid-cols-2 md:grid-cols-3'} 
         gap-x-2 gap-y-4 overflow-y-auto px-3 py-4 md:gap-x-4 md:px-4`}>
         {results.map((result, index) => (
-          <Result
-            key={result.product_id}
-            index={index}
-            result={result}
-            onClickMoreLikeThisHandler={onClickMoreLikeThisHandler}
-          />
+          <div
+            className={`${cardBorderRadius !== '' ? 'border-2' : ''}`}
+            key={`${result.product_id}-${index}`}
+            data-pw={`srp-product-result-card-${index + 1}`}
+            style={getProductCardCssConfig()}
+          >
+            <Result
+              key={result.product_id}
+              index={index}
+              result={result}
+              onClickMoreLikeThisHandler={onClickMoreLikeThisHandler}
+            />
+          </div>
         ))}
       </div>
     </div>

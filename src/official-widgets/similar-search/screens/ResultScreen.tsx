@@ -1,4 +1,4 @@
-import type { FC, ReactElement } from 'react';
+import type { CSSProperties, FC, ReactElement } from 'react';
 import { useMemo, useState, useEffect, useRef, useContext } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import { Button } from '@nextui-org/button';
@@ -19,6 +19,7 @@ import PrevArrow from '../components/PrevArrow';
 import NextArrow from '../components/NextArrow';
 import useBreakpoint from '../../../common/components/hooks/use-breakpoint';
 import { QUERY_MAX_CHARACTER_LENGTH } from '../../../common/constants';
+import type { ProductDisplayConfig } from '../../../common/visenze-core';
 
 const swipeConfig = {
   delta: 10, // min distance(px) before a swipe starts. *See Notes*
@@ -37,6 +38,7 @@ interface ResultScreenProps {
   searchHistory: SearchImage[];
   selectedChip: string;
   trendingKeywords: string[];
+  productCustomizations: ProductDisplayConfig;
 }
 
 const ResultScreen: FC<ResultScreenProps> = ({
@@ -47,6 +49,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
   searchHistory,
   selectedChip,
   trendingKeywords,
+  productCustomizations,
 }) => {
   const { productResults, image, autocompleteResults } = useContext(WidgetResultContext);
   const { customizations } = useContext(WidgetDataContext);
@@ -87,6 +90,29 @@ const ResultScreen: FC<ResultScreenProps> = ({
       return getFile(searchHistory[0]);
     }
     return '';
+  };
+
+  const getProductCardCssConfig = (): CSSProperties => {
+    const cssConfig = {} as CSSProperties;
+    if (productCustomizations.borderRadius
+      && productCustomizations.borderRadius !== 0) {
+      cssConfig.borderRadius = `${productCustomizations.borderRadius}px`;
+    }
+    if (productCustomizations.contentPadding
+      && productCustomizations.contentPadding !== 0) {
+      cssConfig.padding = `${productCustomizations.contentPadding}px`;
+    }
+    if (productCustomizations.marginVertical
+      && productCustomizations.marginVertical !== 0) {
+      cssConfig.marginTop = `${productCustomizations.marginVertical}px`;
+      cssConfig.marginBottom = `${productCustomizations.marginVertical}px`;
+    }
+    if (productCustomizations.marginHorizontal
+      && productCustomizations.marginHorizontal !== 0) {
+      cssConfig.marginLeft = `${productCustomizations.marginHorizontal}px`;
+      cssConfig.marginRight = `${productCustomizations.marginHorizontal}px`;
+    }
+    return cssConfig;
   };
 
   const onClickMoreLikeThisHandler = (queryImage: SearchImage): void => {
@@ -231,11 +257,17 @@ const ResultScreen: FC<ResultScreenProps> = ({
           </div>
 
           <div ref={resultsRef} className='no-scrollbar flex size-full justify-center overflow-y-auto'>
-            <div className='mx-2 grid h-full grid-cols-2 pb-20' data-pw='ss-product-result-grid'>
+            <div
+              className={`mx-2 grid h-full pb-20
+              ${productCustomizations.display.mobile ? `grid-cols-${productCustomizations.display.mobile.slideToShow}` : 'grid-cols-2'}`}
+              data-pw='ss-product-result-grid'
+            >
               {productResults.map((result: ProcessedProduct, index: number) => (
                 <div
                   key={result.product_id}
-                  className='border-gray-300 px-2 pt-2'>
+                  className='border-gray-300 px-2 pt-2'
+                  style={getProductCardCssConfig()}
+                >
                   <Result
                     onMoreLikeThis={onMoreLikeThis}
                     clearSearch={() => setSearch('')}

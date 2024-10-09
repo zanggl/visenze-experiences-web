@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { CSSProperties, FC } from 'react';
 import { useEffect, useCallback, useContext, useState } from 'react';
 import { Button } from '@nextui-org/button';
 import { useIntl } from 'react-intl';
@@ -33,6 +33,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
   const breakpoint = useBreakpoint();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  const [cardBorderRadius, setCardBorderRadius] = useState('');
   const [screen, setScreen] = useState<ScreenType | null>(null);
   const [sortType, setSortType] = useState<SortType>(SortType.RELEVANCE);
   const defaultFilters = {
@@ -73,7 +74,34 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
       cat: Category.ENTRANCE,
       label: Labels.ICON,
     });
+    if (config.customizations.productSlider?.borderRadius
+      && config.customizations.productSlider?.borderRadius !== 0) {
+      setCardBorderRadius(`${config.customizations.productSlider?.borderRadius}px`);
+    }
     setDialogVisible(true);
+  };
+
+  const getProductCardCssConfig = (): CSSProperties => {
+    const cssConfig = {} as CSSProperties;
+    if (config.customizations.productSlider?.borderRadius
+      && config.customizations.productSlider?.borderRadius !== 0) {
+      cssConfig.borderRadius = `${config.customizations.productSlider?.borderRadius}px`;
+    }
+    if (config.customizations.productSlider?.contentPadding
+      && config.customizations.productSlider?.contentPadding !== 0) {
+      cssConfig.padding = `${config.customizations.productSlider?.contentPadding}px`;
+    }
+    if (config.customizations.productSlider?.marginVertical
+      && config.customizations.productSlider?.marginVertical !== 0) {
+      cssConfig.marginTop = `${config.customizations.productSlider?.marginVertical}px`;
+      cssConfig.marginBottom = `${config.customizations.productSlider?.marginVertical}px`;
+    }
+    if (config.customizations.productSlider?.marginHorizontal
+      && config.customizations.productSlider?.marginHorizontal !== 0) {
+      cssConfig.marginLeft = `${config.customizations.productSlider?.marginHorizontal}px`;
+      cssConfig.marginRight = `${config.customizations.productSlider?.marginHorizontal}px`;
+    }
+    return cssConfig;
   };
 
   const getProductGridStyles = (): string => {
@@ -178,7 +206,12 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
               className={`grid ${getProductGridStyles() !== '' ? getProductGridStyles() : 'grid-cols-2 lg:grid-cols-3'} gap-x-2 gap-y-4 overflow-y-auto`}
               data-pw='itg-product-result-grid'>
               {productResults.map((result, index) => (
-                <div key={`${result.product_id}-${index}`} data-pw={`itg-product-result-card-${index + 1}`}>
+                <div
+                  className={`${cardBorderRadius !== '' ? 'border-2' : ''}`}
+                  key={`${result.product_id}-${index}`}
+                  data-pw={`itg-product-result-card-${index + 1}`}
+                  style={getProductCardCssConfig()}
+                >
                   <Result index={index} result={result} isReferenceProduct={false} />
                 </div>
               ))}
