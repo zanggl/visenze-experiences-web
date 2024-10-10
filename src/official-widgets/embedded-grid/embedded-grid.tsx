@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { CSSProperties, FC } from 'react';
 import { useEffect, useState, useContext } from 'react';
 import { useIntl } from 'react-intl';
 import type { WidgetClient, WidgetConfig } from '../../common/visenze-core';
@@ -17,6 +17,7 @@ interface EmbeddedGridProps {
 const EmbeddedGrid: FC<EmbeddedGridProps> = ({ config, productSearch, productId }) => {
   const root = useContext(RootContext);
   const [retryCount, setRetryCount] = useState(0);
+  const [cardBorderRadius, setCardBorderRadius] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const intl = useIntl();
 
@@ -26,6 +27,29 @@ const EmbeddedGrid: FC<EmbeddedGridProps> = ({ config, productSearch, productId 
     productId,
     retryCount,
   });
+
+  const getProductCardCssConfig = (): CSSProperties => {
+    const cssConfig = {} as CSSProperties;
+    if (config.customizations.productSlider?.borderRadius
+      && config.customizations.productSlider?.borderRadius !== 0) {
+      cssConfig.borderRadius = `${config.customizations.productSlider?.borderRadius}px`;
+    }
+    if (config.customizations.productSlider?.contentPadding
+      && config.customizations.productSlider?.contentPadding !== 0) {
+      cssConfig.padding = `${config.customizations.productSlider?.contentPadding}px`;
+    }
+    if (config.customizations.productSlider?.marginVertical
+      && config.customizations.productSlider?.marginVertical !== 0) {
+      cssConfig.marginTop = `${config.customizations.productSlider?.marginVertical}px`;
+      cssConfig.marginBottom = `${config.customizations.productSlider?.marginVertical}px`;
+    }
+    if (config.customizations.productSlider?.marginHorizontal
+      && config.customizations.productSlider?.marginHorizontal !== 0) {
+      cssConfig.marginLeft = `${config.customizations.productSlider?.marginHorizontal}px`;
+      cssConfig.marginRight = `${config.customizations.productSlider?.marginHorizontal}px`;
+    }
+    return cssConfig;
+  };
 
   const getProductGridStyles = (): string => {
     if (config.customizations.productSlider) {
@@ -47,7 +71,10 @@ const EmbeddedGrid: FC<EmbeddedGridProps> = ({ config, productSearch, productId 
   }, [error]);
 
   useEffect(() => {
-    console.log(config);
+    if (config.customizations.productSlider?.borderRadius
+      && config.customizations.productSlider?.borderRadius !== 0 && isLoading) {
+      setCardBorderRadius(`${config.customizations.productSlider?.borderRadius}px`);
+    }
     setIsLoading(false);
   }, []);
 
@@ -78,7 +105,12 @@ const EmbeddedGrid: FC<EmbeddedGridProps> = ({ config, productSearch, productId 
             className={`grid gap-x-2 gap-y-4 ${getProductGridStyles() !== '' ? getProductGridStyles() : 'grid-cols-2 md:grid-cols-5'}`}
             data-pw='eg-product-result-grid'>
             {productResults.map((result, index) => (
-              <div key={`${result.product_id}-${index}`} data-pw={`eg-product-result-card-${index + 1}`}>
+              <div
+                className={`${cardBorderRadius !== '' ? 'border-2' : ''}`}
+                key={`${result.product_id}-${index}`}
+                data-pw={`eg-product-result-card-${index + 1}`}
+                style={getProductCardCssConfig()}
+              >
                 <Result index={index} result={result} />
               </div>
             ))}

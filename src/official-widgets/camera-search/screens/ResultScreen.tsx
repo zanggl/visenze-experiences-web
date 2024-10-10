@@ -1,4 +1,4 @@
-import type { FC, ReactElement } from 'react';
+import type { CSSProperties, FC, ReactElement } from 'react';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Button } from '@nextui-org/button';
 import { Chip } from '@nextui-org/chip';
@@ -67,6 +67,7 @@ const ResultScreen: FC<ResultScreenProps> = ({
   const [showFullResults, setShowFullResults] = useState(false);
   const [showInputSuggest, setShowInputSuggest] = useState(false);
   const [inputSuggestions, setInputSuggestions] = useState<string[]>([]);
+  const [cardBorderRadius, setCardBorderRadius] = useState('');
   const [autocompleteSuggestionsHeight, setAutocompleteSuggestionsHeight] = useState(0);
   const resultsRef = useRef<HTMLDivElement>(null);
   const breakpoint = useBreakpoint();
@@ -175,6 +176,30 @@ const ResultScreen: FC<ResultScreenProps> = ({
     }
     return styleString;
   };
+
+  const getProductCardCssConfig = (): CSSProperties => {
+    const cssConfig = {} as CSSProperties;
+    if (productCustomizations.borderRadius
+      && productCustomizations.borderRadius !== 0) {
+      cssConfig.borderRadius = `${productCustomizations.borderRadius}px`;
+    }
+    if (productCustomizations.contentPadding
+      && productCustomizations.contentPadding !== 0) {
+      cssConfig.padding = `${productCustomizations.contentPadding}px`;
+    }
+    if (productCustomizations.marginVertical
+      && productCustomizations.marginVertical !== 0) {
+      cssConfig.marginTop = `${productCustomizations.marginVertical}px`;
+      cssConfig.marginBottom = `${productCustomizations.marginVertical}px`;
+    }
+    if (productCustomizations.marginHorizontal
+      && productCustomizations.marginHorizontal !== 0) {
+      cssConfig.marginLeft = `${productCustomizations.marginHorizontal}px`;
+      cssConfig.marginRight = `${productCustomizations.marginHorizontal}px`;
+    }
+    return cssConfig;
+  };
+
   const getMobileView = (): ReactElement => (
     <div className='flex h-full flex-col gap-8 bg-primary md:hidden'>
       <Header onCloseHandler={onModalClose} onBackHandler={onBackHandler} isResultScreen={true} />
@@ -223,7 +248,11 @@ const ResultScreen: FC<ResultScreenProps> = ({
               }
               data-pw='cs-product-result-grid'>
               {productResults.map((result: ProcessedProduct, index: number) => (
-                <div key={result.product_id} className='border-gray-300 px-2 pt-2'>
+                <div
+                  key={result.product_id}
+                  className='border-gray-300 px-2 pt-2'
+                  style={getProductCardCssConfig()}
+                >
                   <Result onMoreLikeThis={onMoreLikeThis} clearSearch={clearSearch} index={index} result={result} />
                 </div>
               ))}
@@ -331,7 +360,11 @@ const ResultScreen: FC<ResultScreenProps> = ({
                 className={`grid grid-cols-3 gap-x-2 gap-y-3 px-2 pb-3 ${getProductGridStyles() !== '' ? getProductGridStyles() : 'grid-cols-3'}`}
                 data-pw='cs-product-result-grid'>
                 {productResults.map((result: ProcessedProduct, index: number) => (
-                  <div key={result.product_id} className={cn('bg-primary')}>
+                  <div
+                    key={result.product_id}
+                    className={cn('bg-primary', `${cardBorderRadius !== '' ? 'border-2' : ''}`)}
+                    style={getProductCardCssConfig()}
+                  >
                     <Result onMoreLikeThis={onMoreLikeThis} clearSearch={clearSearch} index={index} result={result} />
                   </div>
                 ))}
@@ -437,6 +470,10 @@ const ResultScreen: FC<ResultScreenProps> = ({
   }, [inputSuggestions]);
 
   useEffect(() => {
+    if (productCustomizations.borderRadius
+      && productCustomizations.borderRadius !== 0) {
+      setCardBorderRadius(`${productCustomizations.borderRadius}px`);
+    }
     // Send Result Load Page event on page load
     productSearch.send(Actions.LOAD, {
       cat: Category.RESULT,

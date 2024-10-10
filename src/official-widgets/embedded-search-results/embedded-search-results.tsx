@@ -1,4 +1,4 @@
-import type { FC, ReactElement } from 'react';
+import type { CSSProperties, FC, ReactElement } from 'react';
 import { useEffect, useRef, useContext, useState } from 'react';
 import type { ProductSearchResponse, Facet } from 'visearch-javascript-sdk';
 import { Button } from '@nextui-org/button';
@@ -42,6 +42,7 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
   const [metadata, setMetadata] = useState<Record<string, any>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [cardBorderRadius, setCardBorderRadius] = useState('');
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
   const [imageUrl, setImageUrl] = useState('');
@@ -88,8 +89,35 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
       const event = new CustomEvent('wigmix_search_bar_append_image', { detail: image });
       document.dispatchEvent(event);
     }
+    if (config.customizations.productSlider?.borderRadius
+      && config.customizations.productSlider?.borderRadius !== 0 && isLoading) {
+      setCardBorderRadius(`${config.customizations.productSlider?.borderRadius}px`);
+    }
     setIsFirstLoad(false);
     setIsLoading(false);
+  };
+
+  const getProductCardCssConfig = (): CSSProperties => {
+    const cssConfig = {} as CSSProperties;
+    if (config.customizations.productSlider?.borderRadius
+      && config.customizations.productSlider?.borderRadius !== 0) {
+      cssConfig.borderRadius = `${config.customizations.productSlider?.borderRadius}px`;
+    }
+    if (config.customizations.productSlider?.contentPadding
+      && config.customizations.productSlider?.contentPadding !== 0) {
+      cssConfig.padding = `${config.customizations.productSlider?.contentPadding}px`;
+    }
+    if (config.customizations.productSlider?.marginVertical
+      && config.customizations.productSlider?.marginVertical !== 0) {
+      cssConfig.marginTop = `${config.customizations.productSlider?.marginVertical}px`;
+      cssConfig.marginBottom = `${config.customizations.productSlider?.marginVertical}px`;
+    }
+    if (config.customizations.productSlider?.marginHorizontal
+      && config.customizations.productSlider?.marginHorizontal !== 0) {
+      cssConfig.marginLeft = `${config.customizations.productSlider?.marginHorizontal}px`;
+      cssConfig.marginRight = `${config.customizations.productSlider?.marginHorizontal}px`;
+    }
+    return cssConfig;
   };
 
   const getProductGridStyles = (): string => {
@@ -272,7 +300,12 @@ const EmbeddedSearchResults: FC<EmbeddedSearchResultProps> = ({ config }): React
                     className={`grid w-full ${getProductGridStyles() !== '' ? getProductGridStyles() : 'grid-cols-2 md:grid-cols-3'} gap-x-2 gap-y-4 px-2 pb-2 md:pl-0 md:pr-2`}
                     data-pw='esr-product-result-grid'>
                     {productResults.map((result, index) => (
-                      <div key={`${result.product_id}-${index}`} data-pw={`esr-product-result-card-${index + 1}`}>
+                      <div
+                        className={`${cardBorderRadius !== '' ? 'border-2' : ''}`}
+                        key={`${result.product_id}-${index}`}
+                        data-pw={`esr-product-result-card-${index + 1}`}
+                        style={getProductCardCssConfig()}
+                      >
                         <Result index={index} result={result} findSimilarClickHandler={findSimilarClickHandler} />
                       </div>
                     ))}
