@@ -137,6 +137,9 @@ export default function getWidgetClient(config: WidgetConfig, widgetType: string
 
     const analyticsParams = params;
 
+    if (!analyticsParams.queryId) {
+      analyticsParams.queryId = getLastClickQueryId();
+    }
     if (!analyticsParams.widgetVersion) {
       analyticsParams.widgetVersion = `${widgetType}.${widgetVersion}.js`;
     }
@@ -211,9 +214,13 @@ export default function getWidgetClient(config: WidgetConfig, widgetType: string
 
   const disposeWidget = (): void => {
     hideWidget();
-    if (placementId && window.visenzeWidgets?.[placementId]) {
-      // eslint-disable-next-line
+    if (window.visenzeWidgets?.[placementId]) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete window.visenzeWidgets[placementId];
+    }
+    if (window[`visenzeWidgets${placementId}`]) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete window[`visenzeWidgets${placementId}`];
     }
   };
 
