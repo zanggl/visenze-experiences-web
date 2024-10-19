@@ -5,8 +5,8 @@ import { WidgetDataContext } from '../../types/contexts';
  * Copy styles from the temp shadow dom into widget shadow dom
  */
 const useStyles = (root: HTMLElement | null): void => {
-  const { widgetType, version, customizations } = useContext(WidgetDataContext);
-  const styleTag = document.getElementById(`vi__${widgetType.toLowerCase()}__${version}`);
+  const { productSearch, customizations } = useContext(WidgetDataContext);
+  const styleTag = document.getElementById(`vi__${productSearch.widgetType.toLowerCase()}__${productSearch.widgetVersion.toLowerCase()}`);
 
   useEffect(() => {
     if (root) {

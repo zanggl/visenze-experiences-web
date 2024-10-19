@@ -236,7 +236,8 @@ export default function getWidgetClient(config: WidgetConfig, widgetType: string
   return {
     visearch,
     widgetType,
-    placementId: placementId ? Number(placementId) : undefined,
+    widgetVersion,
+    placementId,
     lastTrackingMetadata,
     set,
     send: sendEvent,

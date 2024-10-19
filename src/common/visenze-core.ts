@@ -22,15 +22,22 @@ export enum WidgetType {
   EMBEDDED_SEARCH_RESULTS = 'embedded_search_results',
 }
 
-interface GenericWidgetClient {
+/**
+ * Widget client for ViSenze widgets.
+ */
+export interface WidgetClient {
   /**
    * Widget type
    */
-  widgetType?: WidgetType;
+  widgetType: string;
   /**
-   * Widget placement id.
+   * Widget version
    */
-  placementId?: number;
+  widgetVersion: string;
+  /**
+   * Widget placement ID.
+   */
+  placementId: string | number;
   /**
    * Gets the query id of the API call results in the last click event
    */
@@ -89,14 +96,6 @@ interface GenericWidgetClient {
     callback?: SuccessHandler,
     failure?: ErrorHandler,
   ) => Promise<void>;
-}
-
-// widget-client
-
-/**
- * Widget client for ViSenze widgets.
- */
-export interface WidgetClient extends GenericWidgetClient {
   /**
    * Visearch client.
    */
@@ -105,14 +104,11 @@ export interface WidgetClient extends GenericWidgetClient {
    * Tracking metadata from the last search result.
    */
   lastTrackingMetadata: Record<string, Primitive> | undefined;
+  set: (key: string, val: any) => void;
   /**
-   * Widget type
-   */
-  widgetType?: WidgetType;
-  set: (key: string, val: any) => void /**
    *
    * @param roots - render root for the widget.
-   */;
+   */
   setRenderRoots: (roots: Root[]) => void;
   /**
    * Search by product id.
@@ -202,8 +198,8 @@ interface ImageWithLabel {
 
 export interface WidgetConfig {
   appSettings: {
-    appKey?: string;
-    placementId?: string | number;
+    appKey: string;
+    placementId: string | number;
     strategyId?: string | number;
     country?: string;
     uid?: string;
