@@ -33,7 +33,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index, queryId }) =>
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           observer.disconnect();
-          productSearch.send(Actions.PRODUCT_VIEW, {
+          productSearch.sendEvent(Actions.PRODUCT_VIEW, {
             label: 'dialogue',
             pid: product.pid,
             pos: index + 1,
@@ -62,7 +62,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index, queryId }) =>
         if (debugMode) {
           return;
         }
-        productSearch.send(Actions.PRODUCT_CLICK, {
+        productSearch.sendEvent(Actions.PRODUCT_CLICK, {
           label: 'dialogue',
           pid: product.pid,
           pos: index + 1,

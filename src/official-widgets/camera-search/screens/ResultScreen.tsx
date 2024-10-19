@@ -475,14 +475,14 @@ const ResultScreen: FC<ResultScreenProps> = ({
       setCardBorderRadius(`${productCustomizations.borderRadius}px`);
     }
     // Send Result Load Page event on page load
-    productSearch.send(Actions.LOAD, {
+    productSearch.sendEvent(Actions.LOAD, {
       cat: Category.RESULT,
       label: Labels.PAGE,
     });
 
     return (): void => {
       // Send Result Close Page event on page close
-      productSearch.send(Actions.CLOSE, {
+      productSearch.sendEvent(Actions.CLOSE, {
         cat: Category.RESULT,
         label: Labels.PAGE,
       });

@@ -161,7 +161,7 @@ const useRecommendationSearch = ({
 
       // Send RESULT LOAD tracking event if there are results
       if (results.length) {
-        productSearch.send(Actions.RESULT_LOAD, metadata);
+        productSearch.sendEvent(Actions.RESULT_LOAD, metadata);
         productSearch.lastTrackingMetadata = metadata;
       }
     }

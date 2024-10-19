@@ -47,7 +47,7 @@ const useAutocomplete = ({
       setAutocompleteResults(newAutocompleteResults);
 
       if (newAutocompleteResults.length > 0) {
-        productSearch.send(Actions.RESULT_LOAD, newMetadata);
+        productSearch.sendEvent(Actions.RESULT_LOAD, newMetadata);
         productSearch.lastTrackingMetadata = newMetadata;
       }
     }

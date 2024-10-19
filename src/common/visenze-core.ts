@@ -40,17 +40,7 @@ interface GenericWidgetClient {
    */
   getLastQueryId: () => Promise<string>;
   /**
-   * Sends an event to ViSenze Analytics
-   * @param action - action name
-   * @param params - query parameters
-   * @param callback - callback to be executed upon event sent
-   * @param failure - callback to be executed upon event sent failure
-   *
-   * @example
-   * // Sends an add to cart event.
-   * ```
-   * widgetClient.sendEvent('add_to_cart', {pid: 'my_product_id'});
-   * ```
+   * Alias for sendEvents, kept in here for legacy reasons.
    */
   send: (
     action: string,

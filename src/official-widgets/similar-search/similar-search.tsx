@@ -65,7 +65,7 @@ const SimilarSearch: FC<SimilarSearchProps> = ({ config, productSearch, element 
   const onModalClose = useCallback((): void => {
     setDialogVisible(false);
     if (productResults.length > 0) {
-      productSearch.send(Actions.CLOSE, {
+      productSearch.sendEvent(Actions.CLOSE, {
         label: Labels.PAGE,
         metadata,
       });
@@ -130,7 +130,7 @@ const SimilarSearch: FC<SimilarSearchProps> = ({ config, productSearch, element 
   const onPopupIconClick = (event: any): void => {
     event.stopPropagation();
     event.preventDefault();
-    productSearch.send(Actions.CLICK, {
+    productSearch.sendEvent(Actions.CLICK, {
       cat: Category.ENTRANCE,
       label: Labels.ICON,
     });

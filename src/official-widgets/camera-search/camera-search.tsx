@@ -62,7 +62,7 @@ const CameraSearch = memo((props: { config: WidgetConfig; productSearch: WidgetC
   const onModalClose = useCallback((): void => {
     setDialogVisible(false);
     if (productResults.length > 0) {
-      productSearch.send(Actions.CLOSE, {
+      productSearch.sendEvent(Actions.CLOSE, {
         label: Labels.PAGE,
         metadata,
       });
@@ -134,7 +134,7 @@ const CameraSearch = memo((props: { config: WidgetConfig; productSearch: WidgetC
   const onCameraButtonClick = (event: any): void => {
     event.stopPropagation();
     event.preventDefault();
-    productSearch.send(Actions.CLICK, {
+    productSearch.sendEvent(Actions.CLICK, {
       label: Labels.ENTER,
       cat: Category.ENTRANCE,
     });
@@ -226,7 +226,7 @@ const CameraSearch = memo((props: { config: WidgetConfig; productSearch: WidgetC
 
   useEffect(() => {
     // Send Entrance Load event on widget render
-    productSearch.send(Actions.LOAD, {
+    productSearch.sendEvent(Actions.LOAD, {
       cat: Category.ENTRANCE,
       label: Labels.PAGE,
     });

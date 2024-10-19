@@ -78,7 +78,7 @@ const Result = memo(({
       entries.forEach((entry) => {
         if (entry.isIntersecting && productTrackingMeta) {
           observer.disconnect();
-          productSearch.send(Actions.PRODUCT_VIEW, productTrackingMeta);
+          productSearch.sendEvent(Actions.PRODUCT_VIEW, productTrackingMeta);
         }
       });
     }, {

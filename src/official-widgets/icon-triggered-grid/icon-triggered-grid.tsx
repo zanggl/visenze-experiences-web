@@ -62,7 +62,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
     setSortType(SortType.RELEVANCE);
     setRetryCount(0);
     if (productResults.length > 0) {
-      productSearch.send(Actions.CLOSE, {
+      productSearch.sendEvent(Actions.CLOSE, {
         label: Labels.PAGE,
         metadata,
       });
@@ -70,7 +70,7 @@ const IconTriggeredGrid: FC<IconTriggeredGridProps> = ({ config, productSearch, 
   }, [productResults]);
 
   const onPopupIconClick = (): void => {
-    productSearch.send(Actions.CLICK, {
+    productSearch.sendEvent(Actions.CLICK, {
       cat: Category.ENTRANCE,
       label: Labels.ICON,
     });

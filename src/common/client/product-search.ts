@@ -122,7 +122,7 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
   /**
    * Sends event to ViSenze Analytics
    */
-  const send = async (
+  const sendEvent = async (
     action: string,
     params: Record<string, any> = {},
     callback?: (...args: any) => any,
@@ -172,7 +172,7 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
         if (action.toLowerCase() === 'transaction' && !event.transId) {
           event.transId = batchId;
         }
-        send(action, event, callback, failure);
+        sendEvent(action, event, callback, failure);
       });
     });
   };
@@ -243,8 +243,8 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
     placementId: placementId ? Number(placementId) : undefined,
     lastTrackingMetadata,
     set,
-    send,
-    sendEvent: send,
+    send: sendEvent,
+    sendEvent,
     sendEvents,
     getLastClickQueryId,
     getLastQueryId,

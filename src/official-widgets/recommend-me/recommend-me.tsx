@@ -47,7 +47,7 @@ const RecommendMe = memo((props: {
         queryId: requestId,
         cat: Category.RESULT,
       };
-      productSearch.send(Actions.RESULT_LOAD, requestMetadata);
+      productSearch.sendEvent(Actions.RESULT_LOAD, requestMetadata);
       productSearch.lastTrackingMetadata = requestMetadata;
       setMetadata(requestMetadata);
 

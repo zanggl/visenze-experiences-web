@@ -38,7 +38,7 @@ const ResultLogicImpl = ({
   const onClick = (event: any): void => {
     event.stopPropagation();
     event.preventDefault();
-    productSearch.send(Actions.PRODUCT_CLICK, productTrackingMeta);
+    productSearch.sendEvent(Actions.PRODUCT_CLICK, productTrackingMeta);
     if (onProductClick && typeof onProductClick === 'function') {
       onProductClick(result, productTrackingMeta);
     } else {

@@ -23,7 +23,7 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
 
   const onGallerySelect = (index: number): void => {
     // Send Upload Click Sample event when a gallery image is clicked
-    productSearch.send(Actions.CLICK, {
+    productSearch.sendEvent(Actions.CLICK, {
       cat: Category.UPLOAD,
       label: Labels.SAMPLE,
       pos: index + 1,
@@ -69,14 +69,14 @@ const UploadScreen: FC<UploadScreenProps> = ({ onModalClose, onImageUpload }) =>
 
   useEffect(() => {
     // Send Upload Load Page event on page load
-    productSearch.send(Actions.LOAD, {
+    productSearch.sendEvent(Actions.LOAD, {
       cat: Category.UPLOAD,
       label: Labels.PAGE,
     });
 
     return (): void => {
       // Send Upload Close Page event on page close
-      productSearch.send(Actions.CLOSE, {
+      productSearch.sendEvent(Actions.CLOSE, {
         cat: Category.UPLOAD,
         label: Labels.PAGE,
       });
