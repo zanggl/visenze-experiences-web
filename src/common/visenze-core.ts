@@ -4,7 +4,7 @@ import type { ErrorHandler, SuccessHandler } from './types/function';
 
 // model
 
-type Primitive = boolean | string | number;
+export type Primitive = boolean | string | number;
 
 export enum WidgetType {
   CAMERA_SEARCH = 'camera_search',
@@ -46,6 +46,14 @@ export interface WidgetClient {
    * Gets the last API call query id.
    */
   getLastQueryId: () => Promise<string>;
+  /**
+   * Gets the last successful search tracking metadata.
+   */
+  getLastTrackingMeta: () => Record<string, Primitive> | undefined;
+  /**
+   * Gets last reference id or product id used for search/recommendations
+   */
+  getLastReference: () => any;
   /**
    * Alias for sendEvents, kept in here for legacy reasons.
    */
@@ -103,7 +111,7 @@ export interface WidgetClient {
   /**
    * Tracking metadata from the last search result.
    */
-  lastTrackingMetadata: Record<string, Primitive> | undefined;
+  setLastTrackingMeta: (metadata: Record<string, Primitive> | undefined) => void;
   set: (key: string, val: any) => void;
   /**
    *

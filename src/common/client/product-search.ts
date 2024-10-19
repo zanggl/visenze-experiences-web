@@ -1,6 +1,6 @@
 import type { Root } from 'react-dom/client';
 import ViSearch from 'visearch-javascript-sdk';
-import type { WidgetClient, WidgetConfig } from '../visenze-core';
+import type { Primitive, WidgetClient, WidgetConfig } from '../visenze-core';
 import type { ErrorHandler, SuccessHandler } from '../types/function';
 import { DEFAULT_ENDPOINT } from '../constants';
 
@@ -45,10 +45,11 @@ const wrapCallbacks = (
 
 export default function getWidgetClient(config: WidgetConfig, widgetType: string, widgetVersion: string): WidgetClient {
   const { vttSource, disableAnalytics } = config;
-  const lastTrackingMetadata: Record<string, any> = {};
   const { placementId, appKey, strategyId, country, endpoint, gtmTracking, resizeSettings, uid } = config.appSettings;
   const { onSearchCallback } = config?.callbacks;
   let roots: Root[] = [];
+  let lastTrackingMetadata: Record<string, Primitive> = {};
+  let lastReference = '';
 
   const visearch = ViSearch();
   visearch.setKeys({
@@ -71,6 +72,7 @@ export default function getWidgetClient(config: WidgetConfig, widgetType: string
     handleError: ErrorHandler,
   ): void => {
     const [success, error] = wrapCallbacks(onSearchCallback, handleSuccess, handleError);
+    lastReference = pid;
     visearch.productSearchById(
       pid,
       {
@@ -178,6 +180,17 @@ export default function getWidgetClient(config: WidgetConfig, widgetType: string
   };
 
   /**
+   * Gets the metadata of the last request
+   */
+  const getLastTrackingMeta = (): Record<string, any> => {
+    return lastTrackingMetadata;
+  };
+
+  const setLastTrackingMeta = (metadata: Record<string, Primitive> | undefined): void => {
+    lastTrackingMetadata = metadata || {};
+  };
+
+  /**
    * Gets query id of the last request, fallback to local storage if there is none
    */
   const getLastQueryId = (): Promise<string> => {
@@ -240,18 +253,22 @@ export default function getWidgetClient(config: WidgetConfig, widgetType: string
     roots = renderRoots;
   };
 
+  const getLastReference = (): any => lastReference;
+
   return {
     visearch,
     widgetType,
     widgetVersion,
     placementId,
-    lastTrackingMetadata,
+    setLastTrackingMeta,
     set,
     send: sendEvent,
     sendEvent,
     sendEvents,
     getLastClickQueryId,
     getLastQueryId,
+    getLastTrackingMeta,
+    getLastReference,
     searchById,
     multisearchByImage,
     multisearchAutocomplete,

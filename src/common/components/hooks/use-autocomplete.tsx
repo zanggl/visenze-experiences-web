@@ -48,7 +48,7 @@ const useAutocomplete = ({
 
       if (newAutocompleteResults.length > 0) {
         productSearch.sendEvent(Actions.RESULT_LOAD, newMetadata);
-        productSearch.lastTrackingMetadata = newMetadata;
+        productSearch.setLastTrackingMeta(newMetadata);
       }
     }
   };

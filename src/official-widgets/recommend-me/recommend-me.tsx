@@ -48,7 +48,7 @@ const RecommendMe = memo((props: {
         cat: Category.RESULT,
       };
       productSearch.sendEvent(Actions.RESULT_LOAD, requestMetadata);
-      productSearch.lastTrackingMetadata = requestMetadata;
+      productSearch.setLastTrackingMeta(requestMetadata);
       setMetadata(requestMetadata);
 
       // Prepend newly created carousel to carousel history
