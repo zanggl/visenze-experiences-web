@@ -217,7 +217,6 @@ export interface WidgetConfig {
       maxWidth: number;
       maxHeight: number;
     };
-    disableCache?: boolean;
   };
   displaySettings: {
     cssSelector: string;
