@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import type { ProductSearchResponse } from 'visearch-javascript-sdk';
 import type { SearchImage } from '../../types/image';
-import { isImageUrl } from '../../types/image';
+import { isImageFile, isImageUrl } from '../../types/image';
 import { WidgetDataContext } from '../../types/contexts';
 import { Actions, Category } from '../../types/tracking-constants';
 
@@ -60,7 +60,7 @@ const useAutocomplete = ({
     if (image) {
       if (isImageUrl(image)) {
         params.im_url = image.imgUrl;
-      } else {
+      } else if (isImageFile(image)) {
         const [file] = image.files;
         params.image = file;
       }

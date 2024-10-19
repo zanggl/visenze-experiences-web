@@ -4,6 +4,7 @@ import { Button } from '@nextui-org/button';
 import { Actions, Category, Labels } from '../../common/types/tracking-constants';
 import { WidgetResultContext } from '../../common/types/contexts';
 import type { SearchImage } from '../../common/types/image';
+import { isImageDataUrl } from '../../common/types/image';
 import type { BoxData } from '../../common/types/product';
 import useBreakpoint from '../../common/components/hooks/use-breakpoint';
 import useImageMultisearch from '../../common/components/hooks/use-image-multisearch';
@@ -186,8 +187,8 @@ const SimilarSearch: FC<SimilarSearchProps> = ({ config, productSearch, element 
 
   useEffect(() => {
     (async (): Promise<void> => {
-      if (image && 'file' in image) {
-        await productSearch.visearch.resizeImage(image.file, config.appSettings.resizeSettings, (resizedObj) => setResizedImage({ file: resizedObj ?? '', files: image.files }));
+      if (image && isImageDataUrl(image)) {
+        await productSearch.visearch.resizeImage(image.file, config.appSettings.resizeSettings, (resizedObj) => setResizedImage({ file: resizedObj ?? '' }));
       }
     })();
   }, [image]);

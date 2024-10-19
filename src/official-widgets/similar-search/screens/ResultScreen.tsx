@@ -10,6 +10,7 @@ import { useIntl } from 'react-intl';
 import { WidgetDataContext, WidgetResultContext } from '../../../common/types/contexts';
 import type { ProcessedProduct } from '../../../common/types/product';
 import type { SearchImage } from '../../../common/types/image';
+import { isImageDataUrl, isImageUrl } from '../../../common/types/image';
 import Result from '../components/Result';
 import ArrowDownIcon from '../../../common/icons/ArrowDownIcon';
 import ArrowUpIcon from '../../../common/icons/ArrowUpIcon';
@@ -79,10 +80,13 @@ const ResultScreen: FC<ResultScreenProps> = ({
     if (!searchImage) {
       return '';
     }
-    if ('imgUrl' in searchImage) {
+    if (isImageUrl(searchImage)) {
       return searchImage.imgUrl;
     }
-    return searchImage.file;
+    if (isImageDataUrl(searchImage)) {
+      return searchImage.file;
+    }
+    return '';
   };
 
   const getReferenceImage = (): string => {

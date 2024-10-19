@@ -9,7 +9,8 @@ import useBreakpoint from '../../../common/components/hooks/use-breakpoint';
 import FileDropzone from '../../../common/components/FileDropzone';
 import UploadIcon from '../../../common/icons/UploadIcon';
 import { WidgetDataContext } from '../../../common/types/contexts';
-import type { ImageFile, ImageUrl, SearchImage } from '../../../common/types/image';
+import type { SearchImage } from '../../../common/types/image';
+import { isImageDataUrl, isImageUrl } from '../../../common/types/image';
 import CloseIcon from '../../../common/icons/CloseIcon';
 
 interface ImageGalleryUploadProps {
@@ -103,11 +104,11 @@ const ImageGalleryUpload: FC<ImageGalleryUploadProps> = ({ imageUploadHandler, p
       <Button isIconOnly className='rounded-full bg-zinc-100' onClick={onIconClickHandler} data-pw='sb-gallery-button'>
         {searchImage && (
             <>
-              {(searchImage as ImageUrl).imgUrl && (
-                  <img src={(searchImage as ImageUrl).imgUrl} />
+              {isImageUrl(searchImage) && (
+                  <img src={searchImage.imgUrl} />
               )}
-              {(searchImage as ImageFile).file && (
-                  <img src={(searchImage as ImageFile).file} />
+              {isImageDataUrl(searchImage) && (
+                  <img src={searchImage.file} />
               )}
             </>
         )}

@@ -12,6 +12,7 @@ import { WidgetDataContext, WidgetResultContext } from '../../../common/types/co
 import FileDropzone from '../../../common/components/FileDropzone';
 import { ScreenType } from '../../../common/types/constants';
 import type { SearchImage } from '../../../common/types/image';
+import { isImageDataUrl, isImageUrl } from '../../../common/types/image';
 import Result from '../components/Result';
 import Footer from '../../../common/components/Footer';
 import Header from '../components/Header';
@@ -86,10 +87,13 @@ const ResultScreen: FC<ResultScreenProps> = ({
     if (!image) {
       return '';
     }
-    if ('imgUrl' in image) {
+    if (isImageUrl(image)) {
       return image.imgUrl;
     }
-    return image.file;
+    if (isImageDataUrl(image)) {
+      return image.file;
+    }
+    return '';
   };
 
   const clearSearch = (): void => {
