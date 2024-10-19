@@ -33,13 +33,7 @@ export interface CroppingContextValue {
 
 export const WidgetDataContext = createContext<WidgetData>({
   ...DEFAULT_CONFIGS,
-  productSearch: getWidgetClient({
-    config: DEFAULT_CONFIGS,
-    widgetType: undefined,
-    widgetVersion: '0.0.0',
-    widgetDirectory: '/',
-    deployTypeId: 0,
-  }),
+  productSearch: getWidgetClient(DEFAULT_CONFIGS, WidgetType.CAMERA_SEARCH, '0.0.0'),
   widgetType: WidgetType.CAMERA_SEARCH,
   version: '0.0.0',
 });

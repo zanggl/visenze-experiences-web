@@ -1,9 +1,8 @@
 import type { Root } from 'react-dom/client';
 import ViSearch from 'visearch-javascript-sdk';
-import type { WidgetInitOptions, WidgetClient } from '../visenze-core';
+import type { WidgetClient, WidgetConfig } from '../visenze-core';
 import type { ErrorHandler, SuccessHandler } from '../types/function';
-
-const Endpoint = 'https://search.visenze.com';
+import { DEFAULT_ENDPOINT } from '../constants';
 
 const validateBatchEvents = (
   events: Record<string, string>[],
@@ -44,8 +43,7 @@ const wrapCallbacks = (
   return [newOnSuccess, newOnError];
 };
 
-export default function getWidgetClient(options: WidgetInitOptions): WidgetClient {
-  const { config, widgetType, widgetVersion, widgetDirectory, deployTypeId } = options;
+export default function getWidgetClient(config: WidgetConfig, widgetType: string, widgetVersion: string): WidgetClient {
   const { vttSource, disableAnalytics } = config;
   const lastTrackingMetadata: Record<string, any> = {};
   const { placementId, appKey, strategyId, country, endpoint, gtmTracking, resizeSettings, uid } = config.appSettings;
@@ -58,7 +56,7 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
     strategy_id: strategyId,
     app_key: appKey,
     is_cn: country === 'CN',
-    endpoint: endpoint || Endpoint,
+    endpoint: endpoint || DEFAULT_ENDPOINT,
     gtm_tracking: gtmTracking,
     resize_settings: resizeSettings || {},
   });
@@ -141,7 +139,6 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
 
     if (!analyticsParams.widgetVersion) {
       analyticsParams.widgetVersion = `${widgetType}.${widgetVersion}.js`;
-      analyticsParams.widgetDir = widgetDirectory;
     }
     if (vttSource) {
       analyticsParams.vtt_source = vttSource;
@@ -239,7 +236,6 @@ export default function getWidgetClient(options: WidgetInitOptions): WidgetClien
   return {
     visearch,
     widgetType,
-    deployTypeId,
     placementId: placementId ? Number(placementId) : undefined,
     lastTrackingMetadata,
     set,

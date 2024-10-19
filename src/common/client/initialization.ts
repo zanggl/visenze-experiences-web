@@ -3,6 +3,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import type { WidgetType, WidgetClient, WidgetConfig, RecursivePartial } from '../visenze-core';
 import { DEFAULT_CONFIGS } from '../default-configs';
 import getWidgetClient from './product-search';
+import { DEFAULT_ENDPOINT } from '../constants';
 
 export interface WidgetInitResult {
   widgetClient: WidgetClient;
@@ -105,7 +106,6 @@ export const init = (
   fieldMappings: Record<string, string>,
   widgetType: WidgetType,
   widgetVersion: string,
-  widgetDirectory: string,
 ): WidgetInitResult | undefined => {
   if (isPlacementSkippable(initConfig.appSettings.placementId)) {
     return;
@@ -114,13 +114,7 @@ export const init = (
   let config = deepMerge(initConfig, DEFAULT_CONFIGS);
   setCssVariables(config);
   config = populateProductDetailsAndAttrsToGet(config, fieldMappings);
-  const widgetClient = getWidgetClient({
-    config,
-    widgetType,
-    widgetVersion,
-    widgetDirectory,
-    deployTypeId: 0,
-  });
+  const widgetClient = getWidgetClient(config, widgetType, widgetVersion);
   return { widgetClient, fieldMappings, config };
 };
 
@@ -182,7 +176,7 @@ export const initWidgetFactory = (
     isMultiRender: boolean,
 ): WidgetInitializer => {
   return (initConfig, fieldMappings, skipRender) => {
-    const result = init(initConfig, fieldMappings, widgetType, widgetVersion, '/');
+    const result = init(initConfig, fieldMappings, widgetType, widgetVersion);
     if (!result) {
       return undefined;
     }
@@ -203,8 +197,6 @@ export const initWidgetFactory = (
     return widgetClient;
   };
 };
-
-const DEFAULT_ENDPOINT = 'https://search.visenze.com';
 
 export const devInitWidget = async (
     widgetType: WidgetType,
@@ -244,7 +236,7 @@ export const devInitWidget = async (
     },
   };
 
-  const result = init(initConfig, fieldMappings, widgetType, widgetVersion, '/');
+  const result = init(initConfig, fieldMappings, widgetType, widgetVersion);
   if (!result) {
     return;
   }

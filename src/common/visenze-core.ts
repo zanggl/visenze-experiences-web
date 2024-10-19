@@ -109,10 +109,6 @@ export interface WidgetClient extends GenericWidgetClient {
    * Widget type
    */
   widgetType?: WidgetType;
-  /**
-   * Widget deploy type id for tag deployment.
-   */
-  deployTypeId: number | undefined;
   set: (key: string, val: any) => void /**
    *
    * @param roots - render root for the widget.
@@ -167,14 +163,6 @@ export interface WidgetClient extends GenericWidgetClient {
    * Destroys the widget object and reference.
    */
   disposeWidget: () => void;
-}
-
-export interface WidgetInitOptions {
-  config: WidgetConfig;
-  widgetType: WidgetType | undefined;
-  widgetVersion: string;
-  widgetDirectory: string;
-  deployTypeId: number | undefined;
 }
 
 export interface WidgetFont {
