@@ -276,15 +276,9 @@ export interface WidgetConfig {
   vttSource: string;
 }
 
-interface MediaQueryFeatures {
-  minHeight?: number | string;
-  maxHeight?: number | string;
-  minDeviceHeight?: number | string;
-  maxDeviceHeight?: number | string;
+interface ViewportWidth {
   minWidth?: number | string;
   maxWidth?: number | string;
-  minDeviceWidth?: number | string;
-  maxDeviceWidth?: number | string;
 }
 
 export type RecursivePartial<T> = T extends never[] ? T : { [P in keyof T]?: RecursivePartial<T[P]> };
@@ -298,9 +292,9 @@ export type ProductDetailField = keyof {
 };
 
 interface BreakpointConfig {
-  mobile: MediaQueryFeatures;
-  tablet: MediaQueryFeatures;
-  desktop: MediaQueryFeatures;
+  mobile: ViewportWidth;
+  tablet: ViewportWidth;
+  desktop: ViewportWidth;
 }
 
 export interface ProductDisplayConfig {
