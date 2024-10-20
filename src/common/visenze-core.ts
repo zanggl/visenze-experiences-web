@@ -265,6 +265,10 @@ export interface WidgetConfig {
     };
     productSlider?: ProductDisplayConfig;
   };
+  platformSettings?: {
+    platformName: string;
+    customCss: string;
+  };
   hideTrigger: boolean;
   debugMode: boolean;
   disableAnalytics: boolean;
