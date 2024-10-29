@@ -57,3 +57,12 @@
     pulseSize 2s infinite,
     pulseColor 2s infinite;
 }
+
+
+.size-7{
+  width: 22px;
+  height: 22px;
+}
+.py-2{
+  display: none;
+}
