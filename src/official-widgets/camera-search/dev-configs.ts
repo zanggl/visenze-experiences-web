@@ -2,8 +2,8 @@ import type { RecursivePartial, WidgetConfig } from '../../common/visenze-core';
 
 export const devConfigs: RecursivePartial<WidgetConfig> = {
   appSettings: {
-    appKey: '',
-    placementId: '',
+    appKey: '761fb449e74e4a179b303674823e6d62',
+    placementId: '6591',
     endpoint: '',
   },
   searchSettings: {
